@@ -14,7 +14,6 @@
 #include <sstream>
 
 namespace {
-
 uint64_t sLogMask;
 int sLogLevel;
 bool sColorsEnabled;
@@ -22,7 +21,6 @@ FILE *sOutputStream = stderr;
 }
 
 namespace ds2 {
-
 void SetLogMask(uint64_t mask) { sLogMask = mask; }
 
 void SetLogLevel(uint32_t level) { sLogLevel = level; }

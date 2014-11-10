@@ -3125,7 +3125,6 @@ RegisterDef const reg_def_orig_rax = {
 namespace ds2 {
 namespace Architecture {
 namespace X86_64 {
-
 LLDBDescriptor const LLDB = {2, lldb_reg_sets};
 GDBDescriptor const GDB = {"i386:x86-64", "GNU/Linux", 3, gdb_features};
 }

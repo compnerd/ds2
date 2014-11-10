@@ -14,6 +14,8 @@
 
 using ds2::Host::QueueChannel;
 
+namespace ds2 {
+namespace Host {
 QueueChannel::QueueChannel(Channel *remote) : _remote(remote) {}
 
 QueueChannel::~QueueChannel() { close(); }
@@ -61,4 +63,6 @@ bool QueueChannel::receive(std::string &buffer) {
 
   buffer = _queue.get(0);
   return true;
+}
+}
 }

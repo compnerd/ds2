@@ -22,6 +22,9 @@ using ds2::Host::Linux::Platform;
 
 static inline char to_lower(char c) { return std::tolower(c); }
 
+namespace ds2 {
+namespace Host {
+namespace Linux {
 char const *Platform::GetOSTypeName() { return "linux"; }
 
 char const *Platform::GetOSVendorName() {
@@ -109,4 +112,7 @@ const char *Platform::GetSelfExecutablePath() {
   }
 
   return path;
+}
+}
+}
 }

@@ -38,6 +38,8 @@ static std::string Escape(std::string const &s) {
   return ss.str();
 }
 
+namespace ds2 {
+namespace GDBRemote {
 ProtocolInterpreter::ProtocolInterpreter() : _session(nullptr) {}
 
 void ProtocolInterpreter::onPacketData(std::string const &data, bool valid) {
@@ -226,4 +228,6 @@ int ProtocolInterpreter::Handler::compare(std::string const &command) const {
   } else {
     return this->command.compare(command.substr(0, this->command.length()));
   }
+}
+}
 }

@@ -31,7 +31,6 @@ using ds2::ErrorCode;
 using ds2::U8Vector;
 
 namespace {
-
 template <typename T>
 static inline void InitCodeVector(U8Vector &codestr, T const &init) {
   uint8_t const *bptr = reinterpret_cast<uint8_t const *>(&init);
@@ -246,6 +245,9 @@ static void ARMPrepareMunmapCode(uint32_t address, size_t size,
 }
 }
 
+namespace ds2 {
+namespace Target {
+namespace Linux {
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
                                   uint64_t *address) {
   if (address == nullptr)
@@ -363,4 +365,7 @@ GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
 
 LLDBDescriptor const *Process::getLLDBRegistersDescriptor() const {
   return &Architecture::ARM::LLDB;
+}
+}
+}
 }

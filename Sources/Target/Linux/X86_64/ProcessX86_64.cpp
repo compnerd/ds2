@@ -68,6 +68,9 @@ static void PrepareMunmapCode(uint64_t address, size_t size,
   *reinterpret_cast<uint32_t *>(code + 0x14) = size;
 }
 
+namespace ds2 {
+namespace Target {
+namespace Linux {
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
                                   uint64_t *address) {
   if (address == nullptr)
@@ -156,4 +159,7 @@ LLDBDescriptor const *Process::getLLDBRegistersDescriptor() const {
     return &Architecture::X86::LLDB;
   else
     return &Architecture::X86_64::LLDB;
+}
+}
+}
 }

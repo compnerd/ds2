@@ -16,7 +16,6 @@
 namespace ds2 {
 namespace Target {
 namespace Windows {
-
 class Thread : public ds2::Target::ThreadBase {};
 }
 }

@@ -23,6 +23,8 @@
 using ds2::GDBRemote::SessionBase;
 using ds2::Host::Platform;
 
+namespace ds2 {
+namespace GDBRemote {
 SessionBase::SessionBase()
     : _channel(nullptr), _delegate(nullptr), _ackmode(true) {
   _processor.setDelegate(&_interpreter);
@@ -159,6 +161,5 @@ bool SessionBase::sendError(ErrorCode code) {
   return send(message);
 }
 
-using ds2::GDBRemote::SessionDelegate;
-
 SessionDelegate::~SessionDelegate() {}
+} }

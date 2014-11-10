@@ -29,7 +29,6 @@ using ds2::Architecture::GDBFeatureEntry;
 using ds2::Architecture::LLDBRegisterSet;
 
 namespace {
-
 class GDBXMLGenerator {
 private:
   GDBDescriptor const *_desc;
@@ -66,7 +65,6 @@ private:
   static size_t GetVectorCount(GDBEncoding const &enc, size_t vecsize,
                                size_t elsize);
 };
-}
 
 GDBXMLGenerator::GDBXMLGenerator(GDBDescriptor const &desc) : _desc(&desc) {}
 
@@ -342,13 +340,13 @@ std::string GDBXMLGenerator::feature(size_t index) const {
 
   return s.str();
 }
+}
 
 //
 // Public API
 //
 namespace ds2 {
 namespace Architecture {
-
 std::string GDBGenerateXMLMain(GDBDescriptor const &desc) {
   return GDBXMLGenerator(desc).main();
 }

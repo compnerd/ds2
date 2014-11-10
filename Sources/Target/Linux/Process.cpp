@@ -35,6 +35,9 @@ using ds2::Host::Linux::PTrace;
 using ds2::Host::Linux::ProcFS;
 using ds2::ErrorCode;
 
+namespace ds2 {
+namespace Target {
+namespace Linux {
 Process::Process()
     : super(), _breakpointManager(nullptr), _watchpointManager(nullptr),
       _terminated(false) {}
@@ -575,4 +578,7 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
 
   return ptrace().writeMemory(_currentThread->tid(), address, data, length,
                               count);
+}
+}
+}
 }

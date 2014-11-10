@@ -29,7 +29,6 @@ using ds2::Architecture::LLDBRegisterSet;
 #endif
 
 namespace {
-
 //
 // Register Definitions (Forward Declarations)
 //
@@ -2422,7 +2421,6 @@ RegisterDef const reg_def_fpscr = {
 namespace ds2 {
 namespace Architecture {
 namespace ARM {
-
 LLDBDescriptor const LLDB = {2, lldb_reg_sets};
 GDBDescriptor const GDB = {"arm", "GNU/Linux", 3, gdb_features};
 }

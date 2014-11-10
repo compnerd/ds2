@@ -16,6 +16,8 @@
 
 using ds2::GDBRemote::PacketProcessor;
 
+namespace ds2 {
+namespace GDBRemote {
 PacketProcessor::PacketProcessor()
     : _nreqs(0), _needhash(false), _delegate(nullptr) {}
 
@@ -129,4 +131,6 @@ void PacketProcessor::parse(std::string const &data) {
     }
     _buffer += data.substr(first);
   }
+}
+}
 }

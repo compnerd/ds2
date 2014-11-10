@@ -14,4 +14,8 @@
 
 using ds2::GDBRemote::SlaveSessionImpl;
 
+namespace ds2 {
+namespace GDBRemote {
 SlaveSessionImpl::SlaveSessionImpl() : DebugSessionImpl() {}
+}
+}

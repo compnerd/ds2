@@ -14,6 +14,8 @@
 using ds2::Target::ThreadBase;
 using ds2::ErrorCode;
 
+namespace ds2 {
+namespace Target {
 ThreadBase::ThreadBase(Process *process, ThreadId tid)
     : _process(process), _tid(tid), _state(kInvalid) {
   _process->insert(this);
@@ -26,3 +28,5 @@ ErrorCode ThreadBase::prepareSoftwareSingleStep(Address const &) {
 }
 
 void ThreadBase::updateState() {}
+}
+}

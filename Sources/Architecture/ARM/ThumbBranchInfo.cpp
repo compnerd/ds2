@@ -13,7 +13,6 @@
 using namespace ds2::Architecture::ARM;
 
 namespace {
-
 class ThumbInstruction {
   union {
     uint32_t i32[2];
@@ -456,7 +455,6 @@ public:
 namespace ds2 {
 namespace Architecture {
 namespace ARM {
-
 bool GetThumbBranchInfo(uint32_t const insn[2], BranchInfo &info) {
   if (insn == nullptr)
     return false;

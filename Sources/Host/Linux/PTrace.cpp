@@ -26,6 +26,9 @@
 using ds2::Host::Linux::PTrace;
 using ds2::ErrorCode;
 
+namespace ds2 {
+namespace Host {
+namespace Linux {
 PTrace::PTrace() : _privateData(nullptr) {}
 
 PTrace::~PTrace() { doneCPUState(); }
@@ -382,4 +385,7 @@ ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
     return TranslateErrno();
 
   return kSuccess;
+}
+}
+}
 }

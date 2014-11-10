@@ -15,7 +15,6 @@
 using namespace ds2::Architecture::ARM;
 
 namespace {
-
 class ARMInstruction {
   uint32_t _insn;
 
@@ -317,7 +316,6 @@ public:
 namespace ds2 {
 namespace Architecture {
 namespace ARM {
-
 bool GetARMBranchInfo(uint32_t insn, BranchInfo &info) {
   return ARMInstruction(insn).getBranchInfo(info);
 }

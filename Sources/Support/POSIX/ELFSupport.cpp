@@ -14,6 +14,7 @@
 
 using ds2::ELFSupport;
 
+namespace ds2 {
 bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
                                       CPUType &type, CPUSubType &subType) {
   switch (machineType) {
@@ -95,4 +96,5 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
   }
 
   return true;
+}
 }

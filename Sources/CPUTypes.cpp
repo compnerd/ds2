@@ -11,7 +11,6 @@
 #include "DebugServer2/Types.h"
 
 namespace ds2 {
-
 char const *GetCPUTypeName(CPUType type) {
   switch (type) {
   case kCPUTypeAny:

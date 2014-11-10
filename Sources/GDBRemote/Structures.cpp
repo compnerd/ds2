@@ -37,6 +37,8 @@ using ds2::GDBRemote::MemoryRegionInfo;
 using ds2::GDBRemote::ServerVersion;
 using ds2::GDBRemote::ProgramResult;
 
+namespace ds2 {
+namespace GDBRemote {
 //
 // feature+ or feature- or feature? or feature=value
 //
@@ -641,4 +643,6 @@ std::string ProgramResult::encode() const {
   ss << 'F' << ',' << HEX(8) << status << DEC << ',' << HEX(8) << signal << DEC
      << ',' << Escape(output);
   return ss.str();
+}
+}
 }

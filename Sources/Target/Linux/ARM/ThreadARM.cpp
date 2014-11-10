@@ -21,7 +21,6 @@ using ds2::Target::Linux::Process;
 using ds2::ErrorCode;
 
 namespace {
-
 static ErrorCode PrepareThumbSoftwareSingleStep(
     Process *process, uint32_t pc, ds2::Architecture::CPUState const &state,
     bool &link, uint32_t &nextPC, uint32_t &nextPCSize, uint32_t &branchPC,
@@ -318,6 +317,9 @@ PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
 }
 }
 
+namespace ds2 {
+namespace Target {
+namespace Linux {
 ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   Architecture::CPUState state;
 
@@ -362,4 +364,7 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   }
 
   return kSuccess;
+}
+}
+}
 }

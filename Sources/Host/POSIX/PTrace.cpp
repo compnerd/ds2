@@ -16,6 +16,9 @@
 using ds2::Host::POSIX::PTrace;
 using ds2::ErrorCode;
 
+namespace ds2 {
+namespace Host {
+namespace POSIX {
 PTrace::PTrace() {}
 
 PTrace::~PTrace() {}
@@ -124,3 +127,6 @@ ErrorCode PTrace::TranslateErrno(int error) {
 }
 
 ErrorCode PTrace::TranslateErrno() { return TranslateErrno(errno); }
+}
+}
+}

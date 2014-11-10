@@ -24,7 +24,6 @@ using ds2::ErrorCode;
 namespace ds2 {
 namespace Host {
 namespace Linux {
-
 struct PTracePrivateData {
   uint8_t breakpointCount;
   uint8_t watchpointCount;
@@ -37,6 +36,9 @@ struct PTracePrivateData {
 }
 }
 
+namespace ds2 {
+namespace Host {
+namespace Linux {
 void PTrace::initCPUState(ProcessId pid) {
   if (_privateData != nullptr)
     return;
@@ -240,4 +242,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   }
 
   return kSuccess;
+}
+}
+}
 }

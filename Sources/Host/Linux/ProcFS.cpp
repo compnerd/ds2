@@ -139,6 +139,9 @@ static void MakePath(char *path, size_t maxsize, pid_t pid, pid_t tid,
   }
 }
 
+namespace ds2 {
+namespace Host {
+namespace Linux {
 int ProcFS::OpenFd(char const *what, int mode) {
   char path[PATH_MAX + 1];
   snprintf(path, PATH_MAX, "/proc/%s", what);
@@ -844,4 +847,7 @@ bool ProcFS::EnumerateThreads(pid_t pid, std::function<void(pid_t)> const &cb) {
   closedir(dir);
 
   return true;
+}
+}
+}
 }

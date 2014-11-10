@@ -25,6 +25,8 @@ using ds2::Host::Platform;
 using ds2::Target::Thread;
 using ds2::ErrorCode;
 
+namespace ds2 {
+namespace GDBRemote {
 DebugSessionImpl::DebugSessionImpl(int argc, char **argv)
     : DummySessionDelegateImpl() {
   DS2ASSERT(argc >= 1);
@@ -900,10 +902,10 @@ ErrorCode DebugSessionImpl::spawnProcess(std::string const &path,
     // outputting data.
     //
     for (size_t i = 0; i < size; ++i)
-      if (((char*)buf)[i] == '\n')
+      if (((char *)buf)[i] == '\n')
         data += "\r\n";
       else
-        data += ((char*)buf)[i];
+        data += ((char *)buf)[i];
 
     data = StringToHex(data);
     _resumeSession->send(std::string("O") + data);
@@ -919,4 +921,6 @@ ErrorCode DebugSessionImpl::spawnProcess(std::string const &path,
   }
 
   return kSuccess;
+}
+}
 }

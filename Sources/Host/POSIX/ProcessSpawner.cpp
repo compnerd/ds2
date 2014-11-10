@@ -35,8 +35,9 @@ static inline void close_pipes(int fds[3][2]) {
   }
 }
 
-ProcessSpawner::ProcessSpawner()
-    : _exitStatus(0), _signalCode(0), _pid(0) {}
+namespace ds2 {
+namespace Host {
+ProcessSpawner::ProcessSpawner() : _exitStatus(0), _signalCode(0), _pid(0) {}
 
 bool ProcessSpawner::setExecutable(std::string const &path) {
   if (_pid != 0)
@@ -198,8 +199,7 @@ bool ProcessSpawner::redirectErrorToBuffer() {
 //
 // Delegate redirection
 //
-bool
-ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
+bool ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
   if (_pid != 0 || delegate == nullptr)
     return false;
 
@@ -473,4 +473,6 @@ void ProcessSpawner::redirectionThread() {
       _descriptors[n].fd = -1;
     }
   }
+}
+}
 }

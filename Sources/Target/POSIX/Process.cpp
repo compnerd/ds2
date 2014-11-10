@@ -25,6 +25,9 @@ using ds2::Target::POSIX::Process;
 using ds2::Host::ProcessSpawner;
 using ds2::ErrorCode;
 
+namespace ds2 {
+namespace Target {
+namespace POSIX {
 Process::Process() : Target::ProcessBase() {}
 
 Process::~Process() {}
@@ -126,7 +129,8 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   //
   Target::Process *process = new Target::Process;
 
-  spawner.run([process](){ return process->ptrace().traceMe(true) == kSuccess; });
+  spawner.run(
+      [process]() { return process->ptrace().traceMe(true) == kSuccess; });
 
   pid = spawner.pid();
 
@@ -172,4 +176,7 @@ void Process::setSignalPass(int signo, bool set) {
   } else {
     _passthruSignals.erase(signo);
   }
+}
+}
+}
 }

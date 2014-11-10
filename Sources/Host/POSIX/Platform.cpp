@@ -26,6 +26,9 @@
 
 using ds2::Host::POSIX::Platform;
 
+namespace ds2 {
+namespace Host {
+namespace POSIX {
 void Platform::Initialize() {
   // Nothing to do here.
 }
@@ -131,3 +134,6 @@ bool Platform::IsFilePresent(std::string const &path) {
 }
 
 ds2::ProcessId Platform::GetCurrentProcessId() { return ::getpid(); }
+}
+}
+}

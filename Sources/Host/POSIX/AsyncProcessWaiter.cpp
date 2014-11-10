@@ -19,6 +19,9 @@ using ds2::Host::POSIX::AsyncProcessWaiter;
 #define DEFAULT_WAIT_FLAGS (0)
 #endif
 
+namespace ds2 {
+namespace Host {
+namespace POSIX {
 AsyncProcessWaiter::AsyncProcessWaiter() {}
 
 AsyncProcessWaiter &AsyncProcessWaiter::Instance() {
@@ -85,4 +88,7 @@ void AsyncProcessWaiter::run() {
     _cv.notify_one();
     _lock.unlock();
   }
+}
+}
+}
 }

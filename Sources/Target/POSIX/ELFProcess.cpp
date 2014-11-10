@@ -22,7 +22,6 @@ using ds2::ErrorCode;
 using ds2::Address;
 
 namespace {
-
 template <typename AUXV>
 inline void EnumerateELFAuxiliaryVector(
     std::string const &auxv,
@@ -210,6 +209,9 @@ ErrorCode EnumerateLinkMap(
 }
 }
 
+namespace ds2 {
+namespace Target {
+namespace POSIX {
 //
 // This is a SVR4 ELF process, we want this method because GDB
 // distinguishes between SVR4 and non-SVR4 processes to read
@@ -501,4 +503,7 @@ ErrorCode ELFProcess::enumerateSharedLibraries(
   } else {
     return EnumerateLinkMap<uint32_t>(this, address, cb);
   }
+}
+}
+}
 }

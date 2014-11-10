@@ -15,7 +15,6 @@
 using ds2::GDB::ByteCodeInterpreter;
 
 namespace {
-
 enum Opcode {
   kOpcodeINVALID,
 
@@ -76,6 +75,8 @@ enum Opcode {
 };
 }
 
+namespace ds2 {
+namespace GDB {
 ByteCodeInterpreter::ByteCodeInterpreter() : _delegate(nullptr) {}
 
 bool ByteCodeInterpreter::top(int64_t &value) const {
@@ -557,4 +558,6 @@ int ByteCodeInterpreter::printf(size_t nargs, std::string const &format) {
     return kErrorStackUnderflow; // function
 
   return kSuccess;
+}
+}
 }

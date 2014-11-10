@@ -17,6 +17,8 @@ using ds2::GDBRemote::DummySessionDelegateImpl;
 using ds2::Host::Platform;
 using ds2::ErrorCode;
 
+namespace ds2 {
+namespace GDBRemote {
 DummySessionDelegateImpl::DummySessionDelegateImpl() : _secure(true) {}
 
 size_t DummySessionDelegateImpl::getGPRSize() const {
@@ -544,4 +546,6 @@ ErrorCode DummySessionDelegateImpl::onFlashWrite(Session &, Address const &,
 
 ErrorCode DummySessionDelegateImpl::onFlashDone(Session &) {
   return kErrorUnsupported;
+}
+}
 }

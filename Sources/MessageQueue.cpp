@@ -13,6 +13,7 @@
 
 using ds2::MessageQueue;
 
+namespace ds2 {
 // FIXME(strager): This class does not handle spurious
 // wakeups!  See http://en.wikipedia.org/wiki/Spurious_wakeup
 
@@ -64,4 +65,5 @@ void MessageQueue::clear(bool signal) {
   if (signal) {
     _ready.notify_one();
   }
+}
 }

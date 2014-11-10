@@ -23,6 +23,9 @@
 using ds2::Architecture::ARM::SoftwareBreakpointManager;
 using ds2::ErrorCode;
 
+namespace ds2 {
+namespace Architecture {
+namespace ARM {
 SoftwareBreakpointManager::SoftwareBreakpointManager(Target::Process *process)
     : super(process) {}
 
@@ -200,4 +203,7 @@ void SoftwareBreakpointManager::disableLocation(Site const &site) {
          (unsigned long)site.address.value());
 
   _insns.erase(site.address);
+}
+}
+}
 }

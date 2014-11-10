@@ -19,6 +19,8 @@
 using ds2::Target::ProcessBase;
 using ds2::ErrorCode;
 
+namespace ds2 {
+namespace Target {
 ProcessBase::ProcessBase()
     : _flags(0), _pid(kAnyProcessId), _loadBase(), _entryPoint(),
       _currentThread(nullptr) {}
@@ -214,4 +216,6 @@ void ProcessBase::prepareForDetach() {
   if (bpm != nullptr) {
     bpm->clear();
   }
+}
+}
 }

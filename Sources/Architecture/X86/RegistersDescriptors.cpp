@@ -1729,7 +1729,6 @@ RegisterDef const reg_def_orig_eax = {
 namespace ds2 {
 namespace Architecture {
 namespace X86 {
-
 LLDBDescriptor const LLDB = {2, lldb_reg_sets};
 GDBDescriptor const GDB = {"i386:i386", "GNU/Linux", 3, gdb_features};
 }

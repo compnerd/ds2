@@ -15,7 +15,6 @@
 #include <cstdlib>
 
 namespace ds2 {
-
 void OptParse::addOption(OptionType type, std::string const &name,
                          char shortName, std::string const &help, bool hidden) {
   DS2ASSERT(_options.find(name) == _options.end());
