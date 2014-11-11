@@ -1,0 +1,399 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2">
+      <UniqueIdentifier>{14e75acc-fc26-4604-a6df-c0d75f5cb793}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Architecture">
+      <UniqueIdentifier>{50e345ac-e9e2-4ec0-8f09-9fac84e763e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\GDB">
+      <UniqueIdentifier>{3af824aa-9644-4f62-93ba-401174dd2da3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\GDBRemote">
+      <UniqueIdentifier>{60a273c6-d2d2-4f61-bd78-65ad87f2d94a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Host">
+      <UniqueIdentifier>{8cd47c66-8812-4532-bdc5-e3f87534d7ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Target">
+      <UniqueIdentifier>{579559df-894d-47cd-82e7-f454d0f942bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Host\Linux">
+      <UniqueIdentifier>{9599e8e2-454c-482f-9912-b722a3527baf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Host\POSIX">
+      <UniqueIdentifier>{63c26006-02d6-4963-ade3-853536f9436b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Host\Windows">
+      <UniqueIdentifier>{10f2183e-a200-44dd-a7e5-2fffd28f59b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Host\Linux\ARM">
+      <UniqueIdentifier>{f7c6a748-a6fe-47c8-9f84-4ed4e66df1a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Target\Linux">
+      <UniqueIdentifier>{1daa8f5f-49f8-422e-865d-3c9d46cb5a40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Target\POSIX">
+      <UniqueIdentifier>{c6482193-26b9-405b-930f-79f9005b154c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Target\Windows">
+      <UniqueIdentifier>{0ffd3310-5bbd-4d04-b709-8560aa0660a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Architecture\ARM">
+      <UniqueIdentifier>{26465beb-29f8-4973-a36d-9346c0d8ae2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Architecture\ARM64">
+      <UniqueIdentifier>{209cd537-93d7-4ce6-af97-db09227e1103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Architecture\X86">
+      <UniqueIdentifier>{18f29f42-c486-4fe7-be37-bc8344834fd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DebugServer2\Architecture\X86_64">
+      <UniqueIdentifier>{dc490335-c3c3-43f7-a15b-85c24ced7e75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Architecture">
+      <UniqueIdentifier>{cd622531-4b27-4e76-bb2c-5235fa82d8f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GDB">
+      <UniqueIdentifier>{de884d2e-1e5f-41de-9762-ebe8970271cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GDBRemote">
+      <UniqueIdentifier>{2ad006f0-5403-4daa-a7a3-9eeab897e046}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Host">
+      <UniqueIdentifier>{b716e866-bce1-4037-b862-78eaf7da15f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Target">
+      <UniqueIdentifier>{923a496d-4c87-4e67-805b-53cdcf783303}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{3d79143d-4a8e-43c4-80b4-755e402d4c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Architecture\X86">
+      <UniqueIdentifier>{2006e2df-84e9-4a23-b168-6a3eb02041b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Host\Common">
+      <UniqueIdentifier>{7857df83-61ac-4bfb-9e20-c2f9ef9838b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Host\Windows">
+      <UniqueIdentifier>{c5ef25e9-fb48-4940-b2ca-3ff34811a7a3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Headers\DebugServer2\Base.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\BreakpointManager.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\CompilerSupport.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Constants.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\CPUTypes.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\ELFSupport.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\HexValues.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Log.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\MessageQueue.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\OptParse.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\SwapEndian.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Types.h">
+      <Filter>Header Files\DebugServer2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\CPUState.h">
+      <Filter>Header Files\DebugServer2\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\RegisterLayout.h">
+      <Filter>Header Files\DebugServer2\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\Registers.h">
+      <Filter>Header Files\DebugServer2\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\RegistersDescriptors.h">
+      <Filter>Header Files\DebugServer2\Architecture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\ARM\Branching.h">
+      <Filter>Header Files\DebugServer2\Architecture\ARM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\ARM\CPUState.h">
+      <Filter>Header Files\DebugServer2\Architecture\ARM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\ARM\RegistersDescriptors.h">
+      <Filter>Header Files\DebugServer2\Architecture\ARM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\ARM\SoftwareBreakpointManager.h">
+      <Filter>Header Files\DebugServer2\Architecture\ARM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\ARM64\CPUState.h">
+      <Filter>Header Files\DebugServer2\Architecture\ARM64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\X86\CPUState.h">
+      <Filter>Header Files\DebugServer2\Architecture\X86</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\X86\RegistersDescriptors.h">
+      <Filter>Header Files\DebugServer2\Architecture\X86</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\X86\SoftwareBreakpointManager.h">
+      <Filter>Header Files\DebugServer2\Architecture\X86</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\X86_64\CPUState.h">
+      <Filter>Header Files\DebugServer2\Architecture\X86_64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Architecture\X86_64\RegistersDescriptors.h">
+      <Filter>Header Files\DebugServer2\Architecture\X86_64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDB\ByteCodeInterpreter.h">
+      <Filter>Header Files\DebugServer2\GDB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\Base.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\DebugSessionImpl.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\DummySessionDelegateImpl.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\PacketProcessor.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\PlatformSessionImpl.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\ProtocolHelpers.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\ProtocolInterpreter.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\Session.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\SessionBase.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\SessionDelegate.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\SlaveSessionImpl.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\GDBRemote\Types.h">
+      <Filter>Header Files\DebugServer2\GDBRemote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Base.h">
+      <Filter>Header Files\DebugServer2\Host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Channel.h">
+      <Filter>Header Files\DebugServer2\Host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Platform.h">
+      <Filter>Header Files\DebugServer2\Host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\ProcessSpawner.h">
+      <Filter>Header Files\DebugServer2\Host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\QueueChannel.h">
+      <Filter>Header Files\DebugServer2\Host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Socket.h">
+      <Filter>Header Files\DebugServer2\Host</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Linux\ExtraSyscalls.h">
+      <Filter>Header Files\DebugServer2\Host\Linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Linux\Platform.h">
+      <Filter>Header Files\DebugServer2\Host\Linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Linux\ProcFS.h">
+      <Filter>Header Files\DebugServer2\Host\Linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Linux\PTrace.h">
+      <Filter>Header Files\DebugServer2\Host\Linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Linux\ARM\HwCaps.h">
+      <Filter>Header Files\DebugServer2\Host\Linux\ARM</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\POSIX\AsyncProcessWaiter.h">
+      <Filter>Header Files\DebugServer2\Host\POSIX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\POSIX\Platform.h">
+      <Filter>Header Files\DebugServer2\Host\POSIX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\POSIX\ProcessSpawner.h">
+      <Filter>Header Files\DebugServer2\Host\POSIX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\POSIX\PTrace.h">
+      <Filter>Header Files\DebugServer2\Host\POSIX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Windows\Platform.h">
+      <Filter>Header Files\DebugServer2\Host\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Host\Windows\ProcessSpawner.h">
+      <Filter>Header Files\DebugServer2\Host\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\CPUState.h">
+      <Filter>Header Files\DebugServer2\Target</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\Process.h">
+      <Filter>Header Files\DebugServer2\Target</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\ProcessBase.h">
+      <Filter>Header Files\DebugServer2\Target</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\ProcessDecl.h">
+      <Filter>Header Files\DebugServer2\Target</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\Thread.h">
+      <Filter>Header Files\DebugServer2\Target</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\ThreadBase.h">
+      <Filter>Header Files\DebugServer2\Target</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\Linux\Process.h">
+      <Filter>Header Files\DebugServer2\Target\Linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\Linux\Thread.h">
+      <Filter>Header Files\DebugServer2\Target\Linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\POSIX\ELFProcess.h">
+      <Filter>Header Files\DebugServer2\Target\POSIX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\POSIX\Process.h">
+      <Filter>Header Files\DebugServer2\Target\POSIX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\POSIX\Thread.h">
+      <Filter>Header Files\DebugServer2\Target\POSIX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\Windows\Process.h">
+      <Filter>Header Files\DebugServer2\Target\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Headers\DebugServer2\Target\Windows\Thread.h">
+      <Filter>Header Files\DebugServer2\Target\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Main\SessionThread.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Main\main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Main\SessionThread.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\BreakpointManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\CPUTypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\ELFSupport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\ErrorCodes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\FaultHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\MessageQueue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\OptParse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Architecture\RegisterLayout.cpp">
+      <Filter>Source Files\Architecture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Architecture\X86\RegistersDescriptors.cpp">
+      <Filter>Source Files\Architecture\X86</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Architecture\X86\SoftwareBreakpointManager.cpp">
+      <Filter>Source Files\Architecture\X86</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDB\ByteCodeInterpreter.cpp">
+      <Filter>Source Files\GDB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\DebugSessionImpl.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\DummySessionDelegateImpl.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\PacketProcessor.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\PlatformSessionImpl.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\ProtocolHelpers.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\ProtocolInterpeter.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\Session.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\SessionBase.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\SlaveSessionImpl.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\GDBRemote\Structures.cpp">
+      <Filter>Source Files\GDBRemote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Host\Windows\Platform.cpp">
+      <Filter>Source Files\Host\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Target\ProcessBase.cpp">
+      <Filter>Source Files\Target</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Target\ThreadBase.cpp">
+      <Filter>Source Files\Target</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Host\Common\Channel.cpp">
+      <Filter>Source Files\Host\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Host\Common\QueueChannel.cpp">
+      <Filter>Source Files\Host\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Sources\Host\Common\Socket.cpp">
+      <Filter>Source Files\Host\Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
