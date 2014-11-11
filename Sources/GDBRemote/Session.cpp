@@ -881,8 +881,9 @@ void Session::Handle__M(ProtocolInterpreter::Handler const &,
   }
 
   Address address;
-  ErrorCode error =
-      _delegate->onAllocateMemory(*this, length, protection, address);
+  assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
+  ErrorCode error = _delegate->onAllocateMemory(
+      *this, static_cast<size_t>(length), protection, address);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -930,7 +931,8 @@ void Session::Handle_M(ProtocolInterpreter::Handler const &,
 
   std::string data(HexToString(eptr));
   if (data.length() > length) {
-    data = data.substr(0, length);
+    assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
+    data = data.substr(0, static_cast<size_t>(length));
   }
 
   size_t nwritten = 0;
@@ -956,7 +958,9 @@ void Session::Handle_m(ProtocolInterpreter::Handler const &,
   }
   length = std::strtoull(eptr, nullptr, 16);
 
-  ErrorCode error = _delegate->onReadMemory(*this, address, length, data);
+  assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
+  ErrorCode error = _delegate->onReadMemory(*this, address,
+                                            static_cast<size_t>(length), data);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -1407,7 +1411,7 @@ void Session::Handle_QThreadSuffixSupported(
 void Session::Handle_qAttached(ProtocolInterpreter::Handler const &,
                                std::string const &args) {
   bool attached = false;
-  ProcessId pid = std::strtoull(args.c_str(), nullptr, 16);
+  ProcessId pid = static_cast<ProcessId>(std::strtoull(args.c_str(), nullptr, 16));
   ErrorCode error = _delegate->onQueryAttached(*this, pid, attached);
   if (error != kSuccess) {
     sendError(error);
@@ -1462,7 +1466,9 @@ void Session::Handle_qCRC(ProtocolInterpreter::Handler const &,
   length = std::strtoull(eptr, nullptr, 16);
 
   uint32_t crc;
-  ErrorCode error = _delegate->onComputeCRC(*this, address, length, crc);
+  assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
+  ErrorCode error =
+      _delegate->onComputeCRC(*this, address, static_cast<size_t>(length), crc);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -1690,7 +1696,7 @@ void Session::Handle_qLaunchGDBServer(ProtocolInterpreter::Handler const &,
     if (arg.compare(0, 5, "host:") == 0) {
       host = &arg[5];
     } else if (arg.compare(0, 5, "port:") == 0) {
-      port = std::strtoul(&arg[5], nullptr, 10);
+      port = static_cast<uint16_t>(std::strtoul(&arg[5], nullptr, 10));
     }
   });
 
@@ -1980,8 +1986,10 @@ void Session::Handle_qSearch(ProtocolInterpreter::Handler const &,
   }
 
   Address location;
+  assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
   ErrorCode error = _delegate->onSearch(
-      *this, address, std::string(HexToString(eptr), length), location);
+      *this, address,
+      std::string(HexToString(eptr), static_cast<size_t>(length)), location);
   if (error != kSuccess && error != kErrorNotFound) {
     sendError(error);
     return;
@@ -2169,7 +2177,7 @@ void Session::Handle_qSymbol(ProtocolInterpreter::Handler const &,
 void Session::Handle_qThreadStopInfo(ProtocolInterpreter::Handler const &,
                                      std::string const &args) {
   ProcessThreadId ptid;
-  ptid.tid = std::strtoull(args.c_str(), nullptr, 16);
+  ptid.tid = static_cast<ThreadId>(std::strtoull(args.c_str(), nullptr, 16));
 
   StopCode stop;
   ErrorCode error = _delegate->onQueryThreadStopInfo(*this, ptid, true, stop);
@@ -2952,7 +2960,9 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     uint64_t offset = std::strtoull(eptr, &eptr, 16);
 
     std::string buffer;
-    ErrorCode error = _delegate->onFileRead(*this, fd, count, offset, buffer);
+    assert(count <= std::numeric_limits<size_t>::max() && "detected overflow");
+    ErrorCode error = _delegate->onFileRead(
+        *this, fd, static_cast<size_t>(count), offset, buffer);
     if (error != kSuccess) {
       if (error >= kErrorUnknown) {
         sendError(error);
@@ -3083,7 +3093,9 @@ void Session::Handle_vFlashErase(ProtocolInterpreter::Handler const &,
   }
   length = std::strtoull(eptr, nullptr, 16);
 
-  sendError(_delegate->onFlashErase(*this, address, length));
+  assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
+  sendError(
+      _delegate->onFlashErase(*this, address, static_cast<size_t>(length)));
 }
 
 //
@@ -3108,8 +3120,9 @@ void Session::Handle_vFlashWrite(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  ErrorCode error =
-      _delegate->onFlashWrite(*this, address, std::string(eptr, length));
+  assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
+  ErrorCode error = _delegate->onFlashWrite(
+      *this, address, std::string(eptr, static_cast<size_t>(length)));
   if (error == kErrorInvalidAddress) {
     send("E.memtype");
   } else {
@@ -3231,8 +3244,9 @@ void Session::Handle_X(ProtocolInterpreter::Handler const &,
   }
 
   size_t nwritten = 0;
+  assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
   ErrorCode error = _delegate->onWriteMemory(
-      *this, address, std::string(eptr, length), nwritten);
+      *this, address, std::string(eptr, static_cast<size_t>(length)), nwritten);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -3267,7 +3281,9 @@ void Session::Handle_x(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  ErrorCode error = _delegate->onReadMemory(*this, address, length, data);
+  assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
+  ErrorCode error = _delegate->onReadMemory(*this, address,
+                                            static_cast<size_t>(length), data);
   if (error != kSuccess) {
     sendError(error);
     return;

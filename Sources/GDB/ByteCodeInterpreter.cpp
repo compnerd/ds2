@@ -10,6 +10,7 @@
 
 #include "DebugServer2/GDB/ByteCodeInterpreter.h"
 
+#include <cassert>
 #include <cstdio>
 
 using ds2::GDB::ByteCodeInterpreter;
@@ -208,7 +209,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
     case kOpcodeTRACE:
       POP(b); // size
       POP(a); // addr
-      if (!_delegate->recordTraceMemory(a, b, false))
+      assert(b <= std::numeric_limits<size_t>::max() && "overflow detected");
+      if (!_delegate->recordTraceMemory(a, static_cast<size_t>(b), false))
         return kErrorCannotRecordTrace;
       break;
 
@@ -476,7 +478,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
     case kOpcodeTRACENZ:
       POP(b); // size
       POP(a); // addr
-      if (!_delegate->recordTraceMemory(a, b, true))
+      assert(b <= std::numeric_limits<size_t>::max() && "overflow detected");
+      if (!_delegate->recordTraceMemory(a, static_cast<size_t>(b), true))
         return kErrorCannotRecordTrace;
       break;
 

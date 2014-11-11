@@ -17,8 +17,9 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Log.h"
 
-#include <sstream>
+#include <cassert>
 #include <iomanip>
+#include <sstream>
 
 using ds2::GDBRemote::DebugSessionImpl;
 using ds2::Host::Platform;
@@ -425,14 +426,18 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
   if (object == "features") {
     Architecture::GDBDescriptor const *desc =
         _process->getGDBRegistersDescriptor();
+    assert(offset <= std::numeric_limits<size_t>::max() && "detected overflow");
     if (annex == "target.xml") {
-      buffer = Architecture::GDBGenerateXMLMain(*desc).substr(offset);
+      buffer = Architecture::GDBGenerateXMLMain(*desc)
+                   .substr(static_cast<size_t>(offset));
     } else {
       buffer = Architecture::GDBGenerateXMLFeatureByFileName(*desc, annex)
-                   .substr(offset);
+                   .substr(static_cast<size_t>(offset));
     }
     if (buffer.length() > length) {
-      buffer.resize(length);
+      assert(length <= std::numeric_limits<size_t>::max() &&
+             "detected overflow");
+      buffer.resize(static_cast<size_t>(length));
       last = false;
     }
     return kSuccess;
@@ -441,9 +446,11 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
     if (error != kSuccess)
       return error;
 
-    buffer = buffer.substr(offset);
-    if (buffer.length() > length) {
-      buffer.resize(length);
+    assert(offset <= std::numeric_limits<size_t>::max() && "detected overflow");
+    buffer = buffer.substr(static_cast<size_t>(offset));
+    assert(length <= std::numeric_limits<size_t>::max() && "detected overflow");
+    if (buffer.length() > static_cast<size_t>(length)) {
+      buffer.resize(static_cast<size_t>(length));
       last = false;
     }
 
@@ -463,9 +470,12 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
 
     ss << "</threads>" << std::endl;
 
-    buffer = ss.str().substr(offset);
+    assert(offset <= std::numeric_limits<size_t>::max() && "detected overflow");
+    buffer = ss.str().substr(static_cast<size_t>(offset));
     if (buffer.length() > length) {
-      buffer.resize(length);
+      assert(length <= std::numeric_limits<size_t>::max() &&
+             "detected overflow");
+      buffer.resize(static_cast<size_t>(length));
       last = false;
     }
     return kSuccess;
@@ -500,9 +510,13 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
       ss << ">" << std::endl;
       ss << sslibs.str();
       ss << "</library-list-svr4>";
-      buffer = ss.str().substr(offset);
+      assert(offset <= std::numeric_limits<size_t>::max() &&
+             "detected overflow");
+      buffer = ss.str().substr(static_cast<size_t>(offset));
       if (buffer.length() > length) {
-        buffer.resize(length);
+        assert(offset <= std::numeric_limits<size_t>::max() &&
+               "detected overflow");
+        buffer.resize(static_cast<size_t>(length));
         last = false;
       }
       return kSuccess;
