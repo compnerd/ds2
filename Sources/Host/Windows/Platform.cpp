@@ -171,7 +171,7 @@ bool Platform::GetGroupName(UserId const &gid, std::string &name) {
 }
 
 bool Platform::IsFilePresent(std::string const &path) {
-  return ::PathFileExistsA(path.c_str());
+  return ::PathFileExistsA(path.c_str()) == TRUE;
 }
 
 ds2::ProcessId Platform::GetCurrentProcessId() {
