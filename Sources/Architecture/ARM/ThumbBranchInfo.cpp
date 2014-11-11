@@ -8,6 +8,7 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Builtins.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
 
 using namespace ds2::Architecture::ARM;
