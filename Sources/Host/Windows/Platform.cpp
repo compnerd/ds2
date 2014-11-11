@@ -104,7 +104,9 @@ char const *Platform::GetOSVersion() {
   if (versionStr[0] == '\0') {
     DWORD version;
 
+#pragma warning(disable:4996)
     version = ::GetVersion();
+#pragma warning(default:4996)
 
     ::_snprintf(versionStr, sizeof(versionStr), "%d.%d",
                 (DWORD)(LOBYTE(LOWORD(version))),
@@ -120,7 +122,9 @@ char const *Platform::GetOSBuild() {
   if (buildStr[0] == '\0') {
     DWORD version;
 
+#pragma warning(disable:4996)
     version = ::GetVersion();
+#pragma warning(default:4996)
 
     if (version < 0x80000000) {
       ::_snprintf(buildStr, sizeof(buildStr), "%d", (DWORD)(HIWORD(version)));
