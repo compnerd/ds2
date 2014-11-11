@@ -10,7 +10,20 @@
 
 #include "DebugServer2/Support/POSIX/ELFSupport.h"
 
+#if defined(_WIN32)
+#define EM_SPARC        2
+#define EM_386          3
+#define EM_MIPS_RS3_LE  10
+#define EM_SPARC32PLUS  18
+#define EM_PPC          20
+#define EM_PPC64        21
+#define EM_ARM          40
+#define EM_SPARCV9      43
+#define EM_X86_64       62
+#define EM_AARCH64      183
+#else
 #include <elf.h>
+#endif
 
 using ds2::ELFSupport;
 
