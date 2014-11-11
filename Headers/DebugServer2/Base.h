@@ -12,7 +12,12 @@
 #define __DebugServer2_Base_h
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <Windows.h>
+
 #include <WinSock2.h>
+
 typedef SSIZE_T ssize_t;
 #else
 #include <cstdlib>

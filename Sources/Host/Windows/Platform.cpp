@@ -12,11 +12,16 @@
 #include "DebugServer2/Host/Platform.h"
 
 #include <stdio.h>
-#include <windows.h>
-#include <lmcons.h>
-#include <shlwapi.h>
-#include <psapi.h>
+
 #include <vector>
+
+#include <lmcons.h>
+#include <psapi.h>
+#include <shlwapi.h>
+
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
 
 using ds2::Host::Windows::Platform;
 

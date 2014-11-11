@@ -11,6 +11,7 @@
 #include "DebugServer2/Host/QueueChannel.h"
 
 #include <cstring>
+#include <algorithm>
 
 using ds2::Host::QueueChannel;
 
