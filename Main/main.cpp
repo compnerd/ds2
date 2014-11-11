@@ -29,6 +29,7 @@
 #include <unistd.h>
 #endif
 
+#include <cstdio>
 #include <sstream>
 #include <iomanip>
 
@@ -190,6 +191,24 @@ static void SlaveMain(int argc, char **argv) {
 }
 #endif
 
+#if defined(_WIN32)
+#include <sddl.h>
+namespace std {
+std::string to_string(const PSID &psid) {
+  LPSTR stringSid;
+  if (!ConvertSidToStringSidA(psid, &stringSid)) {
+    DS2LOG(Main, Error, "unable to convert sid %u", GetLastError());
+    return "";
+  }
+
+  std::string value(stringSid);
+  LocalFree(stringSid);
+
+  return value;
+}
+}
+#endif
+
 static void ListProcesses() {
   printf("Processes running on %s:\n\n", Platform::GetHostName());
   printf("%s\n%s\n", "PID    USER       ARCH    NAME",
@@ -199,9 +218,7 @@ static void ListProcesses() {
                                [&](ds2::ProcessInfo const &info) {
     std::string user;
     if (!Platform::GetUserName(info.realUid, user)) {
-      char buf[128];
-      snprintf(buf, sizeof(buf), "%u", info.realUid);
-      user = buf;
+      user = std::to_string(info.realUid);
     }
 
     size_t lastsep;
@@ -209,7 +226,7 @@ static void ListProcesses() {
 #if defined(_WIN32)
     lastsep = path.rfind('\\');
 #else
-                                 lastsep = path.rfind('/');
+    lastsep = path.rfind('/');
 #endif
     if (lastsep != std::string::npos) {
       path = path.substr(lastsep + 1);
