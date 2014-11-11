@@ -15,10 +15,12 @@
 #include <cstdlib>
 #include <map>
 #include <signal.h>
+#if !defined(_WIN32)
 #include <unistd.h>
+#endif
 
+#if !defined(_WIN32)
 namespace {
-
 class FaultHandler {
 private:
   static void signalHandler(int sig, siginfo_t *si, void *uc) {
@@ -85,3 +87,5 @@ public:
 
 FaultHandler instance;
 }
+#endif
+
