@@ -90,22 +90,22 @@ make
 
 ### Compiling on Windows
 
-ds2 builds on Windows using Visual Studio. You'll need:
+#### Build Requirements
 
-* Windows builds of CMake for which you can grab binaries
-  [here](https://cmake.org/download/);
-* flex and bison binaries -- easiest way to get these is to install them with
-  Cygwin and add that to your `PATH` (usually `C:\cygwin\bin`);
-* an install of Visual Studio -- we use VS2015, but VS2013 should work too.
+- Visual Studio 2015 or newer
+- CMake (https://cmake.org)
+- WinFlexBison (https://github.com/lexxmark/winflexbison)
+- _Optionally_ Ninja (https://ninja-build.org/)
 
-Then, as with linux, use CMake to generate the build system, then use msbuild
-(or the script provided) to build the binary:
+#### Building
 
-```sh
-cd ds2
-mkdir build && cd build
-cmake ..
-..\Support\Scripts\build-windows.bat
+ds2 requires Visual Studio (with at least the Windows SDK, though the C/C++ workload support is recommended).  CMake can be installed as part of Visual Studio 2019 or through an official release if desired.  The build currently requires flex and bison, which can be satisfied by the WinFlexBison project.
+
+Visual Studio, MSBuild, and Ninja generators are supported.  The Ninja build tool can be installed through Visual Studio by installing the CMake support or can be downloaded from the project's home page.
+
+```cmd
+cmake -B out -G Ninja -S .
+ninja -C out
 ```
 
 ### Cross compiling for Windows Phone
