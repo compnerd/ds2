@@ -1,0 +1,20 @@
+name: build
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: seanmiddleditch/gha-setup-vsdevenv@master
+
+      - name: Configure
+        run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -G Ninja -S ${{ github.workspace }}
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/out --config Release
