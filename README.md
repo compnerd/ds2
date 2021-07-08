@@ -72,30 +72,31 @@ ds2 uses [CMake](http://www.cmake.org/) to generate its build system. A variety
 of CMake toolchain files are provided to help with cross compilation for other
 targets.
 
+The build instructions include instructions assuming that the [ninja-build](https://github.com/ninja-build/ninja) is used for the build tool.  However, it is possible to use other build tools (e.g. make or msbuild).
+
 ### Requirements
 
-ds2 needs cmake, a C++11 compiler, flex and bison.
+- CMake (https://cmake.org)
+- c++ (c++11 or newer)
+- flex
+- bison
 
 ### Compiling on Linux, FreeBSD and macOS
 
-After cloning the ds2 repository, run the following commands to build for the
-current host:
+After cloning the ds2 repository, run the following commands to build for the current host:
 
 ```sh
-cd ds2
-mkdir build && cd build
-cmake ..
-make
+cmake -B out -G Ninja -S ds2
+ninja -C out
 ```
 
 ### Compiling on Windows
 
 #### Build Requirements
 
-- Visual Studio 2015 or newer
 - CMake (https://cmake.org)
+- Visual Studio 2015 or newer
 - WinFlexBison (https://github.com/lexxmark/winflexbison)
-- _Optionally_ Ninja (https://ninja-build.org/)
 
 #### Building
 
@@ -104,7 +105,7 @@ ds2 requires Visual Studio (with at least the Windows SDK, though the C/C++ work
 Visual Studio, MSBuild, and Ninja generators are supported.  The Ninja build tool can be installed through Visual Studio by installing the CMake support or can be downloaded from the project's home page.
 
 ```cmd
-cmake -B out -G Ninja -S .
+cmake -B out -G Ninja -S ds2
 ninja -C out
 ```
 
