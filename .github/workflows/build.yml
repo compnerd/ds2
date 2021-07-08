@@ -10,21 +10,25 @@ jobs:
   windows:
     runs-on: windows-latest
 
+    strategy:
+      matrix:
+        arch: ['Win32', 'x64'] # ['ARM', 'ARM64']
+
     steps:
       - uses: actions/checkout@v2
-      - uses: seanmiddleditch/gha-setup-vsdevenv@master
 
       - name: Install Build Tools
         run: choco install winflexbison3
 
       - name: Configure
-        run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=cl -D CMAKE_CXX_COMPILER=cl -G Ninja -S ${{ github.workspace }}
+        run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A ${{ matrix.arch }} -S ${{ github.workspace }}
+
       - name: Build
         run: cmake --build ${{ github.workspace }}/out --config Release
         
   macos:
     runs-on: macos-latest
-    
+
     steps:
       - uses: actions/checkout@v2
       - uses: seanmiddleditch/gha-setup-ninja@master
