@@ -25,8 +25,8 @@ jobs:
           #        run: choco install winflexbison3
 
       - run: |
-          where cl
-        shell: cmd
+          echo "$env:Path" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+          Get-ChildItem Env: | % { echo "$($_.Name)=$($_.Value)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append }
 
       - name: Configure
         run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=cl -D CMAKE_CXX_COMPILER=cl -G Ninja -S ${{ github.workspace }}
