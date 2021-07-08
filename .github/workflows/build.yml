@@ -12,17 +12,13 @@ jobs:
 
     strategy:
       matrix:
-        arch: ['ARM64'] # ['amd64', 'arm', 'arm64', 'x86']
+        arch: ['ARM', 'ARM64', 'Win32', 'x64']
 
     steps:
       - uses: actions/checkout@v2
-      - uses: seanmiddleditch/gha-setup-vsdevenv@master
-        with:
-          arch: ${{ matrix.arch }}
-          host_arch: amd64
 
-          #      - name: Install Build Tools
-          #        run: choco install winflexbison3
+      - name: Install Build Tools
+        run: choco install winflexbison3
 
       - name: Configure
         run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A ${{ matrix.arch }} -S ${{ github.workspace }}
@@ -30,14 +26,14 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/out --config Release
         
-        #  macos:
-        #    runs-on: macos-latest
-        #    
-        #    steps:
-        #      - uses: actions/checkout@v2
-        #      - uses: seanmiddleditch/gha-setup-ninja@master
-        #
-        #      - name: Configure
-        #        run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -G Ninja -S ${{ github.workspace }}
-        #      - name: Build
-        #        run: cmake --build ${{ github.workspace}}/out --config Release
+  macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Configure
+        run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -G Ninja -S ${{ github.workspace }}
+      - name: Build
+        run: cmake --build ${{ github.workspace}}/out --config Release
