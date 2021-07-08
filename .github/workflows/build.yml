@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: ['ARM', 'ARM64', 'Win32', 'x64']
+        arch: ['Win32', 'x64'] # ['ARM', 'ARM64']
 
     steps:
       - uses: actions/checkout@v2
