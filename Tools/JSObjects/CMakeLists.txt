@@ -41,8 +41,7 @@ target_include_directories(jsobjects
                            PRIVATE ${JSObjects_BINARY_DIR})
 set_property(TARGET jsobjects PROPERTY C_STANDARD 99)
 set_property(TARGET jsobjects PROPERTY C_EXTENSIONS OFF)
-set_property(TARGET jsobjects PROPERTY CXX_STANDARD 11)
-set_property(TARGET jsobjects PROPERTY CXX_EXTENSIONS OFF)
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
     (CMAKE_CXX_COMPILER_ID MATCHES "Clang" 
     AND NOT CMAKE_CXX_SIMULATE_ID MATCHES "MSVC"))

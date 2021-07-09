@@ -24,7 +24,6 @@ set(REGSGEN2_SOURCES
     )
 
 add_executable(regsgen2 ${REGSGEN2_SOURCES})
-set_property(TARGET regsgen2 PROPERTY CXX_STANDARD 11)
 target_compile_options(regsgen2 PRIVATE -Wall -Wextra -Wno-unused-parameter -Wno-unused-function)
 
 add_subdirectory(../JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
