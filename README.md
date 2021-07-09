@@ -169,10 +169,6 @@ make
 This will generate a binary that you can copy to your device to start
 debugging.
 
-## Join the ds2 community
-
-See the `CONTRIBUTING.md` file for how to help out.
-
 ## License
 
 ds2 is licensed under the University of Illinois/NCSA Open Source License.
