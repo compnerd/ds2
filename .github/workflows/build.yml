@@ -36,4 +36,16 @@ jobs:
       - name: Configure
         run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -G Ninja -S ${{ github.workspace }}
       - name: Build
-        run: cmake --build ${{ github.workspace}}/out --config Release
+        run: cmake --build ${{ github.workspace }}/out --config Release
+
+  linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          sudo apt-get install -qq --no-install-recommends flex bison ninja-build
+      - name: Configure
+        run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++ -G Ninja -S ${{ github.workspace }}
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/out --config Releaase
