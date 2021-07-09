@@ -8,7 +8,7 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.13)
 cmake_policy(SET CMP0054 NEW)
 
 project(DebugServer2
@@ -451,43 +451,43 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif ()
 
 add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
-target_link_libraries(ds2 jsobjects)
+target_link_libraries(ds2 PRIVATE jsobjects)
 
 if ("${OS_NAME}" MATCHES "Android")
-  target_link_libraries(ds2 log)
+  target_link_libraries(ds2 PRIVATE log)
 elseif ("${OS_NAME}" MATCHES "Linux" AND NOT TIZEN)
-  target_link_libraries(ds2 dl)
+  target_link_libraries(ds2 PRIVATE dl)
 endif ()
 
 if ("${OS_NAME}" MATCHES "FreeBSD")
-  target_link_libraries(ds2 util procstat)
+  target_link_libraries(ds2 PRIVATE util procstat)
 endif ()
 
 if ("${OS_NAME}" MATCHES "Windows")
-  target_link_libraries(ds2 shlwapi ws2_32)
+  target_link_libraries(ds2 PRIVATE shlwapi ws2_32)
   if ("${CMAKE_LINKER}" MATCHES "lld")
-    target_link_libraries(ds2 advapi32)
+    target_link_libraries(ds2 PRIVATE advapi32)
   endif()
   if ("${CMAKE_SYSTEM_NAME}" MATCHES "WindowsStore")
-    target_link_libraries(ds2 onecore)
+    target_link_libraries(ds2 PRIVATE onecore)
   else ()
-    target_link_libraries(ds2 psapi)
+    target_link_libraries(ds2 PRIVATE psapi)
   endif ()
 endif ()
 
 if (COVERAGE)
   if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    target_link_libraries(ds2 gcov)
+    target_link_libraries(ds2 PRIVATE gcov)
   endif ()
 endif ()
 
 include(FindThreads)
 if (STATIC AND DEFINED CMAKE_THREAD_LIBS_INIT AND
     (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
-  target_link_libraries(ds2 -Wl,--whole-archive ${CMAKE_THREAD_LIBS_INIT}
-                            -Wl,--no-whole-archive)
+  target_link_options(ds2 PRIVATE
+    -Wl,--whole-archive ${CMAKE_THREAD_LIBS_INIT} -Wl,--no-whole-archive)
 else ()
-  target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(ds2 PRIVATE ${CMAKE_THREAD_LIBS_INIT})
 endif ()
 
 install(TARGETS ds2 DESTINATION bin)
