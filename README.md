@@ -98,7 +98,7 @@ ninja -C out
 - Visual Studio 2015 or newer
 - WinFlexBison (https://github.com/lexxmark/winflexbison)
 
-#### Building
+#### Building for Windows Desktop
 
 ds2 requires Visual Studio (with at least the Windows SDK, though the C/C++ workload support is recommended).  CMake can be installed as part of Visual Studio 2019 or through an official release if desired.  The build currently requires flex and bison, which can be satisfied by the WinFlexBison project.
 
@@ -109,7 +109,7 @@ cmake -B out -G Ninja -S ds2
 ninja -C out
 ```
 
-### Cross compiling for Windows Phone
+#### Building for Windows Phone
 
 ds2 can be built for Windows Phone, which will generate a dll that can later be
 loaded in by the application we are debugging as a separate process. This needs
@@ -125,7 +125,7 @@ cmake -G "Visual Studio 14 2015 ARM" -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Too
 ..\Support\Scripts\build-windows.bat
 ```
 
-### Cross compiling for Android
+### Building for Android
 
 For Android native debugging, it is possible to build ds2 with the Android NDK.
 A script is provided to download the Android NDK automatically for you.
