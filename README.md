@@ -1,8 +1,6 @@
 # ds2 [![CircleCI](https://circleci.com/gh/facebook/ds2.svg?style=shield)](https://circleci.com/gh/facebook/ds2) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/sdt15jwwbv2ocdlg/branch/master?svg=true)](https://ci.appveyor.com/project/a20012251/ds2/branch/master)
 
-ds2 is a debug server designed to be used with [LLDB](http://lldb.llvm.org/) to
-perform remote debugging of Linux, Android, FreeBSD, Windows and Windows Phone
-targets. Windows/Windows Phone support is still under active development.
+ds2 is a debug server designed to be used with [LLDB](http://lldb.llvm.org/) to perform remote debugging of Linux, Android, FreeBSD, Windows targets.
 
 ## Running ds2
 
@@ -107,22 +105,6 @@ Visual Studio, MSBuild, and Ninja generators are supported.  The Ninja build too
 ```cmd
 cmake -B out -G Ninja -S ds2
 ninja -C out
-```
-
-#### Building for Windows Phone
-
-ds2 can be built for Windows Phone, which will generate a dll that can later be
-loaded in by the application we are debugging as a separate process. This needs
-Visual Studio 2015.
-
-To build for Windows Phone, use the `Toolchain-WinStore.cmake` toolchain file
-as well as the "Visual Studio 14 2015 ARM" CMake generator.
-
-```sh
-cd ds2
-mkdir build && cd build
-cmake -G "Visual Studio 14 2015 ARM" -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-WinStore.cmake" ..
-..\Support\Scripts\build-windows.bat
 ```
 
 ### Building for Android

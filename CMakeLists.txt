@@ -314,11 +314,7 @@ if (MSVC_IDE OR XCODE)
   set(DEBUGSERVER2_SOURCES ${DEBUGSERVER2_SOURCES} ${headers})
 endif()
 
-if (LIBRARY)
-  add_library(ds2 SHARED ${DEBUGSERVER2_SOURCES})
-else ()
-  add_executable(ds2 ${DEBUGSERVER2_SOURCES})
-endif ()
+add_executable(ds2 ${DEBUGSERVER2_SOURCES})
 target_include_directories(ds2 PUBLIC Headers)
 
 execute_process(COMMAND git rev-parse --short HEAD
