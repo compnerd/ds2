@@ -13,6 +13,9 @@ cmake_policy(SET CMP0054 NEW)
 
 project(DebugServer2)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_EXTENSIONS NO)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(OS_NAME ${CMAKE_SYSTEM_NAME})
@@ -317,9 +320,6 @@ else ()
   add_executable(ds2 ${DEBUGSERVER2_SOURCES})
 endif ()
 target_include_directories(ds2 PUBLIC Headers)
-set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
-set_property(TARGET ds2 PROPERTY CXX_EXTENSIONS OFF)
-set_property(TARGET ds2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
 execute_process(COMMAND git rev-parse --short HEAD
                 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
