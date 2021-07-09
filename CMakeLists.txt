@@ -11,7 +11,8 @@
 cmake_minimum_required(VERSION 3.9)
 cmake_policy(SET CMP0054 NEW)
 
-project(DebugServer2)
+project(DebugServer2
+  LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_EXTENSIONS NO)
@@ -390,12 +391,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
 
   function(enable_warning TARGET FLAG)
     string(REGEX REPLACE "[-/ ]" "" TAG "${FLAG}")
-
-    CHECK_C_COMPILER_FLAG("${FLAG}" ${TAG}_FLAG_AVAILABLE_C)
-    if (${TAG}_FLAG_AVAILABLE_C)
-      target_compile_options("${TARGET}" PRIVATE
-          $<$<COMPILE_LANGUAGE:C>:${FLAG}>)
-    endif ()
 
     CHECK_CXX_COMPILER_FLAG("${FLAG}" "${TAG}_FLAG_AVAILABLE_CXX")
     if (${TAG}_FLAG_AVAILABLE_CXX)

@@ -10,7 +10,12 @@
 
 cmake_minimum_required(VERSION 3.1.0)
 
-project(RegsGen2)
+project(RegsGen2
+  LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_EXTENSIONS NO)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 set(REGSGEN2_SOURCES
     FlagSet.cpp
