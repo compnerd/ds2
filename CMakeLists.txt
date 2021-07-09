@@ -11,7 +11,8 @@
 cmake_minimum_required(VERSION 3.9)
 cmake_policy(SET CMP0054 NEW)
 
-project(DebugServer2)
+project(DebugServer2
+  LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_EXTENSIONS NO)

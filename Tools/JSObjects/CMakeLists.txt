@@ -10,7 +10,16 @@
 
 cmake_minimum_required(VERSION 3.3)
 
-project(JSObjects)
+project(JSObjects
+  LANGUAGES C CXX)
+
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_EXTENSIONS NO)
+set(CMAKE_C_STANDARD_REQUIRED YES)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_EXTENSIONS NO)
+set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 find_package(BISON)
 find_package(FLEX)
@@ -39,8 +48,6 @@ target_include_directories(jsobjects
                            PUBLIC ${JSObjects_SOURCE_DIR}/Headers
                            PRIVATE ${JSObjects_SOURCE_DIR}/Sources/libjson
                            PRIVATE ${JSObjects_BINARY_DIR})
-set_property(TARGET jsobjects PROPERTY C_STANDARD 99)
-set_property(TARGET jsobjects PROPERTY C_EXTENSIONS OFF)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
     (CMAKE_CXX_COMPILER_ID MATCHES "Clang" 
