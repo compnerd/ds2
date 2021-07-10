@@ -1,0 +1,8 @@
+<map id="ds2::Architecture::ARM64::CPUState" name="ds2::Architecture::ARM64::CPUState">
+<area shape="rect" id="node1" title=" " alt="" coords="449,113,580,155"/>
+<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_a_r_m64_1_1_c_p_u_state64.html" title=" " alt="" coords="211,145,355,187"/>
+<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_quad.html" title=" " alt="" coords="5,83,131,124"/>
+<area shape="rect" id="node6" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_c_p_u_state.html" title=" " alt="" coords="220,73,345,115"/>
+<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_single.html" title=" " alt="" coords="5,5,131,47"/>
+<area shape="rect" id="node5" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_double.html" title=" " alt="" coords="5,173,131,215"/>
+</map>

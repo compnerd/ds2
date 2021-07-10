@@ -1,0 +1,11 @@
+<map id="ds2::GDBRemote::DebugSessionImplBase" name="ds2::GDBRemote::DebugSessionImplBase">
+<area shape="rect" id="node1" title=" " alt="" coords="1168,85,1380,127"/>
+<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html" title=" " alt="" coords="569,5,788,47"/>
+<area shape="rect" id="node3" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title=" " alt="" coords="5,23,232,50"/>
+<area shape="rect" id="node5" href="$classds2_1_1_g_d_b_remote_1_1_session_base.html" title=" " alt="" coords="340,63,545,90"/>
+<area shape="rect" id="node4" href="$classds2_1_1_g_d_b_remote_1_1_session.html" title=" " alt="" coords="816,63,991,90"/>
+<area shape="rect" id="node6" href="$structds2_1_1_g_d_b_remote_1_1_protocol_handler.html" title=" " alt="" coords="31,84,207,125"/>
+<area shape="rect" id="node7" href="$structds2_1_1_g_d_b_remote_1_1_iteration_state.html" title=" " alt="" coords="816,115,991,156"/>
+<area shape="rect" id="node8" href="$classds2_1_1_host_1_1_process_spawner.html" title=" " alt="" coords="812,181,995,207"/>
+<area shape="rect" id="node9" href="$structds2_1_1_host_1_1_process_spawner_1_1_redirect_descriptor.html" title=" " alt="" coords="351,173,534,215"/>
+</map>
