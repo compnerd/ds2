@@ -81,15 +81,6 @@ jobs:
           name: Generate register descriptors
           command: ./Support/Scripts/generate-register-descriptors.sh
       - *check_dirty_step
-  Documentation:
-    <<: *docker_config
-    environment:
-      ENCRYPTION_LABEL: c06a05533acc
-    steps:
-      - checkout
-      - run:
-          name: Generate documentation
-          command: ./Support/Scripts/generate-documentation.sh
   Linux-X86:
     <<: *build_and_test_defaults
   Linux-X86-platform:
@@ -164,14 +155,6 @@ jobs:
     <<: *build_only_defaults
   MinGW-X86_64:
     <<: *build_only_defaults
-  Darwin-X86_64:
-    macos:
-      xcode: "9.0"
-    steps:
-      - run: brew install cmake ninja flex bison
-      - checkout
-      - *configure_step
-      - *build_step
 
 workflows:
   version: 2
@@ -179,7 +162,6 @@ workflows:
     jobs:
       - Style
       - Registers
-      # - Documentation
       - Linux-X86
       - Linux-X86-platform
       - Linux-X86-Clang
@@ -200,4 +182,3 @@ workflows:
       - Tizen-ARM
       - MinGW-X86
       - MinGW-X86_64
-      - Darwin-X86_64
