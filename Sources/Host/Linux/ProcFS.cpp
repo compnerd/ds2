@@ -351,7 +351,7 @@ bool ProcFS::ReadStat(pid_t pid, pid_t tid, Stat &stat) {
         // Yes, save the "tcomm" field, and advance field index.
         //
         comm = comm.substr(0, comm.rfind(')'));
-        strncpy(stat.tcomm, comm.c_str(), sizeof(stat.tcomm));
+        memcpy(stat.tcomm, comm.data(), sizeof(stat.tcomm));
         field_index++;
       } else {
         if (!may_end_comm) {
