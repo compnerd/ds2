@@ -71,7 +71,7 @@ ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
     return _lastError = kErrorInvalidHandle;
   }
 
-  if (offset > std::numeric_limits<off_t>::max()) {
+  if (static_cast<off_t>(offset) > std::numeric_limits<off_t>::max()) {
     return _lastError = kErrorInvalidArgument;
   }
 
@@ -100,7 +100,7 @@ ErrorCode File::pwrite(ByteVector const &buf, uint64_t &count,
     return _lastError = kErrorInvalidHandle;
   }
 
-  if (offset > std::numeric_limits<off_t>::max()) {
+  if (static_cast<off_t>(offset) > std::numeric_limits<off_t>::max()) {
     return _lastError = kErrorInvalidArgument;
   }
 
