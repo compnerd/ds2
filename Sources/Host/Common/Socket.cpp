@@ -210,13 +210,14 @@ bool Socket::listen(std::string const &path, bool abstract) {
       _lastError = SOCK_NAMETOOLONG;
       return false;
     }
-    ::strncpy(sun.sun_path + 1, path.c_str(), sizeof(sun.sun_path) - 1);
+    sun.sun_path[0] = '\0';
+    memcpy(sun.sun_path + 1, path.data(), sizeof(sun.sun_path) - 1);
   } else {
     if (path.length() > sizeof(sun.sun_path)) {
       _lastError = SOCK_NAMETOOLONG;
       return false;
     }
-    ::strncpy(sun.sun_path, path.c_str(), sizeof(sun.sun_path));
+    memcpy(sun.sun_path, path.data(), sizeof(sun.sun_path));
   }
 
   size_t len = offsetof(struct sockaddr_un, sun_path) + path.length() +
