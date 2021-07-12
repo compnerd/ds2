@@ -180,7 +180,7 @@ ErrorCode Process::wait() {
   // We have at least one thread when we start waiting on a process.
   DS2ASSERT(!_threads.empty());
 
-  while (!_threads.empty()) {
+  do {
     tid = blocking_waitpid(-1, &status, __WALL);
     if (tid <= 0) {
       return kErrorProcessNotFound;
@@ -323,7 +323,7 @@ ErrorCode Process::wait() {
   continue_waiting:
     _currentThread = nullptr;
     continue;
-  }
+  } while (!_threads.empty());
 
   if (!(WIFEXITED(status) || WIFSIGNALED(status)) || tid != _pid) {
     //
