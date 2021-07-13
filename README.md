@@ -76,10 +76,14 @@ The build instructions include instructions assuming that the [ninja-build](http
 
 - CMake (https://cmake.org)
 - c++ (c++11 or newer)
-- flex
-- bison
+- **Windows Only** Visual Studio 2015 or newer
+- **Windows Only** WinFlexBison (https://github.com/lexxmark/winflexbison)
+- **non-Windows Only** flex
+- **non-Windows Only** bison
 
-### Compiling on Linux, FreeBSD and macOS
+### Building with CMake + Ninja
+
+> NOTE: **Windows Only**  ds2 requires Visual Studio (with at least the Windows SDK, though the C/C++ workload support is recommended).  CMake can be installed as part of Visual Studio 2019 or through an official release if desired. The build currently requires flex and bison, which can be satisfied by the WinFlexBison project. Visual Studio, MSBuild, and Ninja generators are supported. The Ninja build tool can be installed through Visual Studio by installing the CMake support or can be downloaded from the project's home page.
 
 After cloning the ds2 repository, run the following commands to build for the current host:
 
@@ -88,26 +92,7 @@ cmake -B out -G Ninja -S ds2
 ninja -C out
 ```
 
-### Compiling on Windows
-
-#### Build Requirements
-
-- CMake (https://cmake.org)
-- Visual Studio 2015 or newer
-- WinFlexBison (https://github.com/lexxmark/winflexbison)
-
-#### Building for Windows Desktop
-
-ds2 requires Visual Studio (with at least the Windows SDK, though the C/C++ workload support is recommended).  CMake can be installed as part of Visual Studio 2019 or through an official release if desired.  The build currently requires flex and bison, which can be satisfied by the WinFlexBison project.
-
-Visual Studio, MSBuild, and Ninja generators are supported.  The Ninja build tool can be installed through Visual Studio by installing the CMake support or can be downloaded from the project's home page.
-
-```cmd
-cmake -B out -G Ninja -S ds2
-ninja -C out
-```
-
-### Building for Android
+### Compiling for Android
 
 For Android native debugging, it is possible to build ds2 with the Android NDK.
 A script is provided to download the Android NDK automatically for you.
@@ -135,7 +120,7 @@ Android device, you should use the script
 The LLDB test suite expects an NDK to exist on your host, and that script will
 download and unpack it where the CMake Toolchain files expect it to be.
 
-### Cross compiling for Linux-ARM
+### Compiling for Linux ARM
 
 Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install an arm
 toolchain (for instance `g++-4.8-arm-linux-gnueabihf`) and use the provided
