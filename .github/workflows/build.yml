@@ -21,10 +21,38 @@ jobs:
         run: choco install winflexbison3
 
       - name: Configure
-        run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A ${{ matrix.arch }} -S ${{ github.workspace }}
-
+        run: cmake -B ${{ github.workspace }}/build -D CMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A ${{ matrix.arch }} -S ${{ github.workspace }}
       - name: Build
-        run: cmake --build ${{ github.workspace }}/out --config Release
+        run: cmake --build ${{ github.workspace }}/build --config Release
+
+  mingw:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    strategy:
+      matrix:
+        system: ['mingw64'] # mingw32
+    
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.system }}
+          install: >-
+            flex
+            bison
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-ninja
+
+      - uses: actions/checkout@v2
+
+      - name: Configure
+        run: cmake -B $(cygpath -u '${{ github.workspace }}/build') -D CMAKE_BUILD_TYPE=Release -G Ninja -S $(cygpath -u '${{ github.workspace }}')
+      - name: Build
+        run: cmake --build $(cygpath -u '${{ github.workspace }}/build') --config Release
 
   macos:
     runs-on: macos-latest
@@ -47,6 +75,6 @@ jobs:
           sudo apt-get install -qq --no-install-recommends flex bison ninja-build
 
       - name: Configure
-        run: cmake -B ${{ github.workspace }}/out -D CMAKE_BUILD_TYPE=Release -G Ninja -S ${{ github.workspace }}
+        run: cmake -B ${{ github.workspace }}/build -D CMAKE_BUILD_TYPE=Release -G Ninja -S ${{ github.workspace }}
       - name: Build
-        run: cmake --build ${{ github.workspace }}/out --config Releaase
+        run: cmake --build ${{ github.workspace }}/build --config Releaase
