@@ -20,6 +20,10 @@
 #define DS2_EXCEPTION_UNCAUGHT_USER 0xE06D7363
 #define DS2_EXCEPTION_UNCAUGHT_WINRT 0x40080201
 
+#if !defined(HAVE_WaitForDebugEventEx)
+#define WaitForDebugEventEx WaitForDebugEvent
+#endif
+
 // Some APIs are not exposed when building for UAP.
 #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
@@ -465,10 +469,6 @@ WINBASEAPI BOOL WINAPI FlushInstructionCache(
   _In_ LPCVOID lpBaseAddress,
   _In_ SIZE_T  dwSize
 );
-#endif
-
-#if !defined(HAVE_WaitForDebugEventEx)
-#define WaitForDebugEventEx WaitForDebugEvent
 #endif
 
 #if !defined(HAVE_ContinueDebugEvent)
