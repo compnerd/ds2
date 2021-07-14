@@ -2,6 +2,87 @@
 
 ds2 is a debug server designed to be used with [LLDB](http://lldb.llvm.org/) to perform remote debugging of Linux, Android, FreeBSD, Windows targets.
 
+## Building ds2
+
+ds2 uses [CMake](http://www.cmake.org/) to generate its build system. A variety
+of CMake toolchain files are provided to help with cross compilation for other
+targets.
+
+The build instructions include instructions assuming that the [ninja-build](https://github.com/ninja-build/ninja) is used for the build tool.  However, it is possible to use other build tools (e.g. make or msbuild).
+
+### Requirements
+
+**Generic**
+  - CMake (https://cmake.org)
+  - c++ (c++11 or newer)
+
+**Windows Only**
+  - Visual Studio 2015 or newer
+  - WinFlexBison (https://github.com/lexxmark/winflexbison)
+
+**non-Windows Platforms**
+  - flex
+  - bison
+
+### Building with CMake + Ninja
+
+> **Windows Only**
+>
+> **NOTE:** ds2 requires Visual Studio (with at least the Windows SDK, though the C/C++ workload support is recommended).  CMake can be installed as part of Visual Studio 2019 or through an official release if desired. The build currently requires flex and bison, which can be satisfied by the WinFlexBison project. Visual Studio, MSBuild, and Ninja generators are supported. The Ninja build tool can be installed through Visual Studio by installing the CMake support or can be downloaded from the project's home page.
+
+After cloning the ds2 repository, run the following commands to build for the current host:
+
+```sh
+cmake -B out -G Ninja -S ds2
+ninja -C out
+```
+
+### Compiling for Android
+
+For Android native debugging, it is possible to build ds2 with the Android NDK.
+A script is provided to download the Android NDK automatically for you.
+
+`Support/Scripts/prepare-android-ndk.py` will download a working version
+of the NDK, extract it, and install it to `/tmp/android-ndk`.
+
+```sh
+cd ds2
+./Support/Scripts/prepare-android-ndk.py
+mkdir build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
+make
+```
+
+Note that this will build ds2 targeting the highest level API level that the
+NDK supports. If you want to target another api level, e.g. 21, add the flag
+`-DCMAKE_SYSTEM_VERSION=21` to your cmake invocation.
+
+#### Testing on Android device
+
+If you would like to use ds2 to run tests in the LLDB test suite using an
+Android device, you should use the script
+`Support/Scripts/prepare-android-ndk.py` to get a checkout of the android NDK.
+The LLDB test suite expects an NDK to exist on your host, and that script will
+download and unpack it where the CMake Toolchain files expect it to be.
+
+### Compiling for Linux ARM
+
+Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install an arm
+toolchain (for instance `g++-4.8-arm-linux-gnueabihf`) and use the provided
+toolchain file.
+
+```sh
+cd ds2
+mkdir build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Linux-ARM.cmake ..
+make
+```
+
+This will generate a binary that you can copy to your device to start
+debugging.
+
+
+
 ## Running ds2
 
 ### Example
@@ -63,78 +144,6 @@ instance with the `gdb-remote` command.
 
 The run mode and port number must be specified, where run mode is either
 `g[dbserver]` or `p[latform]`. In most cases, the `g[dbserver]` option is desired.
-
-## Building ds2
-
-ds2 uses [CMake](http://www.cmake.org/) to generate its build system. A variety
-of CMake toolchain files are provided to help with cross compilation for other
-targets.
-
-The build instructions include instructions assuming that the [ninja-build](https://github.com/ninja-build/ninja) is used for the build tool.  However, it is possible to use other build tools (e.g. make or msbuild).
-
-### Requirements
-
-- CMake (https://cmake.org)
-- c++ (c++11 or newer)
-- **Windows Only** Visual Studio 2015 or newer
-- **Windows Only** WinFlexBison (https://github.com/lexxmark/winflexbison)
-- **non-Windows Only** flex
-- **non-Windows Only** bison
-
-### Building with CMake + Ninja
-
-> NOTE: **Windows Only**  ds2 requires Visual Studio (with at least the Windows SDK, though the C/C++ workload support is recommended).  CMake can be installed as part of Visual Studio 2019 or through an official release if desired. The build currently requires flex and bison, which can be satisfied by the WinFlexBison project. Visual Studio, MSBuild, and Ninja generators are supported. The Ninja build tool can be installed through Visual Studio by installing the CMake support or can be downloaded from the project's home page.
-
-After cloning the ds2 repository, run the following commands to build for the current host:
-
-```sh
-cmake -B out -G Ninja -S ds2
-ninja -C out
-```
-
-### Compiling for Android
-
-For Android native debugging, it is possible to build ds2 with the Android NDK.
-A script is provided to download the Android NDK automatically for you.
-
-`Support/Scripts/prepare-android-ndk.py` will download a working version
-of the NDK, extract it, and install it to `/tmp/android-ndk`.
-
-```sh
-cd ds2
-./Support/Scripts/prepare-android-ndk.py
-mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
-make
-```
-
-Note that this will build ds2 targeting the highest level API level that the
-NDK supports. If you want to target another api level, e.g. 21, add the flag
-`-DCMAKE_SYSTEM_VERSION=21` to your cmake invocation.
-
-#### Testing on Android device
-
-If you would like to use ds2 to run tests in the LLDB test suite using an
-Android device, you should use the script
-`Support/Scripts/prepare-android-ndk.py` to get a checkout of the android NDK.
-The LLDB test suite expects an NDK to exist on your host, and that script will
-download and unpack it where the CMake Toolchain files expect it to be.
-
-### Compiling for Linux ARM
-
-Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install an arm
-toolchain (for instance `g++-4.8-arm-linux-gnueabihf`) and use the provided
-toolchain file.
-
-```sh
-cd ds2
-mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Linux-ARM.cmake ..
-make
-```
-
-This will generate a binary that you can copy to your device to start
-debugging.
 
 ## License
 
