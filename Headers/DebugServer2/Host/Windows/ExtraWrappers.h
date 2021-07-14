@@ -20,12 +20,6 @@
 #define DS2_EXCEPTION_UNCAUGHT_USER 0xE06D7363
 #define DS2_EXCEPTION_UNCAUGHT_WINRT 0x40080201
 
-// Some APIs require a sufficiently new version of OS
-// but have a reasonable replacement for the older versions.
-#if !defined(_WIN32_WINNT_WIN10) && !defined(_WIN32_WINNT_WINTHRESHOLD)
-#define WaitForDebugEventEx WaitForDebugEvent
-#endif
-
 // Some APIs are not exposed when building for UAP.
 #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
@@ -474,10 +468,7 @@ WINBASEAPI BOOL WINAPI FlushInstructionCache(
 #endif
 
 #if !defined(HAVE_WaitForDebugEventEx)
-WINBASEAPI BOOL WINAPI WaitForDebugEventEx(
-  _Out_  LPDEBUG_EVENT lpDebugEvent,
-  _In_   DWORD dwMilliseconds
-);
+#define WaitForDebugEventEx WaitForDebugEvent
 #endif
 
 #if !defined(HAVE_ContinueDebugEvent)
