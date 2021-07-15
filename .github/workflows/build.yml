@@ -33,7 +33,7 @@ jobs:
         shell: msys2 {0}
 
     strategy:
-      fast-fail: false
+      fail-fast: false
       matrix:
         include: [
           { msystem: ucrt64, prefix: mingw-w64-ucrt-x86_64 },
