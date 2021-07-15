@@ -35,9 +35,10 @@ jobs:
     strategy:
       fast-fail: false
       matrix:
-        include:
-          - { msystem: ucrt64, prefix: mingw-w64-ucrt-x86_64 },
-          - { msystem: clang64, prefix: mingw-w64-clang-x86_64 },
+        include: [
+          { msystem: ucrt64, prefix: mingw-w64-ucrt-x86_64 },
+          { msystem: clang64, prefix: mingw-w64-clang-x86_64 },
+        ]
     
     steps:
       - uses: msys2/setup-msys2@v2
