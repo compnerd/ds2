@@ -36,39 +36,8 @@ extern "C" {
 #define UNLEN 256
 #endif
 
-#if !defined(HAVE_CreateRemoteThread)
-WINBASEAPI HANDLE WINAPI CreateRemoteThread(
-  _In_  HANDLE                 hProcess,
-  _In_  LPSECURITY_ATTRIBUTES  lpThreadAttributes,
-  _In_  SIZE_T                 dwStackSize,
-  _In_  LPTHREAD_START_ROUTINE lpStartAddress,
-  _In_  LPVOID                 lpParameter,
-  _In_  DWORD                  dwCreationFlags,
-  _Out_ LPDWORD                lpThreadId
-);
-#endif
-
-#if !defined(HAVE_GetVersionExA)
-WINBASEAPI BOOL WINAPI GetVersionExA(
-  _Inout_  LPOSVERSIONINFOA lpVersionInfo
-);
-#endif
-
-#if !defined(HAVE_GetVersionExW)
-WINBASEAPI BOOL WINAPI GetVersionExW(
-  _Inout_  LPOSVERSIONINFOW lpVersionInfo
-);
-#endif
-
 #if !defined(GetVersionEx)
 #define GetVersionEx GetVersionExW
-#endif
-
-#if !defined(HAVE_GetWindowsDirectoryA)
-WINBASEAPI UINT WINAPI GetWindowsDirectoryA(
-  _Out_ LPSTR  lpBuffer,
-  _In_  UINT   uSize
-);
 #endif
 
 #if !defined(HAVE_GetWindowsDirectoryW)
@@ -104,16 +73,6 @@ WINBASEAPI BOOL WINAPI K32EnumProcessModules(
 #define EnumProcessModules K32EnumProcessModules
 #endif
 
-#if !defined(HAVE_GetModuleBaseNameA)
-WINBASEAPI DWORD WINAPI K32GetModuleBaseNameA(
-  _In_     HANDLE  hProcess,
-  _In_opt_ HMODULE hModule,
-  _Out_    LPSTR   lpBaseName,
-  _In_     DWORD   nSize
-);
-#define GetModuleBaseNameA K32GetModuleBaseNameA
-#endif
-
 #if !defined(HAVE_GetModuleBaseNameW)
 WINBASEAPI DWORD WINAPI K32GetModuleBaseNameW(
   _In_     HANDLE  hProcess,
@@ -126,16 +85,6 @@ WINBASEAPI DWORD WINAPI K32GetModuleBaseNameW(
 
 #if !defined(GetModuleBaseName)
 #define GetModuleBaseName GetModuleBaseNameW
-#endif
-
-#if !defined(HAVE_GetModuleFileNameExA)
-WINBASEAPI DWORD WINAPI K32GetModuleFileNameExA(
-  _In_     HANDLE  hProcess,
-  _In_opt_ HMODULE hModule,
-  _Out_    LPSTR   lpFilename,
-  _In_     DWORD   nSize
-);
-#define GetModuleFileNameExA K32GetModuleFileNameExA
 #endif
 
 #if !defined(HAVE_GetModuleFileNameExW)
@@ -183,18 +132,6 @@ WINBASEAPI BOOL WINAPI GetTokenInformation(
   _Out_opt_ LPVOID                  TokenInformation,
   _In_      DWORD                   TokenInformationLength,
   _Out_     PDWORD                  ReturnLength
-);
-#endif
-
-#if !defined(HAVE_LookupAccountSidA)
-WINBASEAPI BOOL WINAPI LookupAccountSidA(
-  _In_opt_  LPCSTR        lpSystemName,
-  _In_      PSID          lpSid,
-  _Out_opt_ LPSTR         lpName,
-  _Inout_   LPDWORD       cchName,
-  _Out_opt_ LPSTR         lpReferencedDomainName,
-  _Inout_   LPDWORD       cchReferencedDomainName,
-  _Out_     PSID_NAME_USE peUse
 );
 #endif
 
@@ -304,21 +241,6 @@ typedef struct _PROCESS_INFORMATION {
 } PROCESS_INFORMATION, *LPPROCESS_INFORMATION;
 #endif
 
-#if !defined(HAVE_CreateProcessA)
-WINBASEAPI BOOL WINAPI CreateProcessA(
-  _In_opt_     LPCSTR lpApplicationName,
-  _Inout_opt_  LPSTR lpCommandLine,
-  _In_opt_     LPSECURITY_ATTRIBUTES lpProcessAttributes,
-  _In_opt_     LPSECURITY_ATTRIBUTES lpThreadAttributes,
-  _In_         BOOL bInheritHandles,
-  _In_         DWORD dwCreationFlags,
-  _In_opt_     LPVOID lpEnvironment,
-  _In_opt_     LPCSTR lpCurrentDirectory,
-  _In_         LPSTARTUPINFOA lpStartupInfo,
-  _Out_        LPPROCESS_INFORMATION lpProcessInformation
-);
-#endif
-
 #if !defined(HAVE_CreateProcessW)
 WINBASEAPI BOOL WINAPI CreateProcessW(
   _In_opt_     LPCWSTR lpApplicationName,
@@ -346,12 +268,6 @@ WINBASEAPI HANDLE WINAPI CreateThread(
   _In_opt_   LPVOID lpParameter,
   _In_       DWORD dwCreationFlags,
   _Out_opt_  LPDWORD lpThreadId
-);
-#endif
-
-#if !defined(HAVE_ExitThread)
-WINBASEAPI VOID WINAPI ExitThread(
-  _In_  DWORD dwExitCode
 );
 #endif
 
@@ -388,25 +304,6 @@ WINBASEAPI BOOL WINAPI SetThreadContext(
 );
 #endif
 
-#if !defined(HAVE_GetThreadPriority)
-WINBASEAPI int WINAPI GetThreadPriority(
-  _In_  HANDLE hThread
-);
-#endif
-
-#if !defined(HAVE_SetThreadPriority)
-WINBASEAPI BOOL WINAPI SetThreadPriority(
-  _In_  HANDLE hThread,
-  _In_  int nPriority
-);
-#endif
-
-#if !defined(HAVE_GetProcessId)
-WINBASEAPI DWORD WINAPI GetProcessId(
-  _In_ HANDLE Process
-);
-#endif
-
 #if !defined(HAVE_GetThreadId)
 WINBASEAPI DWORD WINAPI GetThreadId(
   _In_  HANDLE Thread
@@ -421,25 +318,10 @@ WINBASEAPI HANDLE WINAPI OpenProcess(
 );
 #endif
 
-#if !defined(HAVE_OpenThread)
-WINBASEAPI HANDLE WINAPI OpenThread(
-  _In_  DWORD dwDesiredAccess,
-  _In_  BOOL bInheritHandle,
-  _In_  DWORD dwThreadId
-);
-#endif
-
 #if !defined(HAVE_GetExitCodeProcess)
 WINBASEAPI BOOL WINAPI GetExitCodeProcess(
   _In_  HANDLE  hProcess,
   _Out_ LPDWORD lpExitCode
-);
-#endif
-
-#if !defined(HAVE_GetExitCodeThread)
-WINBASEAPI BOOL WINAPI GetExitCodeThread(
-  _In_   HANDLE hThread,
-  _Out_  LPDWORD lpExitCode
 );
 #endif
 
@@ -542,27 +424,6 @@ typedef struct tagTHREADENTRY32 {
 #define TH32CS_SNAPTHREAD 0x00000004
 #endif
 
-#if !defined(HAVE_CreateToolhelp32Snapshot)
-WINBASEAPI HANDLE WINAPI CreateToolhelp32Snapshot(
-  _In_  DWORD dwFlags,
-  _In_  DWORD th32ProcessID
-);
-#endif
-
-#if !defined(HAVE_Thread32First)
-WINBASEAPI BOOL WINAPI Thread32First(
-  _In_     HANDLE hSnapshot,
-  _Inout_  LPTHREADENTRY32 lpte
-);
-#endif
-
-#if !defined(HAVE_Thread32Next)
-WINBASEAPI BOOL WINAPI Thread32Next(
-  _In_   HANDLE hSnapshot,
-  _Out_  LPTHREADENTRY32 lpte
-);
-#endif
-
 #if !defined(HAVE_PTOP_LEVEL_EXCEPTION_FILTER)
 typedef LONG (WINAPI *PTOP_LEVEL_EXCEPTION_FILTER)(
     _In_ struct _EXCEPTION_POINTERS *ExceptionInfo
@@ -583,45 +444,5 @@ WINBASEAPI LPTOP_LEVEL_EXCEPTION_FILTER WINAPI SetUnhandledExceptionFilter(
 // clang-format on
 
 #endif // !DOXYGEN
-
-// The following code allows us to pick some symbols directly from kernel32.dll
-// (against which we cannot link when building for WinStore-ARM for instance.
-// The functions are declared in the above block (see Thread32First for
-// instance), but these declarations are then hidden with macros below.
-// Basically, we just
-//     GetProcAddress(GetModuleHandle("kernel32"), funcName)
-// and call that.
-//
-// Given that we have declarations for these functions above, we can also
-// type-check these calls and make sure both the return type and the arguments
-// type (see `decltype` in `DO_K32_CALL`) are matching.
-//
-// If we need more functions that are only available in kernel32.dll, we just
-// need to add their prototype in the above `extern "C" {}` block, and add a
-// one line `#define` below, in this form:
-//     #define FunctionName(...) DO_K32_CALL(FunctionName, __VA_ARGS__)
-
-static inline FARPROC GetK32Proc(_In_ LPCSTR procName) {
-  static HMODULE kernel32Base = nullptr;
-  if (kernel32Base == nullptr) {
-    kernel32Base = GetModuleHandle(L"kernel32");
-  }
-
-  return GetProcAddress(kernel32Base, procName);
-}
-
-template <typename ProcPtrType, typename... ArgTypes>
-auto CallK32Proc(char const *name, ArgTypes... args)
-    -> decltype(((ProcPtrType) nullptr)(args...)) {
-  auto procAddress = reinterpret_cast<ProcPtrType>(GetK32Proc(name));
-  return procAddress(args...);
-}
-
-#define DO_K32_CALL(FUNC, ...) CallK32Proc<decltype(&FUNC)>(#FUNC, __VA_ARGS__)
-
-#define CreateToolhelp32Snapshot(...)                                          \
-  DO_K32_CALL(CreateToolhelp32Snapshot, __VA_ARGS__)
-#define Thread32First(...) DO_K32_CALL(Thread32First, __VA_ARGS__)
-#define Thread32Next(...) DO_K32_CALL(Thread32Next, __VA_ARGS__)
 
 #endif
