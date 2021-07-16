@@ -340,21 +340,17 @@ elseif ("${OS_NAME}" MATCHES "Windows")
   set(CMAKE_EXTRA_INCLUDE_FILES windows.h)
 
   include(CheckFunctionExists)
-  foreach (FUNC CreateRemoteThread GetVersionExA GetVersionExW
-      GetWindowsDirectoryA GetWindowsDirectoryW EnumProcesses
-      K32EnumProcessModules GetModuleBaseNameA GetModuleBaseNameW
-      GetModuleFileNameExA GetModuleFileNameExW GetModuleHandleA
-      GetModuleHandleW OpenProcessToken GetTokenInformation LookupAccountSidA
-      LookupAccountSidW CopySid GetLengthSid GetEnvironmentStringsW
-      FreeEnvironmentStringsW CreateProcessA CreateProcessW CreateThread
-      ExitThread ResumeThread TerminateThread SuspendThread GetThreadContext
-      SetThreadContext GetThreadPriority SetThreadPriority GetProcessId
-      GetThreadId OpenProcess OpenThread GetExitCodeProcess GetExitCodeThread
-      ReadProcessMemory WriteProcessMemory FlushInstructionCache
-      WaitForDebugEventEx ContinueDebugEvent TerminateProcess
-      DebugActiveProcess DebugActiveProcessStop VirtualAllocEx VirtualFreeEx
-      VirtualQueryEx CreateToolhelp32Snapshot Thread32First Thread32Next
-      SetUnhandledExceptionFilter)
+  foreach (FUNC
+      ContinueDebugEvent CopySidx CreateProcessW CreateThread DebugActiveProcess
+      DebugActiveProcessStop EnumProcesses FlushInstructionCache
+      FreeEnvironmentStringsW GetEnvironmentStringsW GetExitCodeProcess
+      GetLengthSid GetModuleBaseNameW GetModuleFileNameExW GetModuleHandleA
+      GetModuleHandleW GetThreadContext GetThreadId GetTokenInformation
+      GetWindowsDirectoryW K32EnumProcessModules LookupAccountSidW OpenProcess
+      OpenProcessToken ReadProcessMemory ResumeThread SetThreadContext
+      SetUnhandledExceptionFilter SuspendThread TerminateProcess TerminateThread
+      VirtualAllocEx VirtualFreeEx VirtualQueryEx WaitForDebugEventEx
+      WriteProcessMemory)
     CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${FUNC})
     if (HAVE_${CHECK})
       target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
