@@ -15,11 +15,11 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
-#include "DebugServer2/Utils/Paths.h"
 #include "DebugServer2/Utils/Stringify.h"
 
 #include <iomanip>
 #include <sstream>
+#include <filesystem>
 
 using ds2::Host::Platform;
 using ds2::Target::Thread;
@@ -464,7 +464,7 @@ ErrorCode DebugSessionImplBase::onQueryFileLoadAddress(
 
   CHK(_process->enumerateMappedFiles([&](MappedFileInfo const &file) {
     if (file.path == file_path ||
-        ds2::Utils::Basename(file.path) == file_path) {
+        std::filesystem::path(file.path).filename().string() == file_path) {
       address = Address(file.baseAddress);
     }
   }));
@@ -550,7 +550,7 @@ ErrorCode DebugSessionImplBase::onXferRead(Session &session,
       if (library.main)
         return;
 
-      ss << "  <library name=\"" << ds2::Utils::Basename(library.path) << "\">"
+      ss << "  <library name=\"" << std::filesystem::path(library.path).filename().string() << "\">"
          << std::endl;
       for (auto section : library.sections)
         ss << "    <section address=\"0x" << std::hex << section << "\" />"
