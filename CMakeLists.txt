@@ -14,7 +14,7 @@ cmake_policy(SET CMP0054 NEW)
 project(DebugServer2
   LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS NO)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -183,7 +183,6 @@ add_executable(ds2
   Sources/Utils/Backtrace.cpp
   Sources/Utils/Log.cpp
   Sources/Utils/OptParse.cpp
-  Sources/Utils/Paths.cpp
   Sources/Utils/Stringify.cpp)
 
 # Architecture Sources
