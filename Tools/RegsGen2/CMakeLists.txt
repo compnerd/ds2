@@ -8,7 +8,7 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.13)
 
 project(RegsGen2
   LANGUAGES CXX)
@@ -17,19 +17,15 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_EXTENSIONS NO)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
-set(REGSGEN2_SOURCES
-    FlagSet.cpp
-    GDBDefinitions.cpp
-    GDBVectorSet.cpp
-    LLDBDefinitions.cpp
-    ParseConstants.cpp
-    RegisterSet.cpp
-    RegisterTemplate.cpp
-    main.cpp
-    )
-
-add_executable(regsgen2 ${REGSGEN2_SOURCES})
-target_compile_options(regsgen2 PRIVATE -Wall -Wextra -Wno-unused-parameter -Wno-unused-function)
-
 add_subdirectory(../JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
+
+add_executable(regsgen2
+  FlagSet.cpp
+  GDBDefinitions.cpp
+  GDBVectorSet.cpp
+  LLDBDefinitions.cpp
+  ParseConstants.cpp
+  RegisterSet.cpp
+  RegisterTemplate.cpp
+  main.cpp)
 target_link_libraries(regsgen2 jsobjects)
