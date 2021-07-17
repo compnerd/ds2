@@ -20,23 +20,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(OS_NAME ${CMAKE_SYSTEM_NAME})
-set(ARCH_NAME ${CMAKE_SYSTEM_PROCESSOR})
 
 string(STRIP "${OS_NAME}" OS_NAME)
 if (OS_NAME MATCHES "WindowsStore")
   set(OS_NAME "Windows")
-endif ()
-
-string(STRIP "${ARCH_NAME}" ARCH_NAME)
-string(TOUPPER "${ARCH_NAME}" ARCH_NAME)
-if (ARCH_NAME MATCHES "^ARM64" OR ARCH_NAME MATCHES "AARCH64")
-  set(ARCH_NAME "ARM64")
-elseif (ARCH_NAME MATCHES "^ARM")
-  set(ARCH_NAME "ARM") # Normalize ARMHF -> ARM
-elseif (ARCH_NAME MATCHES "I[3-6]86")
-  set(ARCH_NAME "X86")
-elseif (ARCH_NAME MATCHES "AMD64")
-  set(ARCH_NAME "X86_64")
 endif ()
 
 if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
@@ -84,235 +71,173 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
 
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  if ("${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" MATCHES "x64")
-    set(ARCH_NAME "X86_64")
-  elseif ("${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" MATCHES "X86")
-    set(ARCH_NAME "X86")
-  elseif ("${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" MATCHES "ARM")
-    set(ARCH_NAME "ARM")
-  endif()
 endif ()
 
-set(ARCHITECTURE_COMMON_SOURCES
-    Sources/Architecture/RegisterLayout.cpp
-    )
+if((CMAKE_GENERATOR MATCHES "Visual Studio" AND
+    CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "ARM64") OR
+    CMAKE_SYSTEM_PROCESSOR MATCHES "AArch64|ARM64")
+  set(DS2_ARCHITECTURE ARM64)
+elseif((CMAKE_GENERATOR MATCHES "Visual Studio" AND
+        CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "ARM") OR
+       CMAKE_SYSTEM_PROCESSOR MATCHES "ARM")
+  set(DS2_ARCHITECTURE ARM)
+elseif((CMAKE_GENERATOR MATCHES "Visual Studio" AND
+        CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "X86") OR
+       CMAKE_SYSTEM_PROCESSOR MATCHES "i[3-6]86")
+  set(DS2_ARCHITECTURE X86)
+elseif((CMAKE_GENERATOR MATCHES "Visual Studio" AND
+        CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "X64") OR
+       CMAKE_SYSTEM_PROCESSOR MATCHES "AMD64|x86_64")
+  set(DS2_ARCHITECTURE X86_64)
+else()
+  message(SEND_ERROR "Unknown host architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+endif()
 
-set(ARCHITECTURE_ARM_SOURCES
+add_executable(ds2
+  Sources/main.cpp
+
+  Sources/Architecture/RegisterLayout.cpp
+
+  Sources/Core/BreakpointManager.cpp
+  Sources/Core/HardwareBreakpointManager.cpp
+  Sources/Core/SoftwareBreakpointManager.cpp
+  Sources/Core/CPUTypes.cpp
+  Sources/Core/ErrorCodes.cpp
+  Sources/Core/MessageQueue.cpp
+  Sources/Core/SessionThread.cpp
+
+  Sources/GDBRemote/DebugSessionImpl.cpp
+  Sources/GDBRemote/DummySessionDelegateImpl.cpp
+  Sources/GDBRemote/PacketProcessor.cpp
+  Sources/GDBRemote/PlatformSessionImpl.cpp
+  Sources/GDBRemote/ProtocolInterpreter.cpp
+  Sources/GDBRemote/Session.cpp
+  Sources/GDBRemote/SessionBase.cpp
+  Sources/GDBRemote/SlaveSessionImpl.cpp
+  Sources/GDBRemote/Structures.cpp
+
+  Sources/Host/Common/Channel.cpp
+  Sources/Host/Common/Platform.cpp
+  Sources/Host/Common/QueueChannel.cpp
+  Sources/Host/Common/Socket.cpp
+
+  Sources/Target/Common/ProcessBase.cpp
+  Sources/Target/Common/ThreadBase.cpp
+  Sources/Target/Common/${DS2_ARCHITECTURE}/ProcessBase${DS2_ARCHITECTURE}.cpp
+
+  Sources/Utils/Backtrace.cpp
+  Sources/Utils/Log.cpp
+  Sources/Utils/OptParse.cpp
+  Sources/Utils/Paths.cpp
+  Sources/Utils/Stringify.cpp)
+
+# Architecture Sources
+if(DS2_ARCHITECTURE MATCHES "ARM|ARM64")
+  target_sources(ds2 PRIVATE
     Sources/Architecture/ARM/ARMBranchInfo.cpp
-    Sources/Architecture/ARM/ThumbBranchInfo.cpp
     Sources/Architecture/ARM/RegistersDescriptors.cpp
     Sources/Architecture/ARM/SoftwareSingleStep.cpp
-    )
+    Sources/Architecture/ARM/ThumbBranchInfo.cpp
 
-set(ARCHITECTURE_ARM64_SOURCES
-    ${ARCHITECTURE_ARM_SOURCES}
-    Sources/Architecture/ARM64/RegistersDescriptors.cpp
-    )
-
-set(ARCHITECTURE_X86_SOURCES
+    Sources/Core/ARM/HardwareBreakpointManager.cpp
+    Sources/Core/ARM/SoftwareBreakpointManager.cpp)
+  if(DS2_ARCHITECTURE MATCHES "ARM64")
+    target_sources(ds2 PRIVATE
+      Sources/Architecture/ARM64/RegistersDescriptors.cpp)
+  endif()
+elseif(DS2_ARCHITECTURE MATCHES "X86|X86_64")
+  target_sources(ds2 PRIVATE
     Sources/Architecture/X86/RegistersDescriptors.cpp
-    )
 
-set(ARCHITECTURE_X86_64_SOURCES
-    ${ARCHITECTURE_X86_SOURCES}
-    Sources/Architecture/X86_64/RegistersDescriptors.cpp
-    )
+    Sources/Core/X86/HardwareBreakpointManager.cpp
+    Sources/Core/X86/SoftwareBreakpointManager.cpp)
+  if(DS2_ARCHITECTURE MATCHES "X86_64")
+    target_sources(ds2 PRIVATE
+      Sources/Architecture/X86_64/RegistersDescriptors.cpp)
+  endif()
+endif()
 
-set(HOST_COMMON_SOURCES
-    Sources/Host/Common/Channel.cpp
-    Sources/Host/Common/Platform.cpp
-    Sources/Host/Common/QueueChannel.cpp
-    Sources/Host/Common/Socket.cpp
-    )
-
-set(HOST_POSIX_SOURCES
-    Sources/Host/POSIX/File.cpp
-    Sources/Host/POSIX/Platform.cpp
-    Sources/Host/POSIX/PTrace.cpp
-    Sources/Host/POSIX/ProcessSpawner.cpp
-    )
-
-set(HOST_Linux_SOURCES
-    ${HOST_POSIX_SOURCES}
-    Sources/Host/Linux/ProcFS.cpp
-    Sources/Host/Linux/Platform.cpp
-    Sources/Host/Linux/PTrace.cpp
-    Sources/Host/Linux/${ARCH_NAME}/PTrace${ARCH_NAME}.cpp
-    )
-
-set(HOST_Android_SOURCES ${HOST_Linux_SOURCES})
-
-set(HOST_Darwin_SOURCES
-    ${HOST_POSIX_SOURCES}
-    Sources/Host/Darwin/LibProc.cpp
-    Sources/Host/Darwin/Platform.cpp
-    Sources/Host/Darwin/PTrace.cpp
-    Sources/Host/Darwin/Mach.cpp
-    Sources/Host/Darwin/${ARCH_NAME}/Mach${ARCH_NAME}.cpp
-    Sources/Host/Darwin/${ARCH_NAME}/PTrace${ARCH_NAME}.cpp
-    )
-
-set(HOST_FreeBSD_SOURCES
-    ${HOST_POSIX_SOURCES}
-    Sources/Host/FreeBSD/ProcStat.cpp
-    Sources/Host/FreeBSD/Platform.cpp
-    Sources/Host/FreeBSD/PTrace.cpp
-    Sources/Host/FreeBSD/${ARCH_NAME}/PTrace${ARCH_NAME}.cpp
-    )
-
-set(HOST_Windows_SOURCES
+# OS Sources
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  target_sources(ds2 PRIVATE
     Sources/Host/Windows/File.cpp
     Sources/Host/Windows/Platform.cpp
     Sources/Host/Windows/ProcessSpawner.cpp
-    )
 
-set(TARGET_COMMON_SOURCES
-    Sources/Target/Common/ProcessBase.cpp
-    Sources/Target/Common/${ARCH_NAME}/ProcessBase${ARCH_NAME}.cpp
-    Sources/Target/Common/ThreadBase.cpp
-    )
-
-set(TARGET_POSIX_ELF_SOURCES
-    Sources/Target/POSIX/ELFProcess.cpp
-    )
-
-set(TARGET_POSIX_SOURCES
-    Sources/Target/POSIX/Process.cpp
-    Sources/Target/POSIX/Thread.cpp
-    )
-
-set(TARGET_Linux_SOURCES
-    ${TARGET_POSIX_ELF_SOURCES}
-    ${TARGET_POSIX_SOURCES}
-    Sources/Target/Linux/Process.cpp
-    Sources/Target/Linux/${ARCH_NAME}/Process${ARCH_NAME}.cpp
-    Sources/Target/Linux/Thread.cpp
-    )
-
-set(TARGET_Android_SOURCES ${TARGET_Linux_SOURCES})
-
-set(TARGET_Darwin_SOURCES
-    ${TARGET_POSIX_SOURCES}
-    Sources/Target/Darwin/MachOProcess.cpp
-    Sources/Target/Darwin/Process.cpp
-    Sources/Target/Darwin/${ARCH_NAME}/Process${ARCH_NAME}.cpp
-    Sources/Target/Darwin/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
-    Sources/Target/Darwin/Thread.cpp
-    )
-
-set(TARGET_FreeBSD_SOURCES
-    ${TARGET_POSIX_ELF_SOURCES}
-    ${TARGET_POSIX_SOURCES}
-    Sources/Target/FreeBSD/Process.cpp
-    Sources/Target/FreeBSD/${ARCH_NAME}/Process${ARCH_NAME}.cpp
-    Sources/Target/FreeBSD/Thread.cpp
-    )
-
-set(TARGET_Windows_SOURCES
     Sources/Target/Windows/Process.cpp
     Sources/Target/Windows/Thread.cpp
-    Sources/Target/Windows/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
-    )
+    Sources/Target/Windows/${DS2_ARCHITECTURE}/Thread${DS2_ARCHITECTURE}.cpp
 
-set(GDBREMOTE_SOURCES
-    Sources/GDBRemote/DebugSessionImpl.cpp
-    Sources/GDBRemote/DummySessionDelegateImpl.cpp
-    Sources/GDBRemote/PacketProcessor.cpp
-    Sources/GDBRemote/PlatformSessionImpl.cpp
-    Sources/GDBRemote/ProtocolInterpreter.cpp
-    Sources/GDBRemote/Session.cpp
-    Sources/GDBRemote/SessionBase.cpp
-    Sources/GDBRemote/SlaveSessionImpl.cpp
-    Sources/GDBRemote/Structures.cpp
-    )
-
-set(UTILS_COMMON_SOURCES
-    Sources/Utils/Backtrace.cpp
-    Sources/Utils/Log.cpp
-    Sources/Utils/OptParse.cpp
-    Sources/Utils/Paths.cpp
-    Sources/Utils/Stringify.cpp
-    Sources/main.cpp
-    )
-
-set(SUPPORT_POSIX_ELF_SOURCES
-    Sources/Support/POSIX/ELFSupport.cpp
-    )
-
-set(UTILS_POSIX_SOURCES
-    Sources/Utils/POSIX/Daemon.cpp
-    Sources/Utils/POSIX/FaultHandler.cpp
-    Sources/Utils/POSIX/Stringify.cpp
-    )
-
-set(UTILS_Linux_SOURCES
-    ${SUPPORT_POSIX_ELF_SOURCES}
-    ${UTILS_POSIX_SOURCES}
-    )
-
-set(UTILS_Android_SOURCES ${UTILS_Linux_SOURCES})
-
-set(UTILS_Darwin_SOURCES
-    ${UTILS_POSIX_SOURCES}
-    )
-
-set(UTILS_FreeBSD_SOURCES
-    ${SUPPORT_POSIX_ELF_SOURCES}
-    ${UTILS_POSIX_SOURCES}
-    )
-
-set(UTILS_Windows_SOURCES
     Sources/Utils/Windows/Daemon.cpp
     Sources/Utils/Windows/FaultHandler.cpp
-    Sources/Utils/Windows/Stringify.cpp
-    )
+    Sources/Utils/Windows/Stringify.cpp)
+else()
+  # Assumes that any non-Windows platform is POSIX.
+  target_sources(ds2 PRIVATE
+    Sources/Host/POSIX/File.cpp
+    Sources/Host/POSIX/Platform.cpp
+    Sources/Host/POSIX/ProcessSpawner.cpp
+    Sources/Host/POSIX/PTrace.cpp
 
-set(CORE_COMMON_SOURCES
-    Sources/Core/BreakpointManager.cpp
-    Sources/Core/HardwareBreakpointManager.cpp
-    Sources/Core/SoftwareBreakpointManager.cpp
-    Sources/Core/CPUTypes.cpp
-    Sources/Core/ErrorCodes.cpp
-    Sources/Core/MessageQueue.cpp
-    Sources/Core/SessionThread.cpp
-    )
+    Sources/Target/POSIX/Process.cpp
+    Sources/Target/POSIX/Thread.cpp
 
-set(CORE_ARM_SOURCES
-    Sources/Core/ARM/HardwareBreakpointManager.cpp
-    Sources/Core/ARM/SoftwareBreakpointManager.cpp
-    )
+    Sources/Utils/POSIX/Daemon.cpp
+    Sources/Utils/POSIX/FaultHandler.cpp
+    Sources/Utils/POSIX/Stringify.cpp)
 
-set(CORE_X86_SOURCES
-    Sources/Core/X86/HardwareBreakpointManager.cpp
-    Sources/Core/X86/SoftwareBreakpointManager.cpp
-    )
+  if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    target_sources(ds2 PRIVATE
+      Sources/Target/Darwin/MachOProcess.cpp)
+  else()
+    # Assumes that any non-Darwin platform is ELF
+    target_sources(ds2 PRIVATE
+      Sources/Support/POSIX/ELFSupport.cpp
 
-set(CORE_ARM64_SOURCES ${CORE_ARM_SOURCES})
-set(CORE_X86_64_SOURCES ${CORE_X86_SOURCES})
+      Sources/Target/POSIX/ELFProcess.cpp)
+  endif()
 
-set(HOST_SOURCES ${HOST_COMMON_SOURCES} ${HOST_${OS_NAME}_SOURCES})
-set(TARGET_SOURCES ${TARGET_COMMON_SOURCES} ${TARGET_${OS_NAME}_SOURCES})
-set(ARCHITECTURE_SOURCES ${ARCHITECTURE_COMMON_SOURCES} ${ARCHITECTURE_${ARCH_NAME}_SOURCES})
-set(UTILS_SOURCES ${UTILS_COMMON_SOURCES} ${UTILS_${OS_NAME}_SOURCES})
-set(CORE_SOURCES ${CORE_COMMON_SOURCES} ${CORE_${ARCH_NAME}_SOURCES})
+  if(CMAKE_SYSTEM_NAME MATCHES "Android|Linux")
+    target_sources(ds2 PRIVATE
+      Sources/Host/Linux/Platform.cpp
+      Sources/Host/Linux/ProcFS.cpp
+      Sources/Host/Linux/PTrace.cpp
+      Sources/Host/Linux/${DS2_ARCHITECTURE}/PTrace${DS2_ARCHITECTURE}.cpp
 
-set(DEBUGSERVER2_SOURCES
-    ${HOST_SOURCES}
-    ${TARGET_SOURCES}
-    ${ARCHITECTURE_SOURCES}
-    ${UTILS_SOURCES}
-    ${GDBREMOTE_SOURCES}
-    ${CORE_SOURCES}
-    )
+      Sources/Target/Linux/Process.cpp
+      Sources/Target/Linux/Thread.cpp
+      Sources/Target/Linux/${DS2_ARCHITECTURE}/Process${DS2_ARCHITECTURE}.cpp)
+  elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    target_sources(ds2 PRIVATE
+      Sources/Host/Darwin/LibProc.cpp
+      Sources/Host/Darwin/Platform.cpp
+      Sources/Host/Darwin/PTrace.cpp
+      Sources/Host/Darwin/Mach.cpp
+      Sources/Host/Darwin/${DS2_ARCHITECTURE}/Mach${DS2_ARCHITECTURE}.cpp
+      Sources/Host/Darwin/${DS2_ARCHITECTURE}/PTrace${DS2_ARCHITECTURE}.cpp
 
-if (MSVC_IDE OR XCODE)
-  file(GLOB_RECURSE headers
-    Headers/DebugServer2/*.h)
-  set(DEBUGSERVER2_SOURCES ${DEBUGSERVER2_SOURCES} ${headers})
+      Sources/Target/Darwin/Process.cpp
+      Sources/Target/Darwin/Thread.cpp
+      Sources/Target/Darwin/${DS2_ARCHITECTURE}/Process${DS2_ARCHITECTURE}.cpp
+      Sources/Target/Darwin/${DS2_ARCHITECTURE}/Thread${DS2_ARCHITECTURE}.cpp)
+  elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+    target_sources(ds2 PRIVATE
+      Sources/Host/FreeBSD/Platform.cpp
+      Sources/Host/FreeBSD/ProcStat.cpp
+      Sources/Host/FreeBSD/PTrace.cpp
+      Sources/Host/FreeBSD/${DS2_ARCHITECTURE}/PTrace${DS2_ARCHITECTURE}.cpp
+
+      Sources/Target/FreeBSD/Process.cpp
+      Sources/Target/FreeBSD/Thread.cpp
+      Sources/Target/FreeBSD/${DS2_ARCHITECTURE}/Process${DS2_ARCHITECTURE}.cpp)
+  endif()
 endif()
 
-add_executable(ds2 ${DEBUGSERVER2_SOURCES})
+if(MSVC_IDE OR XCODE)
+  file(GLOB_RECURSE DebugServer2_HEADERS Headers/DebugServer2/*.h)
+  target_sources(ds2 PRIVATE ${DebugServer2_HEADERS})
+endif()
+
 target_include_directories(ds2 PUBLIC Headers)
 
 execute_process(COMMAND git rev-parse --short HEAD
