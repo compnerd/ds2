@@ -175,10 +175,6 @@ WINBASEAPI BOOL WINAPI FreeEnvironmentStringsW(
 );
 #endif
 
-#if !defined(HAVE_LPPROC_THREAD_ATTRIBUTE_LIST)
-typedef struct PROC_THREAD_ATTRIBUTE_LIST *LPPROC_THREAD_ATTRIBUTE_LIST;
-#endif
-
 #if !defined(HAVE_struct__STARTUPINFOW)
 typedef struct _STARTUPINFOW {
     DWORD  cb;
@@ -200,36 +196,6 @@ typedef struct _STARTUPINFOW {
     HANDLE hStdOutput;
     HANDLE hStdError;
 } STARTUPINFOW, *LPSTARTUPINFOW;
-#endif
-
-#if !defined(HAVE_struct__STARTUPINFOEXW)
-typedef struct _STARTUPINFOEXW {
-    STARTUPINFOW                 StartupInfo;
-    LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList;
-} STARTUPINFOEXW, *LPSTARTUPINFOEXW;
-#endif
-
-#if !defined(HAVE_struct__STARTUPINFOA)
-typedef struct _STARTUPINFOA {
-    DWORD  cb;
-    LPSTR lpReserved;
-    LPSTR lpDesktop;
-    LPSTR lpTitle;
-    DWORD  dwX;
-    DWORD  dwY;
-    DWORD  dwXSize;
-    DWORD  dwYSize;
-    DWORD  dwXCountChars;
-    DWORD  dwYCountChars;
-    DWORD  dwFillAttribute;
-    DWORD  dwFlags;
-    WORD   wShowWindow;
-    WORD   cbReserved2;
-    LPBYTE lpReserved2;
-    HANDLE hStdInput;
-    HANDLE hStdOutput;
-    HANDLE hStdError;
-} STARTUPINFOA, *LPSTARTUPINFOA;
 #endif
 
 #if !defined(HAVE_struct__PROCESS_INFORMATION)
@@ -406,18 +372,6 @@ WINBASEAPI SIZE_T WINAPI VirtualQueryEx(
   _Out_    PMEMORY_BASIC_INFORMATION lpBuffer,
   _In_     SIZE_T                    dwLength
 );
-#endif
-
-#if !defined(HAVE_struct_tagTHREADENTRY32)
-typedef struct tagTHREADENTRY32 {
-  DWORD dwSize;
-  DWORD cntUsage;
-  DWORD th32ThreadID;
-  DWORD th32OwnerProcessID;
-  LONG  tpBasePri;
-  LONG  tpDeltaPri;
-  DWORD dwFlags;
-} THREADENTRY32, *PTHREADENTRY32, *LPTHREADENTRY32;
 #endif
 
 #if !defined(TH32CS_SNAPTHREAD)

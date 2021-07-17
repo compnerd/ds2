@@ -358,9 +358,8 @@ elseif ("${OS_NAME}" MATCHES "Windows")
   endforeach()
 
   include(CheckTypeSize)
-  foreach (TYPE LPPROC_THREAD_ATTRIBUTE_LIST "struct _STARTUPINFOW"
-      "struct _STARTUPINFOEXW" "struct _STARTUPINFOA"
-      "struct _PROCESS_INFORMATION" "struct tagTHREADENTRY32"
+  foreach (TYPE
+      "struct _STARTUPINFOW" "struct _PROCESS_INFORMATION"
       PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER)
     string(REPLACE " " "_" SANITIZED_TYPE ${TYPE})
     CHECK_TYPE_SIZE(${TYPE} ${SANITIZED_TYPE})
