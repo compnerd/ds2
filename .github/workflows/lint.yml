@@ -16,7 +16,7 @@ jobs:
           sudo apt-get install -y clang-tidy
 
       - run: |
-          cmake -B ${{ github.workspace }}/build -D CMAKE_BUILD_TYPE=Release -D CMAKE_EXPORT_COMPILE_COMMANDS=YES -S ${{ github.workspace }}
+          cmake -B ${{ github.workspace }}/build -C ${{ github.workspace }}/cmake/caches/GNUWarnings.cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_EXPORT_COMPILE_COMMANDS=YES -S ${{ github.workspace }}
       - uses: compnerd/clang-tidy-linter-action@main
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
