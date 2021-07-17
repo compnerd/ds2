@@ -1,1 +1,2 @@
-Checks: '-*,clang-diagnostic-*,llvm-*,misc-*,-misc-unused-parameters,readability-identifier-naming'
+Checks: '-*,bugprone-*,cert-*,clang-analyzer-*,clang-diagnostic-*,concurrency-*,cppcoreguidelines-*,hicpp-*,llvm-*,misc-*,-misc-unused-parameters,modernize-*,performance-*,portability-*readability-identifier-naming'
+FormatStyle: llvm
