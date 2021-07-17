@@ -65,14 +65,6 @@ build_and_test_android: &build_and_test_android
 
 version: 2
 jobs:
-  Registers:
-    <<: *docker_config
-    steps:
-      - checkout
-      - run:
-          name: Generate register descriptors
-          command: ./Support/Scripts/generate-register-descriptors.sh
-      - *check_dirty_step
   Linux-X86-Clang:
     <<: *build_and_test_defaults
   Linux-X86-Clang-platform:
@@ -134,7 +126,6 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - Registers
       - Linux-X86-Clang
       - Linux-X86-Clang-platform
       - Linux-X86_64-Clang

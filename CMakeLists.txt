@@ -93,6 +93,61 @@ else()
   message(SEND_ERROR "Unknown host architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
+# FIXME(compnerd) properly compute the executable suffix for the host.
+# Currently, we are able to get away with this as we are not cross-compiling
+# Windows, but this would be incorrect if we were.
+get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(GENERATOR_IS_MULTI_CONFIG)
+  set(RegsGen2_RELATIVE_PATH Release/regsgen2${CMAKE_EXECUTABLE_SUFFIX})
+else()
+  set(RegsGen2_RELATIVE_PATH regsgen2${CMAKE_EXECUTABLE_SUFFIX})
+endif()
+
+include(ExternalProject)
+ExternalProject_Add(RegsGen2
+  SOURCE_DIR ${PROJECT_SOURCE_DIR}/Tools/RegsGen2
+  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/RegsGen2
+  CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE:STRING=Release
+    -DCMAKE_SYSTEM_NAME:STRING=${CMAKE_HOST_SYSTEM_NAME}
+    -DCMAKE_SYSTEM_PROCESSOR:STRING=${CMAKE_HOST_SYSTEM_PROCESSOR}
+  BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
+  INSTALL_COMMAND ""
+  BUILD_BYPRODUCTS
+    <BINARY_DIR>/${RegsGen2_RELATIVE_PATH})
+ExternalProject_Get_Property(RegsGen2 BINARY_DIR)
+
+add_executable(RegsGen2::RegsGen2 IMPORTED)
+set_target_properties(RegsGen2::RegsGen2 PROPERTIES
+  IMPORTED_LOCATION ${BINARY_DIR}/${RegsGen2_RELATIVE_PATH})
+add_dependencies(RegsGen2::RegsGen2 RegsGen2)
+
+foreach(ARCH ARM ARM64 X86 X86_64)
+  add_custom_command(OUTPUT
+      ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
+    COMMAND
+      $<TARGET_FILE:RegsGen2::RegsGen2>
+        -a $<LOWER_CASE:${CMAKE_SYSTEM_NAME}>
+        -I DebugServer2/Architecture/RegisterLayout.h
+        -h -o ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
+        -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
+    DEPENDS
+      Definitions/${ARCH}.json
+      RegsGen2::RegsGen2)
+
+  add_custom_command(OUTPUT
+      ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/${ARCH}/RegistersDescriptors.cpp
+    COMMAND
+      $<TARGET_FILE:RegsGen2::RegsGen2>
+        -a $<LOWER_CASE:${CMAKE_SYSTEM_NAME}>
+        -I DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
+        -c -o ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/${ARCH}/RegistersDescriptors.cpp
+        -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
+    DEPENDS
+      Definitions/${ARCH}.json
+      RegsGen2::RegsGen2)
+endforeach()
+
 add_executable(ds2
   Sources/main.cpp
 
@@ -135,25 +190,37 @@ add_executable(ds2
 if(DS2_ARCHITECTURE MATCHES "ARM|ARM64")
   target_sources(ds2 PRIVATE
     Sources/Architecture/ARM/ARMBranchInfo.cpp
-    Sources/Architecture/ARM/RegistersDescriptors.cpp
     Sources/Architecture/ARM/SoftwareSingleStep.cpp
     Sources/Architecture/ARM/ThumbBranchInfo.cpp
 
     Sources/Core/ARM/HardwareBreakpointManager.cpp
     Sources/Core/ARM/SoftwareBreakpointManager.cpp)
+
+  target_sources(ds2 PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/ARM/RegistersDescriptors.h
+    ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/ARM/RegistersDescriptors.cpp)
   if(DS2_ARCHITECTURE MATCHES "ARM64")
     target_sources(ds2 PRIVATE
-      Sources/Architecture/ARM64/RegistersDescriptors.cpp)
+      ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/ARM64/RegistersDescriptors.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/ARM64/RegistersDescriptors.cpp)
   endif()
 elseif(DS2_ARCHITECTURE MATCHES "X86|X86_64")
   target_sources(ds2 PRIVATE
-    Sources/Architecture/X86/RegistersDescriptors.cpp
-
     Sources/Core/X86/HardwareBreakpointManager.cpp
     Sources/Core/X86/SoftwareBreakpointManager.cpp)
+
+  target_sources(ds2 PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/X86/RegistersDescriptors.h
+    ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/X86/RegistersDescriptors.cpp)
   if(DS2_ARCHITECTURE MATCHES "X86_64")
     target_sources(ds2 PRIVATE
-      Sources/Architecture/X86_64/RegistersDescriptors.cpp)
+      ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/X86_64/RegistersDescriptors.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/X86_64/RegistersDescriptors.cpp)
+    set_source_files_properties(
+      ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/X86/RegistersDescriptors.cpp
+      ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/X86_64/RegistersDescriptors.cpp
+      PROPERTIES
+        COMPILE_OPTIONS $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-unused-const-variable>)
   endif()
 endif()
 
@@ -238,7 +305,9 @@ if(MSVC_IDE OR XCODE)
   target_sources(ds2 PRIVATE ${DebugServer2_HEADERS})
 endif()
 
-target_include_directories(ds2 PUBLIC Headers)
+target_include_directories(ds2 PUBLIC
+  Headers
+  ${CMAKE_CURRENT_BINARY_DIR}/Headers)
 
 execute_process(COMMAND git rev-parse --short HEAD
                 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
