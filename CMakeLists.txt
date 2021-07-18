@@ -266,7 +266,7 @@ elseif ("${OS_NAME}" MATCHES "Windows")
 
   include(CheckFunctionExists)
   foreach (FUNC
-      ContinueDebugEvent CopySidx CreateProcessW CreateThread DebugActiveProcess
+      ContinueDebugEvent CopySid CreateProcessW CreateThread DebugActiveProcess
       DebugActiveProcessStop EnumProcesses FlushInstructionCache
       FreeEnvironmentStringsW GetEnvironmentStringsW GetExitCodeProcess
       GetLengthSid GetModuleBaseNameW GetModuleFileNameExW GetModuleHandleA
