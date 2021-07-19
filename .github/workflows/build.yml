@@ -36,21 +36,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { msystem: ucrt64, prefix: mingw-w64-ucrt-x86_64 }
-          # disable clang64 as the packaging seems incorrect:
-          # ...: error while loading shared libraries: librhash.dll: cannot open shared object file: No such file or directory
-          # { msystem: clang64, prefix: mingw-w64-clang-x86_64 }
+          - { system: ucrt64, env: ucrt-x86_64 }
+          - { system: clang64, env: clang-x86_64 }
     
     steps:
       - uses: msys2/setup-msys2@v2
         with:
-          msystem: ${{ matrix.msystem }}
+          msystem: ${{ matrix.system }}
           install: >-
             flex
             bison
-            ${{ matrix.prefix }}-cmake
-            ${{ matrix.prefix }}-gcc
-            ${{ matrix.prefix }}-ninja
+            mingw-w64-${{ matrix.env }}-cmake
+            mingw-w64-${{ matrix.env }}-toolchain
+            mingw-w64-${{ matrix.env }}-ninja
 
       - uses: actions/checkout@v2
 
