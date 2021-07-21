@@ -320,9 +320,18 @@ bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
 
     userInfo = reinterpret_cast<PTOKEN_USER>(userInfoBuffer.data());
 
-    DWORD size = GetLengthSid(userInfo->User.Sid);
-    info.realUid = malloc(size);
-    CopySid(size, info.realUid, userInfo->User.Sid);
+    BYTE nSubAuthorityCount = *GetSidSubAuthorityCount(userInfo->User.Sid);
+    AllocateAndInitializeSid(GetSidIdentifierAuthority(userInfo->User.Sid),
+                             nSubAuthorityCount,
+                             nSubAuthorityCount > 0 ? *GetSidSubAuthority(userInfo->User.Sid, 0) : 0,
+                             nSubAuthorityCount > 1 ? *GetSidSubAuthority(userInfo->User.Sid, 1) : 0,
+                             nSubAuthorityCount > 2 ? *GetSidSubAuthority(userInfo->User.Sid, 2) : 0,
+                             nSubAuthorityCount > 3 ? *GetSidSubAuthority(userInfo->User.Sid, 3) : 0,
+                             nSubAuthorityCount > 4 ? *GetSidSubAuthority(userInfo->User.Sid, 4) : 0,
+                             nSubAuthorityCount > 5 ? *GetSidSubAuthority(userInfo->User.Sid, 5) : 0,
+                             nSubAuthorityCount > 6 ? *GetSidSubAuthority(userInfo->User.Sid, 6) : 0,
+                             nSubAuthorityCount > 7 ? *GetSidSubAuthority(userInfo->User.Sid, 7) : 0,
+                             &info.realGid);
 
     CloseHandle(processToken);
   }

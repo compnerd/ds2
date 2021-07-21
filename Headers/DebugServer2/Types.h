@@ -297,9 +297,63 @@ struct ProcessInfo {
   }
 
 #if defined(OS_WIN32)
+  ProcessInfo(const ProcessInfo &other)
+      : pid(other.pid), name(other.name), cpuType(other.cpuType),
+        cpuSubType(other.cpuSubType), nativeCPUType(other.nativeCPUType),
+        nativeCPUSubType(other.nativeCPUSubType), endian(other.endian),
+        pointerSize(other.pointerSize), archFlags(other.archFlags),
+        osType(other.osType), osVendor(other.osVendor) {
+    *this = other;
+  }
+
+
+  ProcessInfo &operator=(const ProcessInfo &rhs) {
+    BYTE nSubAuthorityCount;
+
+    pid = rhs.pid;
+    name = rhs.name;
+
+    nSubAuthorityCount = *GetSidSubAuthorityCount(rhs.realUid);
+    AllocateAndInitializeSid(GetSidIdentifierAuthority(rhs.realUid),
+                             nSubAuthorityCount,
+                             nSubAuthorityCount > 0 ? *GetSidSubAuthority(rhs.realUid, 0) : 0,
+                             nSubAuthorityCount > 1 ? *GetSidSubAuthority(rhs.realUid, 1) : 0,
+                             nSubAuthorityCount > 2 ? *GetSidSubAuthority(rhs.realUid, 2) : 0,
+                             nSubAuthorityCount > 3 ? *GetSidSubAuthority(rhs.realUid, 3) : 0,
+                             nSubAuthorityCount > 4 ? *GetSidSubAuthority(rhs.realUid, 4) : 0,
+                             nSubAuthorityCount > 5 ? *GetSidSubAuthority(rhs.realUid, 5) : 0,
+                             nSubAuthorityCount > 6 ? *GetSidSubAuthority(rhs.realUid, 6) : 0,
+                             nSubAuthorityCount > 7 ? *GetSidSubAuthority(rhs.realUid, 7) : 0,
+                             &realUid);
+
+    nSubAuthorityCount = *GetSidSubAuthorityCount(rhs.realGid);
+    AllocateAndInitializeSid(GetSidIdentifierAuthority(rhs.realGid),
+                             nSubAuthorityCount,
+                             nSubAuthorityCount > 0 ? *GetSidSubAuthority(rhs.realGid, 0) : 0,
+                             nSubAuthorityCount > 1 ? *GetSidSubAuthority(rhs.realGid, 1) : 0,
+                             nSubAuthorityCount > 2 ? *GetSidSubAuthority(rhs.realGid, 2) : 0,
+                             nSubAuthorityCount > 3 ? *GetSidSubAuthority(rhs.realGid, 3) : 0,
+                             nSubAuthorityCount > 4 ? *GetSidSubAuthority(rhs.realGid, 4) : 0,
+                             nSubAuthorityCount > 5 ? *GetSidSubAuthority(rhs.realGid, 5) : 0,
+                             nSubAuthorityCount > 6 ? *GetSidSubAuthority(rhs.realGid, 6) : 0,
+                             nSubAuthorityCount > 7 ? *GetSidSubAuthority(rhs.realGid, 7) : 0,
+                             &realGid);
+
+    cpuType = rhs.cpuType;
+    cpuSubType = rhs.cpuSubType;
+    nativeCPUType = rhs.nativeCPUType;
+    nativeCPUSubType = rhs.nativeCPUSubType;
+    endian = rhs.endian;
+    pointerSize = rhs.pointerSize;
+    archFlags = rhs.archFlags;
+    osType = rhs.osType;
+    osVendor = rhs.osVendor;
+    return *this;
+  }
+
   ~ProcessInfo() {
-    free(realUid);
-    free(realGid);
+    FreeSid(realUid);
+    FreeSid(realGid);
   }
 #endif
 };
