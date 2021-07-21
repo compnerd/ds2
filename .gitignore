@@ -1,4 +1,5 @@
+.venv/
+.vscode/
 build/
-build-*/
 html/
-*.swp
+*.sw?
