@@ -36,69 +36,11 @@ extern "C" {
 #define UNLEN 256
 #endif
 
-#if !defined(GetVersionEx)
-#define GetVersionEx GetVersionExW
-#endif
-
 #if !defined(HAVE_GetWindowsDirectoryW)
 WINBASEAPI UINT WINAPI GetWindowsDirectoryW(
   _Out_ LPWSTR lpBuffer,
   _In_  UINT   uSize
 );
-#endif
-
-#if !defined(GetWindowsDirectory)
-#define GetWindowsDirectory GetWindowsDirectoryW
-#endif
-
-#if !defined(HAVE_EnumProcesses)
-WINBASEAPI BOOL WINAPI K32EnumProcesses(
-  _Out_ DWORD *pProcessIds,
-  _In_  DWORD cb,
-  _Out_ DWORD *pBytesReturned
-);
-#define EnumProcesses K32EnumProcesses
-#endif
-
-#if !defined(HAVE_K32EnumProcessModules)
-WINBASEAPI BOOL WINAPI K32EnumProcessModules(
-  _In_  HANDLE  hProcess,
-  _Out_ HMODULE *lphModule,
-  _In_  DWORD   cb,
-  _Out_ LPDWORD lpcbNeeded
-);
-#endif
-
-#if !defined(EnumProcessModules)
-#define EnumProcessModules K32EnumProcessModules
-#endif
-
-#if !defined(HAVE_GetModuleBaseNameW)
-WINBASEAPI DWORD WINAPI K32GetModuleBaseNameW(
-  _In_     HANDLE  hProcess,
-  _In_opt_ HMODULE hModule,
-  _Out_    LPWSTR  lpBaseName,
-  _In_     DWORD   nSize
-);
-#define GetModuleBaseNameW K32GetModuleBaseNameW
-#endif
-
-#if !defined(GetModuleBaseName)
-#define GetModuleBaseName GetModuleBaseNameW
-#endif
-
-#if !defined(HAVE_GetModuleFileNameExW)
-WINBASEAPI DWORD WINAPI K32GetModuleFileNameExW(
-  _In_     HANDLE  hProcess,
-  _In_opt_ HMODULE hModule,
-  _Out_    LPWSTR  lpFilename,
-  _In_     DWORD   nSize
-);
-#define GetModuleFileNameExW K32GetModuleFileNameExW
-#endif
-
-#if !defined(GetModuleFileNameEx)
-#define GetModuleFileNameEx GetModuleFileNameExW
 #endif
 
 #if !defined(HAVE_GetModuleHandleA)
@@ -110,68 +52,6 @@ WINBASEAPI HMODULE WINAPI GetModuleHandleA(
 #if !defined(HAVE_GetModuleHandleW)
 WINBASEAPI HMODULE WINAPI GetModuleHandleW(
   _In_opt_ LPCWSTR lpModuleName
-);
-#endif
-
-#if !defined(GetModuleHandle)
-#define GetModuleHandle GetModuleHandleW
-#endif
-
-#if !defined(HAVE_OpenProcessToken)
-WINBASEAPI BOOL WINAPI OpenProcessToken(
-  _In_  HANDLE  ProcessHandle,
-  _In_  DWORD   DesiredAccess,
-  _Out_ PHANDLE TokenHandle
-);
-#endif
-
-#if !defined(HAVE_GetTokenInformation)
-WINBASEAPI BOOL WINAPI GetTokenInformation(
-  _In_      HANDLE                  TokenHandle,
-  _In_      TOKEN_INFORMATION_CLASS TokenInformationClass,
-  _Out_opt_ LPVOID                  TokenInformation,
-  _In_      DWORD                   TokenInformationLength,
-  _Out_     PDWORD                  ReturnLength
-);
-#endif
-
-#if !defined(HAVE_LookupAccountSidW)
-WINBASEAPI BOOL WINAPI LookupAccountSidW(
-  _In_opt_  LPCWSTR       lpSystemName,
-  _In_      PSID          lpSid,
-  _Out_opt_ LPWSTR        lpName,
-  _Inout_   LPDWORD       cchName,
-  _Out_opt_ LPWSTR        lpReferencedDomainName,
-  _Inout_   LPDWORD       cchReferencedDomainName,
-  _Out_     PSID_NAME_USE peUse
-);
-#endif
-
-#if !defined(LookupAccountSid)
-#define LookupAccountSid LookupAccountSidW
-#endif
-
-#if !defined(HAVE_CopySid)
-WINBASEAPI BOOL WINAPI CopySid(
-  _In_  DWORD nDestinationSidLength,
-  _Out_ PSID  pDestinationSid,
-  _In_  PSID  pSourceSid
-);
-#endif
-
-#if !defined(HAVE_GetLengthSid)
-WINBASEAPI DWORD WINAPI GetLengthSid(
-  _In_ PSID pSid
-);
-#endif
-
-#if !defined(HAVE_GetEnvironmentStringsW)
-WINBASEAPI LPWCH WINAPI GetEnvironmentStringsW(void);
-#endif
-
-#if !defined(HAVE_FreeEnvironmentStringsW)
-WINBASEAPI BOOL WINAPI FreeEnvironmentStringsW(
-  _In_  LPWCH lpszEnvironmentBlock
 );
 #endif
 
@@ -207,42 +87,6 @@ typedef struct _PROCESS_INFORMATION {
 } PROCESS_INFORMATION, *LPPROCESS_INFORMATION;
 #endif
 
-#if !defined(HAVE_CreateProcessW)
-WINBASEAPI BOOL WINAPI CreateProcessW(
-  _In_opt_     LPCWSTR lpApplicationName,
-  _Inout_opt_  LPWSTR lpCommandLine,
-  _In_opt_     LPSECURITY_ATTRIBUTES lpProcessAttributes,
-  _In_opt_     LPSECURITY_ATTRIBUTES lpThreadAttributes,
-  _In_         BOOL bInheritHandles,
-  _In_         DWORD dwCreationFlags,
-  _In_opt_     LPVOID lpEnvironment,
-  _In_opt_     LPCWSTR lpCurrentDirectory,
-  _In_         LPSTARTUPINFOW lpStartupInfo,
-  _Out_        LPPROCESS_INFORMATION lpProcessInformation
-);
-#endif
-
-#if !defined(CreateProcess)
-#define CreateProcess CreateProcessW
-#endif
-
-#if !defined(HAVE_CreateThread)
-WINBASEAPI HANDLE WINAPI CreateThread(
-  _In_opt_   LPSECURITY_ATTRIBUTES lpThreadAttributes,
-  _In_       SIZE_T dwStackSize,
-  _In_       LPTHREAD_START_ROUTINE lpStartAddress,
-  _In_opt_   LPVOID lpParameter,
-  _In_       DWORD dwCreationFlags,
-  _Out_opt_  LPDWORD lpThreadId
-);
-#endif
-
-#if !defined(HAVE_ResumeThread)
-WINBASEAPI DWORD WINAPI ResumeThread(
-  _In_  HANDLE hThread
-);
-#endif
-
 #if !defined(HAVE_TerminateThread)
 WINBASEAPI BOOL WINAPI TerminateThread(
   _Inout_ HANDLE hThread,
@@ -250,44 +94,10 @@ WINBASEAPI BOOL WINAPI TerminateThread(
 );
 #endif
 
-#if !defined(HAVE_SuspendThread)
-WINBASEAPI DWORD WINAPI SuspendThread(
-  _In_ HANDLE hThread
-);
-#endif
-
-#if !defined(HAVE_GetThreadContext)
-WINBASEAPI BOOL WINAPI GetThreadContext(
-  _In_     HANDLE hThread,
-  _Inout_  LPCONTEXT lpContext
-);
-#endif
-
 #if !defined(HAVE_SetThreadContext)
 WINBASEAPI BOOL WINAPI SetThreadContext(
   _In_  HANDLE hThread,
   _In_  const CONTEXT *lpContext
-);
-#endif
-
-#if !defined(HAVE_GetThreadId)
-WINBASEAPI DWORD WINAPI GetThreadId(
-  _In_  HANDLE Thread
-);
-#endif
-
-#if !defined(HAVE_OpenProcess)
-WINBASEAPI HANDLE WINAPI OpenProcess(
-  _In_  DWORD dwDesiredAccess,
-  _In_  BOOL bInheritHandle,
-  _In_  DWORD dwProcessId
-);
-#endif
-
-#if !defined(HAVE_GetExitCodeProcess)
-WINBASEAPI BOOL WINAPI GetExitCodeProcess(
-  _In_  HANDLE  hProcess,
-  _Out_ LPDWORD lpExitCode
 );
 #endif
 
@@ -311,26 +121,11 @@ WINBASEAPI BOOL WINAPI WriteProcessMemory(
 );
 #endif
 
-#if !defined(HAVE_FlushInstructionCache)
-WINBASEAPI BOOL WINAPI FlushInstructionCache(
-  _In_ HANDLE  hProcess,
-  _In_ LPCVOID lpBaseAddress,
-  _In_ SIZE_T  dwSize
-);
-#endif
-
 #if !defined(HAVE_ContinueDebugEvent)
 WINBASEAPI BOOL WINAPI ContinueDebugEvent(
   _In_  DWORD dwProcessId,
   _In_  DWORD dwThreadId,
   _In_  DWORD dwContinueStatus
-);
-#endif
-
-#if !defined(HAVE_TerminateProcess)
-WINBASEAPI BOOL WINAPI TerminateProcess(
-  _In_  HANDLE hProcess,
-  _In_  UINT uExitCode
 );
 #endif
 
@@ -386,12 +181,6 @@ typedef LONG (WINAPI *PTOP_LEVEL_EXCEPTION_FILTER)(
 
 #if !defined(HAVE_LPTOP_LEVEL_EXCEPTION_FILTER)
 typedef PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER;
-#endif
-
-#if !defined(HAVE_SetUnhandledExceptionFilter)
-WINBASEAPI LPTOP_LEVEL_EXCEPTION_FILTER WINAPI SetUnhandledExceptionFilter(
-  _In_ LPTOP_LEVEL_EXCEPTION_FILTER lpTopLevelExceptionFilter
-);
 #endif
 
 } // extern "C"
