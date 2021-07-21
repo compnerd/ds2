@@ -235,24 +235,22 @@ struct HostInfo {
 
 #if defined(OS_WIN32)
 namespace {
-inline AllocateAndCopySid(const PSID pSid, PSID *ppSid) noexcept {
-  if (!IsValidSid(pSid)) {
-    CreateWellKnownSid(WinNullSid, nullptr, ppSid, nullptr);
-    return;
-  }
+inline BOOL AllocateAndCopySid(const PSID pSid, PSID *ppSid) noexcept {
+  if (!IsValidSid(pSid))
+    return CreateWellKnownSid(WinNullSid, nullptr, ppSid, nullptr);
 
   DWORD nSubAuthorityCount = *GetSidSubAuthorityCount(pSid);
-  AllocateAndInitializeSid(GetSidIdentifierAuthority(pSid),
-                           nSubAuthorityCount,
-                           nSubAuthorityCount > 0 ? *GetSidSubAuthority(pSid, 0) : 0,
-                           nSubAuthorityCount > 1 ? *GetSidSubAuthority(pSid, 1) : 0,
-                           nSubAuthorityCount > 2 ? *GetSidSubAuthority(pSid, 2) : 0,
-                           nSubAuthorityCount > 3 ? *GetSidSubAuthority(pSid, 3) : 0,
-                           nSubAuthorityCount > 4 ? *GetSidSubAuthority(pSid, 4) : 0,
-                           nSubAuthorityCount > 5 ? *GetSidSubAuthority(pSid, 5) : 0,
-                           nSubAuthorityCount > 6 ? *GetSidSubAuthority(pSid, 6) : 0,
-                           nSubAuthorityCount > 7 ? *GetSidSubAuthority(pSid, 7) : 0,
-                           ppSid);
+  return AllocateAndInitializeSid(GetSidIdentifierAuthority(pSid),
+                                  nSubAuthorityCount,
+                                  nSubAuthorityCount > 0 ? *GetSidSubAuthority(pSid, 0) : 0,
+                                  nSubAuthorityCount > 1 ? *GetSidSubAuthority(pSid, 1) : 0,
+                                  nSubAuthorityCount > 2 ? *GetSidSubAuthority(pSid, 2) : 0,
+                                  nSubAuthorityCount > 3 ? *GetSidSubAuthority(pSid, 3) : 0,
+                                  nSubAuthorityCount > 4 ? *GetSidSubAuthority(pSid, 4) : 0,
+                                  nSubAuthorityCount > 5 ? *GetSidSubAuthority(pSid, 5) : 0,
+                                  nSubAuthorityCount > 6 ? *GetSidSubAuthority(pSid, 6) : 0,
+                                  nSubAuthorityCount > 7 ? *GetSidSubAuthority(pSid, 7) : 0,
+                                  ppSid);
 }
 }
 #endif
