@@ -233,6 +233,28 @@ struct HostInfo {
   }
 };
 
+#if defined(OS_WIN32)
+namespace {
+inline BOOL AllocateAndCopySid(const PSID pSid, PSID *ppSid) noexcept {
+  if (!IsValidSid(pSid))
+    return CreateWellKnownSid(WinNullSid, nullptr, ppSid, nullptr);
+
+  DWORD nSubAuthorityCount = *GetSidSubAuthorityCount(pSid);
+  return AllocateAndInitializeSid(GetSidIdentifierAuthority(pSid),
+                                  nSubAuthorityCount,
+                                  nSubAuthorityCount > 0 ? *GetSidSubAuthority(pSid, 0) : 0,
+                                  nSubAuthorityCount > 1 ? *GetSidSubAuthority(pSid, 1) : 0,
+                                  nSubAuthorityCount > 2 ? *GetSidSubAuthority(pSid, 2) : 0,
+                                  nSubAuthorityCount > 3 ? *GetSidSubAuthority(pSid, 3) : 0,
+                                  nSubAuthorityCount > 4 ? *GetSidSubAuthority(pSid, 4) : 0,
+                                  nSubAuthorityCount > 5 ? *GetSidSubAuthority(pSid, 5) : 0,
+                                  nSubAuthorityCount > 6 ? *GetSidSubAuthority(pSid, 6) : 0,
+                                  nSubAuthorityCount > 7 ? *GetSidSubAuthority(pSid, 7) : 0,
+                                  ppSid);
+}
+}
+#endif
+
 //
 // Describe a process
 //
@@ -308,37 +330,10 @@ struct ProcessInfo {
 
 
   ProcessInfo &operator=(const ProcessInfo &rhs) {
-    BYTE nSubAuthorityCount;
-
     pid = rhs.pid;
     name = rhs.name;
-
-    nSubAuthorityCount = *GetSidSubAuthorityCount(rhs.realUid);
-    AllocateAndInitializeSid(GetSidIdentifierAuthority(rhs.realUid),
-                             nSubAuthorityCount,
-                             nSubAuthorityCount > 0 ? *GetSidSubAuthority(rhs.realUid, 0) : 0,
-                             nSubAuthorityCount > 1 ? *GetSidSubAuthority(rhs.realUid, 1) : 0,
-                             nSubAuthorityCount > 2 ? *GetSidSubAuthority(rhs.realUid, 2) : 0,
-                             nSubAuthorityCount > 3 ? *GetSidSubAuthority(rhs.realUid, 3) : 0,
-                             nSubAuthorityCount > 4 ? *GetSidSubAuthority(rhs.realUid, 4) : 0,
-                             nSubAuthorityCount > 5 ? *GetSidSubAuthority(rhs.realUid, 5) : 0,
-                             nSubAuthorityCount > 6 ? *GetSidSubAuthority(rhs.realUid, 6) : 0,
-                             nSubAuthorityCount > 7 ? *GetSidSubAuthority(rhs.realUid, 7) : 0,
-                             &realUid);
-
-    nSubAuthorityCount = *GetSidSubAuthorityCount(rhs.realGid);
-    AllocateAndInitializeSid(GetSidIdentifierAuthority(rhs.realGid),
-                             nSubAuthorityCount,
-                             nSubAuthorityCount > 0 ? *GetSidSubAuthority(rhs.realGid, 0) : 0,
-                             nSubAuthorityCount > 1 ? *GetSidSubAuthority(rhs.realGid, 1) : 0,
-                             nSubAuthorityCount > 2 ? *GetSidSubAuthority(rhs.realGid, 2) : 0,
-                             nSubAuthorityCount > 3 ? *GetSidSubAuthority(rhs.realGid, 3) : 0,
-                             nSubAuthorityCount > 4 ? *GetSidSubAuthority(rhs.realGid, 4) : 0,
-                             nSubAuthorityCount > 5 ? *GetSidSubAuthority(rhs.realGid, 5) : 0,
-                             nSubAuthorityCount > 6 ? *GetSidSubAuthority(rhs.realGid, 6) : 0,
-                             nSubAuthorityCount > 7 ? *GetSidSubAuthority(rhs.realGid, 7) : 0,
-                             &realGid);
-
+    AllocateAndCopySid(rhs.realUid, &realUid);
+    AllocateAndCopySid(rhs.realGid, &realGid);
     cpuType = rhs.cpuType;
     cpuSubType = rhs.cpuSubType;
     nativeCPUType = rhs.nativeCPUType;
