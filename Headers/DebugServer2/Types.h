@@ -330,8 +330,6 @@ struct ProcessInfo {
 
 
   ProcessInfo &operator=(const ProcessInfo &rhs) {
-    BYTE nSubAuthorityCount;
-
     pid = rhs.pid;
     name = rhs.name;
     AllocateAndCopySid(rhs.realUid, &realUid);
