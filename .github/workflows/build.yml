@@ -82,7 +82,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          sudo apt-get install -qq --no-install-recommends flex bison ninja-build
+          sudo apt-get install -qq --no-install-recommends bison flex gcc-multilib ninja-build
 
       - name: Configure
         run: cmake -B ${{ github.workspace }}/build -C ${{ github.workspace }}/cmake/caches/GNUWarnings.cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_SYSTEM_PROCESSOR=${{ matrix.processor }} -D CMAKE_CXX_FLAGS=${{ matrix.cxxflags }} -G Ninja -S ${{ github.workspace }}
