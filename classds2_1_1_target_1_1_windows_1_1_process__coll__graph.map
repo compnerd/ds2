@@ -1,8 +1,8 @@
 <map id="ds2::Target::Windows::Process" name="ds2::Target::Windows::Process">
-<area shape="rect" id="node1" title=" " alt="" coords="184,200,329,241"/>
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="73,117,243,143"/>
-<area shape="rect" id="node3" href="$classds2_1_1_address.html" title=" " alt="" coords="5,5,103,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="127,5,189,32"/>
-<area shape="rect" id="node5" href="$structds2_1_1_process_info.html" title=" " alt="" coords="220,5,339,32"/>
-<area shape="rect" id="node6" href="$structds2_1_1make__unique__enabler.html" title=" " alt="" coords="268,109,443,151"/>
+<area shape="rect" id="node1" title=" " alt="" coords="223,200,368,241"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="111,117,282,143"/>
+<area shape="rect" id="node3" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,32"/>
+<area shape="rect" id="node4" href="$classds2_1_1_address.html" title=" " alt="" coords="148,5,245,32"/>
+<area shape="rect" id="node5" title=" " alt="" coords="269,5,332,32"/>
+<area shape="rect" id="node6" href="$structds2_1_1make__unique__enabler.html" title=" " alt="" coords="307,109,481,151"/>
 </map>
