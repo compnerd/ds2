@@ -21,7 +21,7 @@ jobs:
         run: choco install winflexbison3
 
       - name: Configure
-        run: cmake -B ${{ github.workspace }}/build -C ${{ github.workspace }}/cmake/caches/MSVCWarnings.cmake -D CMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A ${{ matrix.arch }} -S ${{ github.workspace }}
+        run: cmake -B ${{ github.workspace }}/build -C ${{ github.workspace }}/cmake/caches/MSVCWarnings.cmake -D CMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A ${{ matrix.arch }} -S ${{ github.workspace }}
       - name: Build
         run: cmake --build ${{ github.workspace }}/build --config Release
 
