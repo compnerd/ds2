@@ -17,6 +17,7 @@
 static int
 read_u (char **tmp, const char **str)
 {
+#if 0
   uint32_t uchar = 0;
   unsigned int i;
 
@@ -41,6 +42,8 @@ read_u (char **tmp, const char **str)
   */
 
 
+  return -1;
+#endif
   return -1;
 }
 
