@@ -11,13 +11,16 @@
 cmake_minimum_required(VERSION 3.13)
 
 project(RegsGen2
-  LANGUAGES CXX)
+  LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS NO)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 add_subdirectory(../JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
+
+add_library(getopt OBJECT
+  getopt.c)
 
 add_executable(regsgen2
   FlagSet.cpp
@@ -28,4 +31,5 @@ add_executable(regsgen2
   RegisterSet.cpp
   RegisterTemplate.cpp
   main.cpp)
-target_link_libraries(regsgen2 jsobjects)
+target_link_libraries(regsgen2 PRIVATE
+  getopt jsobjects)
