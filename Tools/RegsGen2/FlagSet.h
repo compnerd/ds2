@@ -14,6 +14,8 @@
 #include "JSObjects/JSObjects.h"
 #include "Definitions.h"
 
+#include <type_traits>
+
 #include <sys/types.h>
 
 class FlagSet {
@@ -22,7 +24,7 @@ public:
   typedef std::map<std::string, shared_ptr> name_map;
 
 private:
-  ssize_t _size;
+  typename std::make_signed<size_t>::type _size;
   std::string _name;
   std::string _GDBName;
   Flag::vector _flags;
