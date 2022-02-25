@@ -14,7 +14,8 @@
 #include <cstring>
 #include <filesystem>
 #include <sstream>
-#include <unistd.h>
+
+#include "getopt.h"
 
 static char const *const sKnownOSABI[] = {"linux", "freebsd", "darwin",
                                           "windows", nullptr};
