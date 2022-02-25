@@ -17,8 +17,10 @@
 #include <memory>
 #include <set>
 #include <string>
-#include <sys/types.h>
+#include <type_traits>
 #include <vector>
+
+#include <sys/types.h>
 
 struct Register {
   typedef std::shared_ptr<Register> shared_ptr;
@@ -31,17 +33,17 @@ struct Register {
   bool Private;
   bool NoGDBRegisterNumber;
 
-  ssize_t BitSize;
+  typename std::make_signed<size_t>::type BitSize;
   ::Format Format;
   ::LLDBVectorFormat LLDBVectorFormat;
   ::Encoding Encoding;
   ::GDBEncoding GDBEncoding;
   std::string GDBEncodingName;
 
-  ssize_t GDBRegisterNumber;
-  ssize_t EHFrameRegisterNumber;
-  ssize_t DWARFRegisterNumber;
-  ssize_t LLDBRegisterNumber;
+  typename std::make_signed<size_t>::type GDBRegisterNumber;
+  typename std::make_signed<size_t>::type EHFrameRegisterNumber;
+  typename std::make_signed<size_t>::type DWARFRegisterNumber;
+  typename std::make_signed<size_t>::type LLDBRegisterNumber;
 
   std::string Name;
   std::string CName;
@@ -51,7 +53,7 @@ struct Register {
 
   std::string GDBGroup;
 
-  ssize_t LLDBOffset;
+  typename std::make_signed<size_t>::type LLDBOffset;
 
   vector InvalidateRegisters;
   vector ContainerRegisters;
@@ -62,7 +64,7 @@ struct Register {
 
   std::string ParentSetName;
   std::string ParentRegisterName;
-  ssize_t ParentElement;
+  typename std::make_signed<size_t>::type ParentElement;
   shared_ptr ParentRegister;
 
   Register()
@@ -104,7 +106,7 @@ struct GDBVector {
   typedef std::map<std::string, shared_ptr> name_map;
 
   size_t BitSize;
-  ssize_t ElementSize;
+  typename std::make_signed<size_t>::type ElementSize;
 
   std::string Name;
   ::GDBEncoding Encoding;

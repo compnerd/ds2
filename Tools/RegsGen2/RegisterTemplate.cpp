@@ -16,7 +16,8 @@ RegisterTemplate::Number::Number() : _base(-1), _next(0) {}
 void RegisterTemplate::Number::init(size_t base) { _base = base; }
 
 bool RegisterTemplate::Number::mark(size_t index) {
-  if (_base < 0 || static_cast<ssize_t>(index) < _base)
+  if (_base < 0 ||
+      static_cast<typename std::make_signed<size_t>::type>(index) < _base)
     return false;
 
   index -= _base;
@@ -31,7 +32,7 @@ bool RegisterTemplate::Number::mark(size_t index) {
   return true;
 }
 
-ssize_t RegisterTemplate::Number::next() {
+typename std::make_signed<size_t>::type RegisterTemplate::Number::next() {
   if (_base < 0)
     return -1;
 
@@ -44,7 +45,7 @@ ssize_t RegisterTemplate::Number::next() {
   }
 
   _used[_next] = true;
-  ssize_t ret = _base + _next;
+  typename std::make_signed<size_t>::type ret = _base + _next;
   _next++;
   return ret;
 }

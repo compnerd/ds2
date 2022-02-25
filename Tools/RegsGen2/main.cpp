@@ -402,7 +402,8 @@ static std::string BuildGDBEncodingArray(Register const *reg) {
   return ss.str();
 }
 
-static std::string NameOfRegister(ssize_t regno, std::string const &name,
+static std::string NameOfRegister(typename std::make_signed<size_t>::type regno,
+                                  std::string const &name,
                                   std::string const &prefix) {
   if (regno < 0)
     return "-1";
@@ -842,8 +843,10 @@ static void GenerateGDBFeatures(FILE *fp, Context const &ctx) {
 // This is an helper function to emit endian-neutral offset for
 // subsetted registers.
 //
-static std::string GetLLDBOffset(Register const *parent, ssize_t bitsize,
-                                 ssize_t offset) {
+static std::string
+GetLLDBOffset(Register const *parent,
+              typename std::make_signed<size_t>::type bitsize,
+              typename std::make_signed<size_t>::type offset) {
   std::ostringstream ss;
   if (parent != nullptr && !(bitsize < 0) && !(offset < 0)) {
     ss << parent->LLDBOffset << " + "

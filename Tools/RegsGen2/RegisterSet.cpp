@@ -11,6 +11,8 @@
 #include "RegisterSet.h"
 #include "Context.h"
 
+#include <type_traits>
+
 RegisterSet::RegisterSet() {}
 
 bool RegisterSet::parse(Context &ctx, std::string const &name,
@@ -318,7 +320,7 @@ bool RegisterSet::finalize(Context &ctx) {
       }
 
       // (d)
-      ssize_t bitoff = reg->BitSize * reg->ParentElement;
+      typename std::make_signed<size_t>::type bitoff = reg->BitSize * reg->ParentElement;
       if (bitoff + reg->BitSize > preg->BitSize) {
         fprintf(stderr, "error: register '%s' references element #%zd "
                         "of register '%s' in register set '%s', but given the "

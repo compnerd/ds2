@@ -14,11 +14,13 @@
 #include "JSObjects/JSObjects.h"
 #include "Definitions.h"
 
+#include <type_traits>
+
 class RegisterTemplate {
 private:
   class Number {
   private:
-    ssize_t _base;
+    typename std::make_signed<size_t>::type _base;
     std::vector<bool> _used;
     size_t _next;
 
@@ -32,7 +34,7 @@ private:
     bool mark(size_t index);
 
   public:
-    ssize_t next();
+    typename std::make_signed<size_t>::type next();
   };
 
 private:
