@@ -12,6 +12,7 @@
 
 #include <cerrno>
 #include <cstring>
+#include <filesystem>
 #include <sstream>
 #include <unistd.h>
 
@@ -1156,7 +1157,7 @@ int main(int argc, char *const *argv) {
   if (strcmp(output, "-") == 0) {
     fp = stdout;
   } else {
-    if (!overwrite && (access(output, R_OK) == 0 || errno != ENOENT)) {
+    if (!overwrite && std::filesystem::exists(output)) {
       fprintf(stderr, "error: output file '%s' already exists, use -f if you "
                       "want overwrite\n",
               output);
