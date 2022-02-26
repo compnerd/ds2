@@ -17,7 +17,9 @@
 #include <csignal>
 #include <cstddef>
 #include <cstdio>
+#include <cstring>
 #include <limits>
+
 #include <sys/uio.h>
 #include <sys/user.h>
 #include <sys/wait.h>
