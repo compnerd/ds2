@@ -25,6 +25,13 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/build --config Release
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: windows-${{ matrix.processor }}-ds2
+          path: |
+            build/ds2.exe
+
+
   mingw:
     runs-on: windows-latest
 
@@ -57,6 +64,12 @@ jobs:
       - name: Build
         run: cmake --build $(cygpath -u '${{ github.workspace }}/build') --config Release
 
+      - uses: actions/upload-artifact@v2
+        with:
+          name: mingw-${{ matrix.system }}-ds2
+          path: |
+            build/ds2
+
   macos:
     runs-on: macos-latest
 
@@ -68,6 +81,12 @@ jobs:
         run: cmake -B ${{ github.workspace }}/out -C ${{ github.workspace }}/cmake/caches/ClangWarnings.cmake -D CMAKE_BUILD_TYPE=Release -G Ninja -S ${{ github.workspace }}
       - name: Build
         run: cmake --build ${{ github.workspace }}/out --config Release
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macOS-x86_64-ds2
+          path: |
+            build/ds2
 
   linux:
     runs-on: ubuntu-latest
