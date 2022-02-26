@@ -54,7 +54,7 @@ enum CPUType {
   kCPUTypeALPHA = 16,
   // skip 17
   kCPUTypePOWERPC = 18,
-  kCPUTypePOWERPC64 = (kCPUTypePOWERPC | kCPUArchABI64)
+  kCPUTypePOWERPC64 = (kCPUTypePOWERPC | kCPUArchABI64),
 };
 
 //
@@ -229,7 +229,7 @@ enum CPUSubType {
   //
 
   kCPUSubTypeARM64_ALL = 0,
-  kCPUSubTypeARM64_V8 = 1
+  kCPUSubTypeARM64_V8 = 1,
 };
 
 static inline bool CPUTypeIs64Bit(CPUType type) {
