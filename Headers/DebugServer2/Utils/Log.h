@@ -46,6 +46,8 @@ void Log(int level, char const *classname, char const *funcname,
 #define PRI_PTR "#010" PRIxPTR
 #elif defined(BITSIZE_64)
 #define PRI_PTR "#018" PRIxPTR
+#elif defined(BITSIZE_128)
+#define PRI_PTR "#034" PRIxPTR
 #endif
 
 #define PRI_PTR_CAST(VAL) ((uintptr_t)(VAL))

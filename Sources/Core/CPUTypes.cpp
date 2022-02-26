@@ -54,6 +54,12 @@ char const *GetCPUTypeName(CPUType type) {
     return "POWERPC";
   case kCPUTypePOWERPC64:
     return "POWERPC64";
+  case kCPUTypeRISCV32:
+    return "RISCV32";
+  case kCPUTypeRISCV64:
+    return "RISCV64";
+  case kCPUTypeRISCV128:
+    return "RISCV128";
   default:
     break;
   }
@@ -112,6 +118,12 @@ char const *GetArchName(CPUType type, CPUSubType subtype) {
     return "powerpc";
   case kCPUTypePOWERPC64:
     return "powerpc64";
+  case kCPUTypeRISCV32:
+    return "riscv32";
+  case kCPUTypeRISCV64:
+    return "riscv64";
+  case kCPUTypeRISCV128:
+    return "riscv128";
   default:
     break;
   }
@@ -156,6 +168,12 @@ char const *GetArchName(CPUType type, CPUSubType subtype, Endian endian) {
       return "mips64el";
     else
       return "mips64eb";
+  case kCPUTypeRISCV32:
+    return endian == kEndianLittle ? "riscv32" : "riscv32be";
+  case kCPUTypeRISCV64:
+    return endian == kEndianLittle ? "riscv64" : "riscv64be";
+  case kCPUTypeRISCV128:
+    return endian == kEndianLittle ? "riscv128" : "riscv128be";
   default:
     break;
   }

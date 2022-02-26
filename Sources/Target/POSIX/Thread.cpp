@@ -11,6 +11,8 @@
 #include "DebugServer2/Target/POSIX/Thread.h"
 #if defined(ARCH_ARM)
 #include "DebugServer2/Architecture/ARM/SoftwareSingleStep.h"
+#elif defined(ARCH_RISCV)
+#include "DebugServer2/Architecture/RISCV/SoftwareSingleStep.h"
 #endif
 #include "DebugServer2/Target/Process.h"
 

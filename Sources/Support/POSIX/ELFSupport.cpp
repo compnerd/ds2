@@ -44,6 +44,20 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
     break;
 #endif
 
+#elif defined(ARCH_RISCV)
+  case EM_RISCV:
+#if __riscv_xlen == 32
+    type = kCPUTypeRISCV32;
+    subType = kCPUSubTypeRISCV32_ALL;
+#elif __riscv_xlen == 64
+    type = kCPUTypeRISCV64;
+    subType = kCPUSubTypeRISCV64_ALL;
+#elif __riscv_xlen == 128
+    type = kCPUTypeRISCV128;
+    subType = kCPUSubTypeRISCV128_ALL;
+#endif
+    break;
+
 #else
 #error "Architecture not supported."
 #endif

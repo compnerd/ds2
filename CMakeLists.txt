@@ -90,6 +90,9 @@ elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "X86" OR
 elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "X64" OR
       CMAKE_SYSTEM_PROCESSOR MATCHES "AMD64|x86_64")
   set(DS2_ARCHITECTURE X86_64)
+elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "RISCV32|RISCV64|RISCV128" OR
+       CMAKE_SYSTEM_PROCESSOR MATCHES "riscv32|riscv64|riscv128")
+  set(DS2_ARCHITECTURE RISCV)
 else()
   message(SEND_ERROR "Unknown host architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
@@ -123,7 +126,14 @@ set_target_properties(RegsGen2::RegsGen2 PROPERTIES
   IMPORTED_LOCATION ${BINARY_DIR}/${RegsGen2_RELATIVE_PATH})
 add_dependencies(RegsGen2::RegsGen2 RegsGen2)
 
-foreach(ARCH ARM ARM64 X86 X86_64)
+# Generate different pointer size RISC-V definitions.
+# FIXME(compnerd) this assumes all targets are RISCVnnnG, which may not be true.
+foreach(WORDSIZE 32 64 128)
+  configure_file(${PROJECT_SOURCE_DIR}/Definitions/RISCVnnn.json
+    ${PROJECT_SOURCE_DIR}/Definitions/RISCV${WORDSIZE}.json @ONLY)
+endforeach()
+
+foreach(ARCH ARM ARM64 RISCV32 RISCV64 RISCV128 X86 X86_64)
   add_custom_command(OUTPUT
       ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
     COMMAND
@@ -221,6 +231,28 @@ elseif(DS2_ARCHITECTURE MATCHES "X86|X86_64")
       ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/X86_64/RegistersDescriptors.cpp
       PROPERTIES
         COMPILE_OPTIONS $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-unused-const-variable>)
+  endif()
+elseif(DS2_ARCHITECTURE STREQUAL RISCV)
+  target_sources(ds2 PRIVATE
+    Sources/Architecture/RISCV/SoftwareSingleStep.cpp
+    Sources/Core/RISCV/HardwareBreakpointManager.cpp
+    Sources/Core/RISCV/SoftwareBreakpointManager.cpp)
+
+  if(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "RISCV32" OR
+       CMAKE_SYSTEM_PROCESSOR MATCHES "riscv32")
+    target_sources(ds2 PRIVATE
+      ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/RISCV32/RegistersDescriptors.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/RISCV32/RegistersDescriptors.cpp)
+  elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "RISCV64" OR
+       CMAKE_SYSTEM_PROCESSOR MATCHES "riscv64")
+    target_sources(ds2 PRIVATE
+      ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/RISCV64/RegistersDescriptors.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/RISCV64/RegistersDescriptors.cpp)
+  elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "RISCV128" OR
+       CMAKE_SYSTEM_PROCESSOR MATCHES "riscv128")
+    target_sources(ds2 PRIVATE
+      ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/RISCV128/RegistersDescriptors.h
+      ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/RISCV128/RegistersDescriptors.cpp)
   endif()
 endif()
 

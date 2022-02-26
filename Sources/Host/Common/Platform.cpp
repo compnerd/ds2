@@ -19,6 +19,14 @@ ds2::CPUType Platform::GetCPUType() {
   return (sizeof(void *) == 8) ? kCPUTypeARM64 : kCPUTypeARM;
 #elif defined(ARCH_X86) || defined(ARCH_X86_64)
   return (sizeof(void *) == 8) ? kCPUTypeX86_64 : kCPUTypeI386;
+#elif defined(ARCH_RISCV)
+#if __riscv_xlen == 32
+  return kCPUTypeRISCV32;
+#elif __riscv_xlen == 64
+  return kCPUTypeRISCV64;
+#elif __riscv_xlen == 128
+  return kCPUTypeRISCV128;
+#endif
 #else
 #error "Architecture not supported."
 #endif

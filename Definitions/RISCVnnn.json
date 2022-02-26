@@ -1,0 +1,353 @@
+//
+// Copyright (c) 2022 Saleem Abdulrasool <compnerd@compnerd.org>
+// All Rights Reserved.
+//
+
+{
+    "namespace": "RISCV@WORDSIZE@",
+    "register-sets": {
+        "gpr": {
+            "*": {
+                "bit-size": @WORDSIZE@,
+                "encoding": "int",
+                "format": "hex",
+
+                "base-gdb-reg-number": 0,
+                "base-ehframe-reg-number": 0,
+                "base-dwarf-reg-number": 0
+            },
+
+            "x0": {
+                "alternate-name": "zero",
+                "generic-name": "zero"
+            },
+            "x1": {
+                "alternate-name": "ra",
+                "gdb-encoding": "code-pointer",
+                "generic-name": "ra"
+            },
+            "x2": {
+                "alternate-name": "sp",
+                "gdb-encoding": "data-pointer",
+                "generic-name": "sp"
+            },
+            "x3": {
+                "alternate-name": "gp",
+                "gdb-encoding": "data-pointer",
+                "generic-name": "gp"
+            },
+            "x4": {
+                "alternate-name": "tp",
+                "gdb-encoding": "data-pointer",
+                "generic-name": "tp"
+            },
+            "x5": {
+                "alternate-name": "t0",
+                "generic-name": "t0"
+            },
+            "x6": {
+                "alternate-name": "t1",
+                "generic-name": "t1"
+            },
+            "x7": {
+                "alternate-name": "t2",
+                "generic-name": "t2"
+            },
+            "x8": {
+                "alternate-name": "fp",
+                "gdb-encoding": "data-pointer",
+                "generic-name": "s0"
+            },
+            "x9": {
+                "alternate-name": "s1",
+                "generic-name": "s1"
+            },
+            "x10": {
+                "alternate-name": "a0",
+                "generic-name": "a0"
+            },
+            "x11": {
+                "alternate-name": "a1",
+                "generic-name": "a1"
+            },
+            "x12": {
+                "alternate-name": "a2",
+                "generic-name": "a2"
+            },
+            "x13": {
+                "alternate-name": "a3",
+                "generic-name": "a3"
+            },
+            "x14": {
+                "alternate-name": "a4",
+                "generic-name": "a4"
+            },
+            "x15": {
+                "alternate-name": "a5",
+                "generic-name": "a5"
+            },
+            "x16": {
+                "alternate-name": "a6",
+                "generic-name": "a6"
+            },
+            "x17": {
+                "alternate-name": "a7",
+                "generic-name": "a7"
+            },
+            "x18": {
+                "alternate-name": "s2",
+                "generic-name": "s2"
+            },
+            "x19": {
+                "alternate-name": "s3",
+                "generic-name": "s3"
+            },
+            "x20": {
+                "alternate-name": "s4",
+                "generic-name": "s4"
+            },
+            "x21": {
+                "alternate-name": "s5",
+                "generic-name": "s5"
+            },
+            "x22": {
+                "alternate-name": "s6",
+                "generic-name": "s6"
+            },
+            "x23": {
+                "alternate-name": "s7",
+                "generic-name": "s7"
+            },
+            "x24": {
+                "alternate-name": "s8",
+                "generic-name": "s8"
+            },
+            "x25": {
+                "alternate-name": "s9",
+                "generic-name": "s9"
+            },
+            "x26": {
+                "alternate-name": "s10",
+                "generic-name": "s10"
+            },
+            "x27": {
+                "alternate-name": "s11",
+                "generic-name": "s11"
+            },
+            "x28": {
+                "alternate-name": "t3",
+                "generic-name": "t3"
+            },
+            "x29": {
+                "alternate-name": "t4",
+                "generic-name": "t4"
+            },
+            "x30": {
+                "alternate-name": "t5",
+                "generic-name": "t5"
+            },
+            "x31": {
+                "alternate-name": "t6",
+                "generic-name": "t6"
+            },
+            "pc": {
+                "gdb-encoding": "code-pointer",
+                "generic-name": "pc"
+            }
+        },
+
+        "fpr": {
+            "*": {
+                "bit-size": 64,
+                "encoding": "ieee-double",
+                "format": "float",
+
+                "base-gdb-reg-number": 33
+            },
+
+            "f0": {
+                "alternate-name": "ft0",
+                "generic-name": "f0"
+            },
+            "f1": {
+                "alternate-name": "ft1",
+                "generic-name": "f1"
+            },
+            "f2": {
+                "alternate-name": "ft2",
+                "generic-name": "f2"
+            },
+            "f3": {
+                "alternate-name": "ft3",
+                "generic-name": "f3"
+            },
+            "f4": {
+                "alternate-name": "ft4",
+                "generic-name": "f4"
+            },
+            "f5": {
+                "alternate-name": "ft5",
+                "generic-name": "f5"
+            },
+            "f6": {
+                "alternate-name": "ft6",
+                "generic-name": "f6"
+            },
+            "f7": {
+                "alternate-name": "ft7",
+                "generic-name": "f7"
+            },
+            "f8": {
+                "alternate-name": "fs0",
+                "generic-name": "f8"
+            },
+            "f9": {
+                "alternate-name": "fs1",
+                "generic-name": "f9"
+            },
+            "f10": {
+                "alternate-name": "fa0",
+                "generic-name": "f10"
+            },
+            "f11": {
+                "alternate-name": "fa1",
+                "generic-name": "f11"
+            },
+            "f12": {
+                "alternate-name": "fa2",
+                "generic-name": "f12"
+            },
+            "f13": {
+                "alternate-name": "fa3",
+                "generic-name": "f13"
+            },
+            "f14": {
+                "alternate-name": "fa4",
+                "generic-name": "f14"
+            },
+            "f15": {
+                "alternate-name": "fa5",
+                "generic-name": "f15"
+            },
+            "f16": {
+                "alternate-name": "fa6",
+                "generic-name": "f16"
+            },
+            "f17": {
+                "alternate-name": "fa7",
+                "generic-name": "f17"
+            },
+            "f18": {
+                "alternate-name": "fs2",
+                "generic-name": "f18"
+            },
+            "f19": {
+                "alternate-name": "fs3",
+                "generic-name": "f19"
+            },
+            "f20": {
+                "alternate-name": "fs4",
+                "generic-name": "f20"
+            },
+            "f21": {
+                "alternate-name": "fs5",
+                "generic-name": "f21"
+            },
+            "f22": {
+                "alternate-name": "fs6",
+                "generic-name": "f22"
+            },
+            "f23": {
+                "alternate-name": "fs7",
+                "generic-name": "f23"
+            },
+            "f24": {
+                "alternate-name": "fs8",
+                "generic-name": "f24"
+            },
+            "f25": {
+                "alternate-name": "fs9",
+                "generic-name": "f25"
+            },
+            "f26": {
+                "alternate-name": "fs10",
+                "generic-name": "f26"
+            },
+            "f27": {
+                "alternate-name": "fs11",
+                "generic-name": "f27"
+            },
+            "f28": {
+                "alternate-name": "ft8",
+                "generic-name": "f28"
+            },
+            "f29": {
+                "alternate-name": "ft9",
+                "generic-name": "f29"
+            },
+            "f30": {
+                "alternate-name": "ft10",
+                "generic-name": "f30"
+            },
+            "f31": {
+                "alternate-name": "ft11",
+                "generic-name": "f31"
+            },
+
+            "fflags": {
+                "alternate-name": "csr1",
+                "bit-size": 32,
+                "encoding": "int",
+                "format": "hex",
+                "gdb-encoding": "int",
+                "gdb-reg-number": 66
+            },
+            "frm": {
+                "alternate-name": "csr2",
+                "bit-size": 32,
+                "encoding": "int",
+                "format": "hex",
+                "gdb-encoding": "int",
+                "gdb-reg-number": 67
+            },
+            "fcsr": {
+                "alternate-name": "csr3",
+                "bit-size": 32,
+                "encoding": "int",
+                "format": "hex",
+                "gdb-encoding": "int",
+                "gdb-reg-number": 68
+            }
+        }
+    },
+
+    "gdb-defs": {
+        "architecture": "riscv",
+        "features": [
+            {
+                "filename": "riscv/@WORDSIZE@bit-cpu.xml",
+                "identifier": "org.gnu.gdb.riscv.cpu",
+                "contents": [
+                    "register-sets:gpr"
+                ]
+            },
+            {
+                "filename": "riscv/64bit-fpu.xml",
+                "identifier": "org.gnu.gdb.riscv.fpu",
+                "contents": [
+                    "register-sets:fpr"
+                ]
+            }
+        ]
+    },
+    "lldb-defs": [
+        {
+            "description": "General Purpose Registers",
+            "sets": ["gpr"]
+        },
+        {
+            "description": "Floating Point Registers",
+            "sets": ["fpr"]
+        }
+    ]
+}

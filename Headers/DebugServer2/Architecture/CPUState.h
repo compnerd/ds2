@@ -24,6 +24,8 @@
 #elif defined(ARCH_X86_64)
 #include "DebugServer2/Architecture/X86/CPUState.h"
 #include "DebugServer2/Architecture/X86_64/CPUState.h"
+#elif defined(ARCH_RISCV)
+#include "DebugServer2/Architecture/RISCV/CPUState.h"
 #else
 #error "Architecture not supported."
 #endif
@@ -40,6 +42,8 @@ using ARM64::CPUState;
 using X86::CPUState;
 #elif defined(ARCH_X86_64)
 using X86_64::CPUState;
+#elif defined(ARCH_RISCV)
+using RISCV::CPUState;
 #else
 #error "Architecture not supported."
 #endif
