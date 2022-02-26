@@ -16,6 +16,8 @@
 
 #include <cerrno>
 #include <csignal>
+#include <cstring>
+
 #include <sys/mman.h>
 #include <sys/wait.h>
 #include <unistd.h>

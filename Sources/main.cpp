@@ -24,13 +24,16 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <fcntl.h>
+#include <cstring>
 #include <iomanip>
 #include <memory>
 #include <set>
 #include <string>
-#if !defined(OS_WIN32)
 #include <thread>
+
+#include <fcntl.h>
+
+#if !defined(OS_WIN32)
 #include <unistd.h>
 #endif
 

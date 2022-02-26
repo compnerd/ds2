@@ -17,6 +17,7 @@
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/Stringify.h"
 
+#include <cstring>
 #include <iomanip>
 #include <sstream>
 #include <filesystem>

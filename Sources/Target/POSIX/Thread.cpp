@@ -14,6 +14,8 @@
 #endif
 #include "DebugServer2/Target/Process.h"
 
+#include <cstring>
+
 #include <sys/wait.h>
 
 #define super ds2::Target::ThreadBase
