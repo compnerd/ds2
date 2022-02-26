@@ -55,6 +55,13 @@ enum CPUType {
   // skip 17
   kCPUTypePOWERPC = 18,
   kCPUTypePOWERPC64 = (kCPUTypePOWERPC | kCPUArchABI64),
+  // skip 19
+  // TODO(compnerd) these do not map consistently with the remainder of the CPU
+  // codes which mirror the Darwin constants.  These values here correspond to
+  // the PE/COFF specification.
+  kCPUTypeRISCV32 = 0x5032,
+  kCPUTypeRISCV64 = 0x5064,
+  kCPUTypeRISCV128 = 0x5128,
 };
 
 //
@@ -230,10 +237,29 @@ enum CPUSubType {
 
   kCPUSubTypeARM64_ALL = 0,
   kCPUSubTypeARM64_V8 = 1,
+
+  //
+  // kCPUTypeRISCV32
+  //
+
+  kCPUSubTypeRISCV32_ALL = 0,
+
+  //
+  // kCPUTypeRISCV64
+  //
+
+  kCPUSubTypeRISCV64_ALL = 0,
+
+  //
+  // kCPUTypeRISCV128
+  //
+
+  kCPSubTypeRISCV128_ALL = 0,
 };
 
 static inline bool CPUTypeIs64Bit(CPUType type) {
-  return ((type & kCPUArchABI64) != 0 || type == kCPUTypeALPHA);
+  return type & kCPUArchABI64 || type == kCPUTypeALPHA ||
+         type == kCPUTypeRISCV64;
 }
 
 char const *GetCPUTypeName(CPUType type);

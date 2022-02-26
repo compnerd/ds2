@@ -11,3 +11,8 @@
 # Output Directories
 /build/
 /html/
+
+# Generated Data
+/Definitions/RISCV32.json
+/Definitions/RISCV64.json
+/Definitions/RISCV128.json

@@ -76,6 +76,15 @@ typedef SSIZE_T ssize_t;
 #elif defined(__x86_64__) || defined(_M_AMD64)
 #define ARCH_X86_64
 #define BITSIZE_64
+#elif defined(__riscv)
+#define ARCH_RISCV
+#if __riscv_xlen == 32
+#define BITSIZE_32
+#elif __riscv_xlen == 64
+#define BITSIZE_64
+#elif __riscv_xlen == 128
+#define BITSIZE_128
+#endif
 #else
 #error "Architecture not supported."
 #endif
