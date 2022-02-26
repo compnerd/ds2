@@ -1,5 +1,13 @@
-.venv/
-.vscode/
-build/
-html/
+# git ls-files --others --exclude-from=.git/info/exclude
+# Lines that start with '#' are comments.
+
+# vim swap files
 *.sw?
+
+# GitHub CodeSpaces content
+/.venv/
+/.vscode/
+
+# Output Directories
+/build/
+/html/
