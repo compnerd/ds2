@@ -27,7 +27,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: windows-${{ matrix.processor }}-ds2
+          name: windows-${{ matrix.arch }}-ds2
           path: |
             build/Release/ds2.exe
 
@@ -68,7 +68,7 @@ jobs:
         with:
           name: mingw-${{ matrix.system }}-ds2
           path: |
-            build/ds2
+            build/Release/ds2.exe
 
   macos:
     runs-on: macos-latest
@@ -86,7 +86,7 @@ jobs:
         with:
           name: macOS-x86_64-ds2
           path: |
-            build/ds2.exe
+            build/ds2
 
   linux:
     runs-on: ubuntu-latest
