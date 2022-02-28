@@ -29,7 +29,7 @@ jobs:
         with:
           name: windows-${{ matrix.processor }}-ds2
           path: |
-            build/ds2.exe
+            build/Release/ds2.exe
 
 
   mingw:
@@ -86,7 +86,7 @@ jobs:
         with:
           name: macOS-x86_64-ds2
           path: |
-            build/ds2
+            build/ds2.exe
 
   linux:
     runs-on: ubuntu-latest
