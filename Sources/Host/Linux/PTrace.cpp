@@ -253,8 +253,12 @@ ErrorCode PTrace::prepareAddressForResume(ProcessThreadId const &ptid,
 
 ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                        int signal, Address const &address) {
-#if defined(ARCH_ARM)
-  DS2BUG("single stepping for ARM must be implemented in software");
+// PTRACE_SINGLESTEP requires hardware support.  This is checked in the kernel
+// and will result in an -EIO if the hardware does not support the feature.  We
+// assume that the target does not support the feature (the default setting,
+// c.f. include/linux/ptrace.h `arch_has_single_step`).
+#if !(defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_ARM64))
+  DS2BUG("single stepping must be implemented in software");
 #endif
 
   ErrorCode error = prepareAddressForResume(ptid, pinfo, address);
