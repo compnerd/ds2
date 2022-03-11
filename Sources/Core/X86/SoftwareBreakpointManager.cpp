@@ -65,7 +65,7 @@ ErrorCode SoftwareBreakpointManager::isValid(Address const &address,
   return super::isValid(address, size, mode);
 }
 
-size_t SoftwareBreakpointManager::chooseBreakpointSize() const {
+size_t SoftwareBreakpointManager::chooseBreakpointSize(Address const &) const {
   // On x86 and x86_64, software breakpoints will always be of size 1
   return 1;
 }

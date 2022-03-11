@@ -41,7 +41,7 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
   return kErrorUnsupported;
 }
 
-size_t HardwareBreakpointManager::chooseBreakpointSize() const {
+size_t HardwareBreakpointManager::chooseBreakpointSize(Address const &) const {
   DS2BUG(
       "Choosing a hardware breakpoint size on ARM is an unsupported operation");
 }

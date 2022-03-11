@@ -27,7 +27,7 @@ ErrorCode BreakpointManager::add(Address const &address, Lifetime lifetime,
   CHK(isValid(address, size, mode));
 
   if (size == 0) {
-    size = chooseBreakpointSize();
+    size = chooseBreakpointSize(address);
   }
 
   auto it = _sites.find(address);
