@@ -83,7 +83,7 @@ public:
 protected:
   virtual ErrorCode isValid(Address const &address, size_t size,
                             Mode mode) const;
-  virtual size_t chooseBreakpointSize() const = 0;
+  virtual size_t chooseBreakpointSize(Address const &address) const = 0;
 
 protected:
   friend Target::ProcessBase;

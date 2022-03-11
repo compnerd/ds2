@@ -236,7 +236,7 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
   return super::isValid(address, size, mode);
 }
 
-size_t HardwareBreakpointManager::chooseBreakpointSize() const {
+size_t HardwareBreakpointManager::chooseBreakpointSize(Address const &) const {
   DS2BUG(
       "Choosing a hardware breakpoint size on x86 is an unsupported operation");
 }

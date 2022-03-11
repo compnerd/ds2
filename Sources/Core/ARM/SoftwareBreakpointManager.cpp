@@ -177,7 +177,7 @@ ErrorCode SoftwareBreakpointManager::isValid(Address const &address,
   return super::isValid(address, size, mode);
 }
 
-size_t SoftwareBreakpointManager::chooseBreakpointSize() const {
+size_t SoftwareBreakpointManager::chooseBreakpointSize(Address const &) const {
   DS2BUG(
       "Choosing a software breakpoint size on ARM is an unsupported operation");
 }
