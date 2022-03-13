@@ -151,8 +151,8 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>getOpcode</b>
 <tr class="separator:a5594b18a8aaac7c081aeb7c436ec080d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1522614f435618198c75dfaa144d9884"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classds2_1_1_software_breakpoint_manager.html#a1522614f435618198c75dfaa144d9884">isValid</a> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t size, Mode mode) const override</td></tr>
 <tr class="separator:a1522614f435618198c75dfaa144d9884"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95ca43491068f4246b6e3d5434671da7"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classds2_1_1_software_breakpoint_manager.html#a95ca43491068f4246b6e3d5434671da7">chooseBreakpointSize</a> () const override</td></tr>
-<tr class="separator:a95ca43491068f4246b6e3d5434671da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c85e25d9c37976375d3744dc42517dc"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classds2_1_1_software_breakpoint_manager.html#a8c85e25d9c37976375d3744dc42517dc">chooseBreakpointSize</a> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address) const override</td></tr>
+<tr class="separator:a8c85e25d9c37976375d3744dc42517dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa947949542ce171de366c5e235feae4e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classds2_1_1_software_breakpoint_manager.html#aa947949542ce171de366c5e235feae4e">enabled</a> (Target::Thread *thread=nullptr) const override</td></tr>
 <tr class="separator:aa947949542ce171de366c5e235feae4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classds2_1_1_breakpoint_manager"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classds2_1_1_breakpoint_manager')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classds2_1_1_breakpoint_manager.html">ds2::BreakpointManager</a></td></tr>
@@ -162,9 +162,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>getOpcode</b>
 <tr class="memitem:ab51add08926990573d25c364b293dbf2 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a id="ab51add08926990573d25c364b293dbf2" name="ab51add08926990573d25c364b293dbf2"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>isValid</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t size, Mode mode) const</td></tr>
 <tr class="separator:ab51add08926990573d25c364b293dbf2 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2e7d704be06e33cc22952b167d054b0 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a id="ab2e7d704be06e33cc22952b167d054b0" name="ab2e7d704be06e33cc22952b167d054b0"></a>
-virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>chooseBreakpointSize</b> () const =0</td></tr>
-<tr class="separator:ab2e7d704be06e33cc22952b167d054b0 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43ff8b0ecea72c7e2b159df3710439e7 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a id="a43ff8b0ecea72c7e2b159df3710439e7" name="a43ff8b0ecea72c7e2b159df3710439e7"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>chooseBreakpointSize</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address) const =0</td></tr>
+<tr class="separator:a43ff8b0ecea72c7e2b159df3710439e7 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a id="ab04108b1e7e01ff84a5306c2924d318c" name="ab04108b1e7e01ff84a5306c2924d318c"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site)</td></tr>
 <tr class="separator:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -204,8 +204,8 @@ SiteMap&#160;</td><td class="memItemRight" valign="bottom"><b>_sites</b></td></t
 <tr class="separator:aab2a6b16b9880150e394a772d6077cd6 inherit pro_attribs_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a95ca43491068f4246b6e3d5434671da7" name="a95ca43491068f4246b6e3d5434671da7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95ca43491068f4246b6e3d5434671da7">&#9670;&nbsp;</a></span>chooseBreakpointSize()</h2>
+<a id="a8c85e25d9c37976375d3744dc42517dc" name="a8c85e25d9c37976375d3744dc42517dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c85e25d9c37976375d3744dc42517dc">&#9670;&nbsp;</a></span>chooseBreakpointSize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -216,7 +216,8 @@ SiteMap&#160;</td><td class="memItemRight" valign="bottom"><b>_sites</b></td></t
         <tr>
           <td class="memname">size_t ds2::SoftwareBreakpointManager::chooseBreakpointSize </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classds2_1_1_address.html">Address</a> const &amp;&#160;</td>
+          <td class="paramname"><em>address</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>

@@ -162,8 +162,8 @@ virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>disableL
 <tr class="separator:a5b45fe1db4d99cb67e8e2acc506fdc1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd80de928108afbdc4b0f0edf5480b2e"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classds2_1_1_hardware_breakpoint_manager.html#abd80de928108afbdc4b0f0edf5480b2e">isValid</a> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t size, Mode mode) const override</td></tr>
 <tr class="separator:abd80de928108afbdc4b0f0edf5480b2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73e8b3f402e946526af6f9404cc4cb0e"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classds2_1_1_hardware_breakpoint_manager.html#a73e8b3f402e946526af6f9404cc4cb0e">chooseBreakpointSize</a> () const override</td></tr>
-<tr class="separator:a73e8b3f402e946526af6f9404cc4cb0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a114d173dee252e848b9c70519bd179ef"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classds2_1_1_hardware_breakpoint_manager.html#a114d173dee252e848b9c70519bd179ef">chooseBreakpointSize</a> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address) const override</td></tr>
+<tr class="separator:a114d173dee252e848b9c70519bd179ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72df3863c6e111fa16cb284555aa6dae"><td class="memItemLeft" align="right" valign="top"><a id="a72df3863c6e111fa16cb284555aa6dae" name="a72df3863c6e111fa16cb284555aa6dae"></a>
 virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getAvailableLocation</b> ()</td></tr>
 <tr class="separator:a72df3863c6e111fa16cb284555aa6dae"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -183,9 +183,9 @@ ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>writeDebugRegist
 <tr class="memitem:ab51add08926990573d25c364b293dbf2 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a id="ab51add08926990573d25c364b293dbf2" name="ab51add08926990573d25c364b293dbf2"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>isValid</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t size, Mode mode) const</td></tr>
 <tr class="separator:ab51add08926990573d25c364b293dbf2 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2e7d704be06e33cc22952b167d054b0 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a id="ab2e7d704be06e33cc22952b167d054b0" name="ab2e7d704be06e33cc22952b167d054b0"></a>
-virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>chooseBreakpointSize</b> () const =0</td></tr>
-<tr class="separator:ab2e7d704be06e33cc22952b167d054b0 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43ff8b0ecea72c7e2b159df3710439e7 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a id="a43ff8b0ecea72c7e2b159df3710439e7" name="a43ff8b0ecea72c7e2b159df3710439e7"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>chooseBreakpointSize</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address) const =0</td></tr>
+<tr class="separator:a43ff8b0ecea72c7e2b159df3710439e7 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a id="ab04108b1e7e01ff84a5306c2924d318c" name="ab04108b1e7e01ff84a5306c2924d318c"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site)</td></tr>
 <tr class="separator:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -284,8 +284,8 @@ typedef std::map&lt; uint64_t, <a class="el" href="structds2_1_1_breakpoint_mana
 
 </div>
 </div>
-<a id="a73e8b3f402e946526af6f9404cc4cb0e" name="a73e8b3f402e946526af6f9404cc4cb0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73e8b3f402e946526af6f9404cc4cb0e">&#9670;&nbsp;</a></span>chooseBreakpointSize()</h2>
+<a id="a114d173dee252e848b9c70519bd179ef" name="a114d173dee252e848b9c70519bd179ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a114d173dee252e848b9c70519bd179ef">&#9670;&nbsp;</a></span>chooseBreakpointSize()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -296,7 +296,8 @@ typedef std::map&lt; uint64_t, <a class="el" href="structds2_1_1_breakpoint_mana
         <tr>
           <td class="memname">size_t ds2::HardwareBreakpointManager::chooseBreakpointSize </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classds2_1_1_address.html">Address</a> const &amp;&#160;</td>
+          <td class="paramname"><em>address</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
