@@ -10,6 +10,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace ds2 {
 
 static constexpr uint16_t Swap16(uint16_t x) { return (x >> 8) | (x << 8); }
