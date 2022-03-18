@@ -19,6 +19,11 @@ set(CMAKE_CXX_EXTENSIONS NO)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+if(CMAKE_SYSTEM_NAME MATCHES Windows)
+  # NOTE(compnerd) disable exceptions in STL
+  add_compile_definitions(_HAS_EXCEPTIONS=0)
+endif()
+
 set(OS_NAME ${CMAKE_SYSTEM_NAME})
 
 string(STRIP "${OS_NAME}" OS_NAME)
