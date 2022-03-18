@@ -12,6 +12,7 @@
 
 #include "DebugServer2/Utils/CompilerSupport.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Types.h"
 
 #include <cstdint>
 #include <cstdio>

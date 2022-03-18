@@ -8,6 +8,8 @@
 // PATENTS file in the same directory.
 //
 
+#include <type_traits>
+
 template <typename Enum> struct EnableBitMaskOperators {
   static const bool enable = false;
 };
