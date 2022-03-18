@@ -190,7 +190,7 @@ int HardwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
 
   int regIdx = -1;
   for (size_t i = 0; i < maxWatchpoints(); ++i) {
-    if (debugRegs[kStatusRegIdx] & (1 << i)) {
+    if (debugRegs[kStatusRegIdx] & (1ull << i)) {
       DS2ASSERT(_locations[i] != 0);
       site = _sites.find(_locations[i])->second;
       regIdx = i;
