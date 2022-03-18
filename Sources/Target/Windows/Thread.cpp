@@ -177,7 +177,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     default:
       DS2LOG(Warning, "unsupported exception code: %lx",
              de.u.Exception.ExceptionRecord.ExceptionCode);
-      [[gnu::fallthrough]];
+      [[fallthrough]];
 
     case STATUS_INVALID_DISPOSITION:
     case STATUS_NONCONTINUABLE_EXCEPTION:
