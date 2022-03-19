@@ -14,7 +14,7 @@ The build instructions include instructions assuming that the [ninja-build](http
 
 **Generic**
   - CMake (https://cmake.org)
-  - c++ (c++11 or newer)
+  - c++ (c++17 or newer)
 
 **Windows Only**
   - Visual Studio 2015 or newer
