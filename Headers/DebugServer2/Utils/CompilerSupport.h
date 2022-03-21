@@ -27,18 +27,6 @@
 #define DS2_ATTRIBUTE_PRINTF(FORMAT, START)
 #endif
 
-#if defined(COMPILER_GCC)
-#if __GNUC__ > 6
-#define DS2_FALLTHROUGH [[fallthrough]]
-#else
-#define DS2_FALLTHROUGH
-#endif
-#elif defined(COMPILER_CLANG)
-#define DS2_FALLTHROUGH [[clang::fallthrough]]
-#else
-#define DS2_FALLTHROUGH
-#endif
-
 #if defined(COMPILER_MSVC)
 #define DS2_ATTRIBUTE_PACKED "DS2_ATTRIBUTE_PACKED not implemented on MSVC"
 #elif defined(COMPILER_GCC) || defined(COMPILER_CLANG)
