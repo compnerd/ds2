@@ -117,55 +117,57 @@ $(function() {
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#define PRI_PTR &quot;#010&quot;</span> PRIxPTR</div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">#elif defined(BITSIZE_64)</span></div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">#define PRI_PTR &quot;#018&quot;</span> PRIxPTR</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">#define PRI_PTR_CAST(VAL) ((uintptr_t)(VAL))</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">#elif defined(BITSIZE_128)</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="preprocessor">#define PRI_PTR &quot;#034&quot;</span> PRIxPTR</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="preprocessor">#if defined(COMPILER_MSVC)</span></div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="preprocessor">#define FUNCTION_NAME __FUNCTION__</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">#elif defined(COMPILER_CLANG) || defined(COMPILER_GCC)</span></div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor">#define FUNCTION_NAME __PRETTY_FUNCTION__</span></div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#error &quot;Compiler not supported.&quot;</span></div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">#define DS2LOG(LVL, ...)                                                       \</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="preprocessor">  ds2::Log(ds2::kLogLevel##LVL, nullptr, FUNCTION_NAME, __VA_ARGS__)</span></div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="preprocessor">#if !defined(NDEBUG)</span></div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="preprocessor">#define DS2ASSERT(COND)                                                        \</span></div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">  do {                                                                         \</span></div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="preprocessor">    if (!(COND)) {                                                             \</span></div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">      DS2LOG(Fatal, &quot;assertion `%s&#39; failed at %s:%d&quot;</span>, #COND, __FILE__,         \</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>             __LINE__);                                                        \</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>      DS2_UNREACHABLE();                                                       \</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    }                                                                          \</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>  } while (0)</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">#define DS2ASSERT(COND)                                                        \</span></div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="preprocessor">  do {                                                                         \</span></div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="preprocessor">    if (!(COND))                                                               \</span></div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="preprocessor">      DS2_UNREACHABLE();                                                       \</span></div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="preprocessor">  } while (0)</span></div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="preprocessor">#if defined(COMPILER_CLANG) || defined(COMPILER_GCC)</span></div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="preprocessor">#define DS2BUG(MESSAGE, ...)                                                   \</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="preprocessor">  do {                                                                         \</span></div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="preprocessor">    DS2LOG(Fatal, &quot;bug at %s:%d: &quot;</span> MESSAGE, __FILE__, __LINE__,                \</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>           ##__VA_ARGS__);                                                     \</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    DS2_UNREACHABLE();                                                         \</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>  } while (0)</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span><span class="preprocessor">#elif defined(COMPILER_MSVC)</span></div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="preprocessor">#define DS2BUG(MESSAGE, ...)                                                   \</span></div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="preprocessor">  do {                                                                         \</span></div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="preprocessor">    DS2LOG(Fatal, &quot;bug at %s:%d: &quot;</span> MESSAGE, __FILE__, __LINE__, __VA_ARGS__);  \</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    DS2_UNREACHABLE();                                                         \</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>  } while (0)</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span><span class="preprocessor">#error &quot;Compiler not supported.&quot;</span></div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>} <span class="comment">// namespace ds2</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="preprocessor">#define PRI_PTR_CAST(VAL) ((uintptr_t)(VAL))</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">#if defined(COMPILER_MSVC)</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor">#define FUNCTION_NAME __FUNCTION__</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="preprocessor">#elif defined(COMPILER_CLANG) || defined(COMPILER_GCC)</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#define FUNCTION_NAME __PRETTY_FUNCTION__</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="preprocessor">#error &quot;Compiler not supported.&quot;</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="preprocessor">#define DS2LOG(LVL, ...)                                                       \</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="preprocessor">  ds2::Log(ds2::kLogLevel##LVL, nullptr, FUNCTION_NAME, __VA_ARGS__)</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">#if !defined(NDEBUG)</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="preprocessor">#define DS2ASSERT(COND)                                                        \</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">  do {                                                                         \</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="preprocessor">    if (!(COND)) {                                                             \</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="preprocessor">      DS2LOG(Fatal, &quot;assertion `%s&#39; failed at %s:%d&quot;</span>, #COND, __FILE__,         \</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>             __LINE__);                                                        \</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>      DS2_UNREACHABLE();                                                       \</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    }                                                                          \</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>  } while (0)</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="preprocessor">#define DS2ASSERT(COND)                                                        \</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="preprocessor">  do {                                                                         \</span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="preprocessor">    if (!(COND))                                                               \</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">      DS2_UNREACHABLE();                                                       \</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="preprocessor">  } while (0)</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="preprocessor">#if defined(COMPILER_CLANG) || defined(COMPILER_GCC)</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="preprocessor">#define DS2BUG(MESSAGE, ...)                                                   \</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="preprocessor">  do {                                                                         \</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span><span class="preprocessor">    DS2LOG(Fatal, &quot;bug at %s:%d: &quot;</span> MESSAGE, __FILE__, __LINE__,                \</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>           ##__VA_ARGS__);                                                     \</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    DS2_UNREACHABLE();                                                         \</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>  } while (0)</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="preprocessor">#elif defined(COMPILER_MSVC)</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="preprocessor">#define DS2BUG(MESSAGE, ...)                                                   \</span></div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="preprocessor">  do {                                                                         \</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="preprocessor">    DS2LOG(Fatal, &quot;bug at %s:%d: &quot;</span> MESSAGE, __FILE__, __LINE__, __VA_ARGS__);  \</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    DS2_UNREACHABLE();                                                         \</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>  } while (0)</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span><span class="preprocessor">#else</span></div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span><span class="preprocessor">#error &quot;Compiler not supported.&quot;</span></div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>} <span class="comment">// namespace ds2</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
