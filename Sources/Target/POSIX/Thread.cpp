@@ -76,7 +76,7 @@ ErrorCode Thread::suspend() {
   return kSuccess;
 }
 
-#if defined(ARCH_ARM)
+#if !(defined(ARCH_X86) || defined(ARCH_X86_64) || defined(ARCH_ARM64))
 ErrorCode Thread::step(int signal, Address const &address) {
   if (_state == kInvalid || _state == kRunning) {
     return kErrorInvalidArgument;
