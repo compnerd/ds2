@@ -27,8 +27,8 @@ inline void mmap(size_t size, int protection, ByteVector &code) {
   DS2BUG("do not know how to mmap on this bitness")
 #elif __riscv_xlen == 64
   static_assert(sizeof(size) == 8, "size_t should be 8-bytes on RISCV64");
-  static_assert(std::log2(MAP_ANON | MAP_PRIVATE) <= 20, "20-bit immediate");
-  static_assert(std::log2(__NR_mmap) <= 20, "20-bit immediate");
+  DS2ASSERT(std::log2(MAP_ANON | MAP_PRIVATE) <= 20);
+  DS2ASSERT(std::log2(__NR_mmap) <= 20);
   DS2ASSERT(std::log2(protection) <= 20);
 
   for (uint32_t instruction: {
@@ -57,7 +57,7 @@ inline void munmap(uintptr_t address, size_t size, ByteVector &code) {
   DS2BUG("do not know how to munmap on this bitness")
 #elif __riscv_xlen == 64
   static_assert(sizeof(size) == 8, "size_t should be 8-bytes on RISCV64");
-  static_assert(std::log2(__NR_munmap) <= 20, "20-bit immediate");
+  DS2ASSERT(std::log2(__NR_munmap) <= 20);
 
   for (uint32_t instruction: {
            static_cast<uint32_t>(0x00000517),                                  // ld a0, .Laddress
