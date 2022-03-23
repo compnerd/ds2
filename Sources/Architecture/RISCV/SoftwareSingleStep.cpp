@@ -11,7 +11,7 @@ namespace {
 template <size_t Width>
 uintptr_t sext(uintptr_t value) {
   return ((value & (1 << Width)) ? ~((value & (1 << Width)) - 1) : 0) |
-         (value & ((1 << Width + 1) - 1));
+         (value & ((1 << (Width + 1)) - 1));
 }
 }
 
