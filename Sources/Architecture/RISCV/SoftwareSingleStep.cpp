@@ -142,6 +142,7 @@ ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
         break;
       }
       }
+      break;
     case 0x02:
       switch ((instruction & 0xf000) >> 12) {
       default: break;
