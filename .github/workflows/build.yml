@@ -68,7 +68,7 @@ jobs:
         with:
           name: mingw-${{ matrix.system }}-ds2
           path: |
-            ${{ github.workspace }}/BinaryCache/ds2/Release/ds2.exe
+            ${{ github.workspace }}/BinaryCache/ds2/ds2.exe
 
   macos:
     runs-on: macos-latest
