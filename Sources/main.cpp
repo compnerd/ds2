@@ -33,7 +33,9 @@
 #include <thread>
 
 #include <fcntl.h>
-
+#if HAVE_TERMIOS_H
+#include <termios.h>
+#endif
 #if !defined(OS_WIN32)
 #include <unistd.h>
 #endif
@@ -297,6 +299,7 @@ static int GdbserverMain(int argc, char **argv) {
 
   enum class channel_type {
     file_descriptor,
+    character_device,
     named_pipe,
     network,
   };
@@ -322,6 +325,10 @@ static int GdbserverMain(int argc, char **argv) {
     connection_type = channel_type::named_pipe;
 
   const std::string &address = opts.getPositional("[host]:port");
+#if defined(OS_POSIX)
+  if (!address.empty() && address.find_first_of(":") == std::string::npos)
+    connection_type = channel_type::character_device;
+#endif
 
   switch (connection_type) {
   case channel_type::file_descriptor:
@@ -412,6 +419,35 @@ static int GdbserverMain(int argc, char **argv) {
     }
     break;
 
+  case channel_type::character_device:
+#if defined(OS_POSIX)
+    if (std::filesystem::exists(address))
+      if (std::filesystem::is_character_file(address) ||
+          std::filesystem::is_fifo(address))
+        fd = ::open(address.c_str(), O_RDWR);
+    if (fd < 0) {
+      DS2LOG(Error, "unable to open %s: %s", address.c_str(), strerror(errno));
+      ::exit(EXIT_FAILURE);
+    }
+
+#if HAVE_TERMIOS_H
+    {
+      struct termios termios;
+      (void)tcgetattr(fd, &termios);
+      termios.c_iflag = 0;
+      termios.c_oflag = 0;
+      termios.c_cflag = (termios.c_cflag & ~(CSIZE | PARENB)) | CLOCAL | CS8;
+      termios.c_lflag = 0;
+      termios.c_cc[VMIN] = 1;
+      termios.c_cc[VTIME] = 0;
+      (void)tcsetattr(fd, TCSANOW, &termios);
+    }
+#endif
+
+    [[fallthrough]];
+#else
+    DS2BUG("connecting with chardev is not supported on this platform");
+#endif
   case channel_type::file_descriptor:
 #if defined(OS_POSIX)
     socket = CreateFDSocket(fd);
