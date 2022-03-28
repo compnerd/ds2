@@ -34,6 +34,7 @@ endif ()
 if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
   include(CheckIncludeFile)
   CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
+  CHECK_INCLUDE_FILE(termios.h HAVE_TERMIOS_H)
 
   include(CheckSymbolExists)
   set(CMAKE_REQUIRED_DEFINITIONS -D_XOPEN_SOURCE=600;-D_GNU_SOURCE)
@@ -355,7 +356,7 @@ if ("${OS_NAME}" MATCHES "Windows")
 endif ()
 
 if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
-  foreach (CHECK SYS_PERSONALITY_H GETTID POSIX_OPENPT TGKILL
+  foreach (CHECK SYS_PERSONALITY_H TERMIOS_H GETTID POSIX_OPENPT TGKILL
            PROCESS_VM_READV PROCESS_VM_WRITEV
            ENUM_PTRACE_REQUEST)
     if (HAVE_${CHECK})
