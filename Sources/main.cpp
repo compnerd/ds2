@@ -25,6 +25,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
 #include <iomanip>
 #include <memory>
 #include <set>
@@ -293,15 +294,51 @@ static int GdbserverMain(int argc, char **argv) {
   opts.addPositional("[host]:port", "the [host]:port to connect to");
 
   int idx = opts.parse(argc, argv);
+
+  enum class channel_type {
+    file_descriptor,
+    named_pipe,
+    network,
+  };
+  channel_type connection_type = channel_type::network;
+  int fd = -1;
+
 #if defined(OS_POSIX)
-  int fd =
-      opts.getString("fd").empty() ? -1 : atoi(opts.getString("fd").c_str());
-  if (fd >= 0) {
-    CloseFD(fd);
-  } else {
-    CloseFD();
+  if (const std::string &arg = opts.getString("fd"); !arg.empty()) {
+      connection_type = channel_type::file_descriptor;
+    fd = atoi(arg.c_str());
+    if (fd < 0) {
+      DS2LOG(Error, "invalid file descriptor %s", arg.c_str());
+      connection_type = channel_type::network;
+    }
   }
 #endif
+
+  // This is used for llgs testing. We determine a port number dynamically and
+  // write it back to the FIFO passed as argument for the test harness to use
+  // it.
+  const std::string &pipe = opts.getString("named-pipe");
+  if (!pipe.empty())
+    connection_type = channel_type::named_pipe;
+
+  const std::string &address = opts.getPositional("[host]:port");
+
+  switch (connection_type) {
+  case channel_type::file_descriptor:
+#if defined(OS_POSIX)
+    CloseFD(fd);
+    break;
+#else
+    (void)fd;
+    DS2BUG("connecting with file descriptor is not supported on this platform");
+#endif
+  default:
+#if defined(OS_POSIX)
+    CloseFD();
+#endif
+    break;
+  }
+
   HandleSharedOptions(opts);
 
   // Target debug program and arguments.
@@ -345,50 +382,44 @@ static int GdbserverMain(int argc, char **argv) {
     opts.usageDie("either a program or target PID is required in gdb mode");
   }
 
-  // This is used for llgs testing. We determine a port number dynamically and
-  // write it back to the FIFO passed as argument for the test harness to use
-  // it.
-  std::string namedPipePath = opts.getString("named-pipe");
-
   bool reverse = opts.getBool("reverse-connect");
 
   std::unique_ptr<Socket> socket;
 
+  switch (connection_type) {
+  case channel_type::named_pipe:
 #if defined(OS_POSIX)
-  if (fd >= 0) {
-    socket = CreateFDSocket(fd);
-  } else {
-#endif
-    if (opts.getPositional("[host]:port").empty()) {
-      // If we have a named pipe, set the port to 0 to indicate that we should
-      // dynamically allocate it and write it back to the FIFO.
-      socket = CreateTCPSocket(
-          gDefaultHost, namedPipePath.empty() ? gDefaultPort : "0", reverse);
-    } else {
-      socket = CreateSocket(opts.getPositional("[host]:port"), reverse);
-    }
-#if defined(OS_POSIX)
-  }
-#endif
-
-  if (!namedPipePath.empty()) {
-#if defined(OS_POSIX)
-    if (fd >= 0) {
+    if (fd >= 0)
       DS2LOG(Error, "named pipe should not be used with fd option");
-    }
 #endif
-
-    std::string realPort = socket->port();
-    FILE *namedPipe = fopen(namedPipePath.c_str(), "a");
-    if (namedPipe == nullptr) {
-      DS2LOG(Error, "unable to open %s: %s", namedPipePath.c_str(),
-             strerror(errno));
-    } else {
-      // Write the null terminator to the file. This follows the llgs
-      // behavior.
-      fwrite(realPort.c_str(), 1, realPort.length() + 1, namedPipe);
-      fclose(namedPipe);
+    [[fallthrough]];
+  case channel_type::network:
+    // If we have a named pipe, set the port to 0 to indicate that we should
+    // dynamically allocate it and write it back to the FIFO.
+    socket = address.empty()
+                 ? CreateTCPSocket(gDefaultHost,
+                                   pipe.empty() ? gDefaultPort : "0", reverse)
+                 : CreateSocket(address, reverse);
+    if (connection_type == channel_type::named_pipe) {
+      std::string port = socket->port();
+      FILE *named_pipe = ::fopen(pipe.c_str(), "a");
+      if (named_pipe) {
+        ::fwrite(port.c_str(), 1, port.length() + 1, named_pipe);
+        ::fclose(named_pipe);
+      } else {
+        DS2LOG(Error, "unable to open %s: %s", pipe.c_str(), strerror(errno));
+      }
     }
+    break;
+
+  case channel_type::file_descriptor:
+#if defined(OS_POSIX)
+    socket = CreateFDSocket(fd);
+#else
+    (void)fd;
+    DS2BUG("connecting with file descriptor is not supported on this platform");
+#endif
+    break;
   }
 
   if (gDaemonize) {
