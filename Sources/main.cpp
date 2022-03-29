@@ -326,7 +326,7 @@ static int GdbserverMain(int argc, char **argv) {
 
   const std::string &address = opts.getPositional("[host]:port");
 #if defined(OS_POSIX)
-  if (!address.empty() && address.find_first_of(":") == std::string::npos)
+  if (!address.empty() && address.find_first_of(':') == std::string::npos)
     connection_type = channel_type::character_device;
 #endif
 
