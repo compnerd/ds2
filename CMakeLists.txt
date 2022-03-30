@@ -275,6 +275,7 @@ else()
   # Assumes that any non-Windows platform is POSIX.
   target_sources(ds2 PRIVATE
     Sources/Host/POSIX/File.cpp
+    Sources/Host/POSIX/HandleChannel.cpp
     Sources/Host/POSIX/Platform.cpp
     Sources/Host/POSIX/ProcessSpawner.cpp
     Sources/Host/POSIX/PTrace.cpp
