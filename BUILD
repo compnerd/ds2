@@ -252,6 +252,7 @@ filegroup(
             "Headers/DebugServer2/Target/Windows/Thread.h",
         ],
         ("@platforms//os:android", "@platforms//os:freebsd", "@platforms//os:linux", "@platforms//os:macos"): [
+            "Headers/DebugServer2/Host/POSIX/HandleChannel.h",
             "Headers/DebugServer2/Host/POSIX/PTrace.h",
             "Headers/DebugServer2/Host/POSIX/ProcessSpawner.h",
             "Headers/DebugServer2/Target/POSIX/Process.h",
@@ -402,6 +403,7 @@ filegroup(
         ],
         ("@platforms//os:android", "@platforms//os:freebsd", "@platforms//os:linux", "@platforms//os:macos"): [
             "Sources/Host/POSIX/File.cpp",
+            "Sources/Host/POSIX/HandleChannel.cpp",
             "Sources/Host/POSIX/Platform.cpp",
             "Sources/Host/POSIX/ProcessSpawner.cpp",
             "Sources/Host/POSIX/PTrace.cpp",

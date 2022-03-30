@@ -17,6 +17,9 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/QueueChannel.h"
 #include "DebugServer2/Host/Socket.h"
+#if defined(OS_POSIX)
+#include "DebugServer2/Host/POSIX/HandleChannel.h"
+#endif
 #include "DebugServer2/Utils/Daemon.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/OptParse.h"
@@ -197,10 +200,10 @@ static std::unique_ptr<Socket> CreateSocket(std::string const &arg,
   DS2_UNREACHABLE();
 }
 
-static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
+static int RunDebugServer(ds2::Host::Channel *channel, SessionDelegate *impl) {
   Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
                              : ds2::GDBRemote::kCompatibilityModeLLDB);
-  QueueChannel qchannel(socket);
+  QueueChannel qchannel(channel);
   SessionThread thread(&qchannel, &session);
 
   session.setDelegate(impl);
@@ -392,6 +395,9 @@ static int GdbserverMain(int argc, char **argv) {
   bool reverse = opts.getBool("reverse-connect");
 
   std::unique_ptr<Socket> socket;
+#if defined(OS_POSIX)
+  std::unique_ptr<ds2::Host::HandleChannel> device;
+#endif
 
   switch (connection_type) {
   case channel_type::named_pipe:
@@ -419,6 +425,15 @@ static int GdbserverMain(int argc, char **argv) {
     }
     break;
 
+  case channel_type::file_descriptor:
+#if defined(OS_POSIX)
+    socket = CreateFDSocket(fd);
+#else
+    (void)fd;
+    DS2BUG("connecting with file descriptor is not supported on this platform");
+#endif
+    break;
+
   case channel_type::character_device:
 #if defined(OS_POSIX)
     if (std::filesystem::exists(address))
@@ -444,22 +459,31 @@ static int GdbserverMain(int argc, char **argv) {
     }
 #endif
 
-    [[fallthrough]];
+    device = std::make_unique<ds2::Host::HandleChannel>(fd);
+    break;
 #else
     DS2BUG("connecting with chardev is not supported on this platform");
 #endif
-  case channel_type::file_descriptor:
-#if defined(OS_POSIX)
-    socket = CreateFDSocket(fd);
-#else
-    (void)fd;
-    DS2BUG("connecting with file descriptor is not supported on this platform");
-#endif
-    break;
   }
 
   if (gDaemonize) {
     ds2::Utils::Daemonize();
+  }
+
+  ds2::Host::Channel *channel;
+  switch (connection_type) {
+  case channel_type::file_descriptor:
+  case channel_type::named_pipe:
+  case channel_type::network:
+    channel = (fd >= 0 || reverse) ? socket.get() : socket->accept().get();
+    break;
+  case channel_type::character_device:
+#if defined(OS_POSIX)
+    channel = device.get();
+#else
+    DS2BUG("connecting with chardev is not supported on this platform");
+#endif
+    break;
   }
 
   std::unique_ptr<DebugSessionImpl> impl;
@@ -471,13 +495,7 @@ static int GdbserverMain(int argc, char **argv) {
   else
     impl = ds2::make_unique<DebugSessionImpl>();
 
-#if defined(OS_POSIX)
-  return RunDebugServer(
-      (fd >= 0 || reverse) ? socket.get() : socket->accept().get(), impl.get());
-#else
-  return RunDebugServer(reverse ? socket.get() : socket->accept().get(),
-                        impl.get());
-#endif
+  return RunDebugServer(channel, impl.get());
 }
 
 #if !defined(OS_WIN32)
