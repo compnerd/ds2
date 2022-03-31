@@ -1,6 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classds2_1_1_host_1_1_channel.html" title=" " alt="" coords="27,5,158,32"/>
-<area shape="rect" id="node2" href="$classds2_1_1_host_1_1_queue_channel.html" title=" " alt="" coords="228,5,396,32"/>
-<area shape="rect" id="node3" href="$classds2_1_1_host_1_1_socket.html" title=" " alt="" coords="250,60,374,87"/>
-<area shape="rect" id="node4" href="$structds2_1_1make__unique__enabler.html" title=" " alt="" coords="5,57,180,98"/>
+<area shape="rect" id="node1" href="$classds2_1_1_host_1_1_channel.html" title=" " alt="" coords="27,53,158,80"/>
+<area shape="rect" id="node2" href="$classds2_1_1_host_1_1_handle_channel.html" title=" " alt="" coords="228,5,399,32"/>
+<area shape="rect" id="node3" href="$classds2_1_1_host_1_1_queue_channel.html" title=" " alt="" coords="229,56,397,83"/>
+<area shape="rect" id="node4" href="$classds2_1_1_host_1_1_socket.html" title=" " alt="" coords="251,108,375,135"/>
+<area shape="rect" id="node5" href="$structds2_1_1make__unique__enabler.html" title=" " alt="" coords="5,105,180,146"/>
 </map>
