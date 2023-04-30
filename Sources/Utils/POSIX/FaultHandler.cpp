@@ -31,14 +31,18 @@ private:
   }
 
   void installCatcher() {
-    static char alt[SIGSTKSZ];
+    long sz = sysconf(_SC_SIGSTKSZ);
+    if (sz == -1)
+      abort("unable to query signal stack size");
+
+    static std::unique_ptr<char*> alt = std::make_unique<char*>(sz);
     struct sigaction sa;
     stack_t ss;
 
     // Allocate our own signal stack so that fault handlers work even
     // when the stack pointer is busted.
-    ss.ss_sp = alt;
-    ss.ss_size = sizeof(alt);
+    ss.ss_sp = alt.get();
+    ss.ss_size = sz;
     ss.ss_flags = 0;
 
     sa.sa_sigaction = FaultHandler::signalHandler;
