@@ -54,6 +54,8 @@ target_include_directories(jsobjects
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
     (CMAKE_CXX_COMPILER_ID MATCHES "Clang" 
     AND NOT CMAKE_CXX_SIMULATE_ID MATCHES "MSVC"))
+  set_source_files_properties(${JSObjects_BINARY_DIR}/parser.c PROPERTIES
+      COMPILE_FLAGS -Wno-error=unused-but-set-variable)
   target_compile_options(jsobjects PRIVATE -Wall -Wextra -Werror)
   target_compile_options(jsobjects PRIVATE -Wno-unused-parameter
                                            -Wno-unused-function
