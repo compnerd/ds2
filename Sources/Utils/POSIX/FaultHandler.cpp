@@ -33,9 +33,9 @@ private:
   void installCatcher() {
     long sz = sysconf(_SC_SIGSTKSZ);
     if (sz == -1)
-      abort("unable to query signal stack size");
+      abort();
 
-    static std::unique_ptr<char[]> alt = std::make_unique<chari[]>(sz);
+    static std::unique_ptr<char[]> alt = std::make_unique<char[]>(sz);
     struct sigaction sa;
     stack_t ss;
 
