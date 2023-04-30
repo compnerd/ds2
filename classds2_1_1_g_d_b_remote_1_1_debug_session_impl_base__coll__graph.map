@@ -1,11 +1,11 @@
 <map id="ds2::GDBRemote::DebugSessionImplBase" name="ds2::GDBRemote::DebugSessionImplBase">
-<area shape="rect" id="node1" title=" " alt="" coords="1168,80,1380,121"/>
-<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html" title=" " alt="" coords="569,5,788,47"/>
-<area shape="rect" id="node3" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title=" " alt="" coords="5,23,232,50"/>
-<area shape="rect" id="node8" href="$classds2_1_1_g_d_b_remote_1_1_session_base.html" title=" " alt="" coords="340,63,545,90"/>
-<area shape="rect" id="node4" href="$classds2_1_1_host_1_1_process_spawner.html" title=" " alt="" coords="812,114,995,141"/>
-<area shape="rect" id="node5" href="$structds2_1_1_host_1_1_process_spawner_1_1_redirect_descriptor.html" title=" " alt="" coords="351,115,534,156"/>
-<area shape="rect" id="node6" href="$structds2_1_1_g_d_b_remote_1_1_iteration_state.html" title=" " alt="" coords="816,165,991,207"/>
-<area shape="rect" id="node7" href="$classds2_1_1_g_d_b_remote_1_1_session.html" title=" " alt="" coords="816,63,991,90"/>
-<area shape="rect" id="node9" href="$structds2_1_1_g_d_b_remote_1_1_protocol_handler.html" title=" " alt="" coords="31,84,207,125"/>
+<area shape="rect" id="node1" title=" " alt="" coords="1162,80,1373,121"/>
+<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html" title=" " alt="" coords="566,5,784,46"/>
+<area shape="rect" id="node3" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title=" " alt="" coords="5,24,231,49"/>
+<area shape="rect" id="node8" href="$classds2_1_1_g_d_b_remote_1_1_session_base.html" title=" " alt="" coords="338,64,542,89"/>
+<area shape="rect" id="node4" href="$classds2_1_1_host_1_1_process_spawner.html" title=" " alt="" coords="808,113,990,139"/>
+<area shape="rect" id="node5" href="$structds2_1_1_host_1_1_process_spawner_1_1_redirect_descriptor.html" title=" " alt="" coords="349,113,531,154"/>
+<area shape="rect" id="node6" href="$structds2_1_1_g_d_b_remote_1_1_iteration_state.html" title=" " alt="" coords="812,163,986,203"/>
+<area shape="rect" id="node7" href="$classds2_1_1_g_d_b_remote_1_1_session.html" title=" " alt="" coords="812,64,986,89"/>
+<area shape="rect" id="node9" href="$structds2_1_1_g_d_b_remote_1_1_protocol_handler.html" title=" " alt="" coords="30,84,206,125"/>
 </map>

@@ -1,8 +1,8 @@
 <map id="ds2::SoftwareBreakpointManager" name="ds2::SoftwareBreakpointManager">
-<area shape="rect" id="node1" title=" " alt="" coords="90,275,303,301"/>
-<area shape="rect" id="node2" href="$classds2_1_1_breakpoint_manager.html" title=" " alt="" coords="116,199,277,225"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="111,109,282,136"/>
-<area shape="rect" id="node4" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,32"/>
-<area shape="rect" id="node5" href="$classds2_1_1_address.html" title=" " alt="" coords="148,5,245,32"/>
-<area shape="rect" id="node6" title=" " alt="" coords="269,5,332,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="90,273,303,298"/>
+<area shape="rect" id="node2" href="$classds2_1_1_breakpoint_manager.html" title=" " alt="" coords="116,198,277,223"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="112,109,281,135"/>
+<area shape="rect" id="node4" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,31"/>
+<area shape="rect" id="node5" href="$classds2_1_1_address.html" title=" " alt="" coords="148,5,245,31"/>
+<area shape="rect" id="node6" title=" " alt="" coords="269,5,330,31"/>
 </map>
