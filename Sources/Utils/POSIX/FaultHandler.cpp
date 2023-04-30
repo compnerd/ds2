@@ -35,7 +35,7 @@ private:
     if (sz == -1)
       abort("unable to query signal stack size");
 
-    static std::unique_ptr<char*> alt = std::make_unique<char*>(sz);
+    static std::unique_ptr<char[]> alt = std::make_unique<chari[]>(sz);
     struct sigaction sa;
     stack_t ss;
 
