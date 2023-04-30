@@ -31,11 +31,16 @@ private:
   }
 
   void installCatcher() {
+#if defined(__APPLE__)
+    long sz = SIGSTKSZ;
+    static std::unique_ptr<char[]> alt = std::make_unique<char[]>(sz);
+#else
     long sz = sysconf(_SC_SIGSTKSZ);
     if (sz == -1)
       abort();
 
     static std::unique_ptr<char[]> alt = std::make_unique<char[]>(sz);
+#endif
     struct sigaction sa;
     stack_t ss;
 
