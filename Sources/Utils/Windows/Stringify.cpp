@@ -120,6 +120,8 @@ char const *Stringify::ExceptionCode(DWORD code) {
     return "0xE06D7363 (uncaught user exception)";
   case DS2_EXCEPTION_UNCAUGHT_WINRT:
     return "0x40080201 (uncaught WinRT exception)";
+  case DS2_EXCEPTION_VC_THREAD_NAME_SET:
+    return "0x406D1388 (VC thread name set)";
     DO_DEFAULT("unknown exception code", code)
   }
 }
