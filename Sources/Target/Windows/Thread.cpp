@@ -125,6 +125,14 @@ void Thread::updateState(DEBUG_EVENT const &de) {
         PRI_PTR_CAST(de.u.Exception.ExceptionRecord.ExceptionAddress));
 
     switch (de.u.Exception.ExceptionRecord.ExceptionCode) {
+    case DS2_EXCEPTION_VC_THREAD_NAME_SET:
+      // This is a special exception code that is used by the Microsoft C++
+      // runtime to notify the debugger that a thread has started or exited.
+      // We don't care about this, so we just ignore it. Some context at
+      // https://github.com/go-delve/delve/issues/1383.
+      _stopInfo.clear();
+      _process->resume();
+      break;
     case STATUS_BREAKPOINT:
     case STATUS_SINGLE_STEP: {
       _stopInfo.event = StopInfo::kEventStop;
