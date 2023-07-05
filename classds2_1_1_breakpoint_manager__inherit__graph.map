@@ -1,5 +1,7 @@
 <map id="ds2::BreakpointManager" name="ds2::BreakpointManager">
-<area shape="rect" id="node1" title=" " alt="" coords="152,5,312,31"/>
-<area shape="rect" id="node2" href="$classds2_1_1_hardware_breakpoint_manager.html" title=" " alt="" coords="5,79,222,105"/>
-<area shape="rect" id="node3" href="$classds2_1_1_software_breakpoint_manager.html" title=" " alt="" coords="246,79,458,105"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="152,5,312,31"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_hardware_breakpoint_manager.html" title=" " alt="" coords="5,79,222,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="201,41,135,81,132,76,198,37"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_software_breakpoint_manager.html" title=" " alt="" coords="246,79,458,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="266,37,333,76,330,81,264,41"/>
 </map>

@@ -1,9 +1,15 @@
 <map id="ds2::Target::POSIX::Process" name="ds2::Target::POSIX::Process">
-<area shape="rect" id="node1" title=" " alt="" coords="223,39,355,79"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_darwin_1_1_mach_o_process.html" title=" " alt="" coords="404,5,535,46"/>
-<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title=" " alt="" coords="403,71,535,111"/>
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="5,46,175,72"/>
-<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_darwin_1_1_process.html" title=" " alt="" coords="590,5,721,46"/>
-<area shape="rect" id="node6" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_process.html" title=" " alt="" coords="583,71,728,111"/>
-<area shape="rect" id="node7" href="$classds2_1_1_target_1_1_linux_1_1_process.html" title=" " alt="" coords="594,136,717,177"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="223,39,355,79"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_darwin_1_1_mach_o_process.html" title=" " alt="" coords="404,5,535,46"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="369,41,403,35,404,40,370,47"/>
+<area shape="rect" id="Node000005" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title=" " alt="" coords="403,71,535,111"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="370,71,403,77,402,82,369,76"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="5,46,175,72"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="190,56,222,56,222,62,190,62"/>
+<area shape="rect" id="Node000004" href="$classds2_1_1_target_1_1_darwin_1_1_process.html" title=" " alt="" coords="590,5,721,46"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="549,23,589,23,589,28,549,28"/>
+<area shape="rect" id="Node000006" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_process.html" title=" " alt="" coords="583,71,728,111"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="550,88,583,88,583,94,550,94"/>
+<area shape="rect" id="Node000007" href="$classds2_1_1_target_1_1_linux_1_1_process.html" title=" " alt="" coords="594,136,717,177"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="544,114,596,133,595,138,542,119"/>
 </map>

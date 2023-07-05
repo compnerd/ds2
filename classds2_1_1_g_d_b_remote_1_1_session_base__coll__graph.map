@@ -1,5 +1,7 @@
 <map id="ds2::GDBRemote::SessionBase" name="ds2::GDBRemote::SessionBase">
-<area shape="rect" id="node1" title=" " alt="" coords="103,109,307,135"/>
-<area shape="rect" id="node2" href="$structds2_1_1_g_d_b_remote_1_1_protocol_handler.html" title=" " alt="" coords="5,5,181,46"/>
-<area shape="rect" id="node3" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title=" " alt="" coords="204,13,430,39"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="103,109,307,135"/>
+<area shape="rect" id="Node000002" href="$structds2_1_1_g_d_b_remote_1_1_protocol_handler.html" title=" " alt="" coords="5,5,181,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="129,53,193,107,189,111,125,57"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title=" " alt="" coords="204,13,430,39"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="294,50,221,111,218,106,290,46"/>
 </map>

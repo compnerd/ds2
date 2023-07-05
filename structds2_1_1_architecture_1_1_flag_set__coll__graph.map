@@ -1,4 +1,5 @@
 <map id="ds2::Architecture::FlagSet" name="ds2::Architecture::FlagSet">
-<area shape="rect" id="node1" title=" " alt="" coords="5,109,130,150"/>
-<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_flag_def.html" title=" " alt="" coords="5,5,130,46"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,109,130,150"/>
+<area shape="rect" id="Node000002" href="$structds2_1_1_architecture_1_1_flag_def.html" title=" " alt="" coords="5,5,130,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="70,61,70,109,65,109,65,61"/>
 </map>

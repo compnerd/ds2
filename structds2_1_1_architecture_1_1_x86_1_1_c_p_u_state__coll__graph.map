@@ -1,6 +1,9 @@
 <map id="ds2::Architecture::X86::CPUState" name="ds2::Architecture::X86::CPUState">
-<area shape="rect" id="node1" title=" " alt="" coords="209,71,333,111"/>
-<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_x86_1_1_x87_register.html" title=" " alt="" coords="5,5,130,46"/>
-<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_x86_1_1_a_v_x_vector.html" title=" " alt="" coords="5,71,130,111"/>
-<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_x86_1_1_s_s_e_vector.html" title=" " alt="" coords="5,136,130,177"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="209,71,333,111"/>
+<area shape="rect" id="Node000002" href="$structds2_1_1_architecture_1_1_x86_1_1_x87_register.html" title=" " alt="" coords="5,5,130,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,40,186,52,225,68,223,73,184,58,143,45"/>
+<area shape="rect" id="Node000003" href="$structds2_1_1_architecture_1_1_x86_1_1_a_v_x_vector.html" title=" " alt="" coords="5,71,130,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="144,88,208,88,208,94,144,94"/>
+<area shape="rect" id="Node000004" href="$structds2_1_1_architecture_1_1_x86_1_1_s_s_e_vector.html" title=" " alt="" coords="5,136,130,177"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="143,129,207,108,209,113,145,134"/>
 </map>

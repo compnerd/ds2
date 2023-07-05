@@ -1,8 +1,13 @@
 <map id="ds2::Target::FreeBSD::Thread" name="ds2::Target::FreeBSD::Thread">
-<area shape="rect" id="node1" title=" " alt="" coords="14,348,158,388"/>
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_thread.html" title=" " alt="" coords="20,258,152,298"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_thread_base.html" title=" " alt="" coords="5,183,167,208"/>
-<area shape="rect" id="node4" title=" " alt="" coords="9,94,78,120"/>
-<area shape="rect" id="node5" href="$structds2_1_1_stop_info.html" title=" " alt="" coords="103,94,200,120"/>
-<area shape="rect" id="node6" href="$classds2_1_1_address.html" title=" " alt="" coords="103,5,200,31"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="14,348,158,388"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_thread.html" title=" " alt="" coords="20,258,152,298"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,313,89,347,83,347,83,313"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_thread_base.html" title=" " alt="" coords="5,183,167,208"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="89,223,89,258,83,258,83,223"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="9,94,78,120"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="50,133,58,157,75,181,71,184,53,160,45,135"/>
+<area shape="rect" id="Node000005" href="$structds2_1_1_stop_info.html" title=" " alt="" coords="103,94,200,120"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="136,133,97,184,93,181,131,130"/>
+<area shape="rect" id="Node000006" href="$classds2_1_1_address.html" title=" " alt="" coords="103,5,200,31"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="154,46,154,94,149,94,149,46"/>
 </map>

@@ -1,6 +1,9 @@
 <map id="ds2::Host::Channel" name="ds2::Host::Channel">
-<area shape="rect" id="node1" title=" " alt="" coords="219,5,349,31"/>
-<area shape="rect" id="node2" href="$classds2_1_1_host_1_1_handle_channel.html" title=" " alt="" coords="5,79,176,105"/>
-<area shape="rect" id="node3" href="$classds2_1_1_host_1_1_queue_channel.html" title=" " alt="" coords="200,79,368,105"/>
-<area shape="rect" id="node4" href="$classds2_1_1_host_1_1_socket.html" title=" " alt="" coords="392,79,515,105"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="219,5,349,31"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_host_1_1_handle_channel.html" title=" " alt="" coords="5,79,176,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="238,39,124,81,123,76,236,34"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_host_1_1_queue_channel.html" title=" " alt="" coords="200,79,368,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="287,46,287,79,281,79,281,46"/>
+<area shape="rect" id="Node000004" href="$classds2_1_1_host_1_1_socket.html" title=" " alt="" coords="392,79,515,105"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="327,35,425,76,423,81,325,40"/>
 </map>

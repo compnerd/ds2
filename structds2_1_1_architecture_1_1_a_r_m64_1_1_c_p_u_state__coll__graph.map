@@ -1,8 +1,16 @@
 <map id="ds2::Architecture::ARM64::CPUState" name="ds2::Architecture::ARM64::CPUState">
-<area shape="rect" id="node1" title=" " alt="" coords="446,113,575,154"/>
-<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_c_p_u_state.html" title=" " alt="" coords="218,145,343,186"/>
-<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_single.html" title=" " alt="" coords="5,83,130,123"/>
-<area shape="rect" id="node6" href="$structds2_1_1_architecture_1_1_a_r_m64_1_1_c_p_u_state64.html" title=" " alt="" coords="209,73,352,114"/>
-<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_double.html" title=" " alt="" coords="5,5,130,46"/>
-<area shape="rect" id="node5" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_quad.html" title=" " alt="" coords="5,173,130,214"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="446,113,575,154"/>
+<area shape="rect" id="Node000002" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_c_p_u_state.html" title=" " alt="" coords="218,145,343,186"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="357,156,422,147,445,144,446,149,422,153,357,161"/>
+<area shape="rect" id="Node000003" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_single.html" title=" " alt="" coords="5,83,130,123"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="101,131,131,158,155,174,186,180,218,179,218,184,185,186,153,179,127,162,97,135"/>
+<area shape="rect" id="Node000006" href="$structds2_1_1_architecture_1_1_a_r_m64_1_1_c_p_u_state64.html" title=" " alt="" coords="209,73,352,114"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="144,97,208,94,208,99,144,102"/>
+<area shape="rect" id="Node000004" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_double.html" title=" " alt="" coords="5,5,130,46"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="144,49,167,61,187,77,196,90,199,101,203,112,211,124,235,143,231,147,207,127,198,115,194,103,191,92,183,81,164,66,142,53"/>
+<area shape="poly" id="edge7_Node000006_Node000004" title=" " alt="" coords="145,16,186,23,227,44,260,71,257,75,224,49,184,28,144,22"/>
+<area shape="rect" id="Node000005" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_quad.html" title=" " alt="" coords="5,173,130,214"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="125,216,155,222,184,219,220,204,251,184,254,189,223,209,185,225,154,227,124,222"/>
+<area shape="poly" id="edge8_Node000006_Node000005" title=" " alt="" coords="125,164,234,112,236,117,127,169"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="367,106,446,120,445,125,366,111"/>
 </map>

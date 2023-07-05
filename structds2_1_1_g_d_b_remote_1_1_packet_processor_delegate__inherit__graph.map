@@ -1,5 +1,7 @@
 <map id="ds2::GDBRemote::PacketProcessorDelegate" name="ds2::GDBRemote::PacketProcessorDelegate">
-<area shape="rect" id="node1" title=" " alt="" coords="29,5,256,46"/>
-<area shape="rect" id="node2" href="$class_session_thread.html" title=" " alt="" coords="5,102,114,127"/>
-<area shape="rect" id="node3" href="$classds2_1_1_g_d_b_remote_1_1_protocol_interpreter.html" title=" " alt="" coords="137,94,313,135"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="29,5,256,46"/>
+<area shape="rect" id="Node000002" href="$class_session_thread.html" title=" " alt="" coords="5,102,114,127"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="115,59,73,103,69,99,111,55"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_g_d_b_remote_1_1_protocol_interpreter.html" title=" " alt="" coords="137,94,313,135"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="173,55,208,92,204,95,169,59"/>
 </map>

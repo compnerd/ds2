@@ -1,9 +1,16 @@
 <map id="ds2::Target::Darwin::MachOProcess" name="ds2::Target::Darwin::MachOProcess">
-<area shape="rect" id="node1" title=" " alt="" coords="322,301,453,342"/>
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title=" " alt="" coords="192,198,324,238"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="137,109,307,135"/>
-<area shape="rect" id="node4" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,31"/>
-<area shape="rect" id="node5" href="$classds2_1_1_address.html" title=" " alt="" coords="295,5,391,31"/>
-<area shape="rect" id="node6" title=" " alt="" coords="147,5,209,31"/>
-<area shape="rect" id="node7" href="$classds2_1_1_host_1_1_darwin_1_1_mach.html" title=" " alt="" coords="424,205,585,231"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="322,301,453,342"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title=" " alt="" coords="192,198,324,238"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="296,246,364,299,361,303,293,250"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="137,109,307,135"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="234,148,253,196,248,198,229,150"/>
+<area shape="rect" id="Node000004" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="87,40,111,62,139,83,187,106,185,111,136,87,108,66,83,44"/>
+<area shape="rect" id="Node000005" href="$classds2_1_1_address.html" title=" " alt="" coords="295,5,391,31"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="365,41,371,54,388,124,395,194,395,256,392,301,387,301,390,256,390,194,383,124,366,56,360,44"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="319,42,302,57,272,87,241,111,238,106,268,83,299,53,316,38"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="147,5,209,31"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="177,45,177,65,182,84,191,96,203,107,200,111,187,100,177,86,172,66,171,46"/>
+<area shape="rect" id="Node000007" href="$classds2_1_1_host_1_1_darwin_1_1_mach.html" title=" " alt="" coords="424,205,585,231"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="481,243,412,303,408,299,478,239"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="ds2::Host::Linux::PTrace" name="ds2::Host::Linux::PTrace">
-<area shape="rect" id="node1" title=" " alt="" coords="10,79,172,105"/>
-<area shape="rect" id="node2" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title=" " alt="" coords="5,5,177,31"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="10,79,172,105"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title=" " alt="" coords="5,5,177,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,46,94,79,88,79,88,46"/>
 </map>

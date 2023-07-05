@@ -1,4 +1,5 @@
 <map id="ds2::GDBRemote::DummySessionDelegateImpl" name="ds2::GDBRemote::DummySessionDelegateImpl">
-<area shape="rect" id="node1" title=" " alt="" coords="9,79,227,120"/>
-<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title=" " alt="" coords="5,5,231,31"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="9,79,227,120"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title=" " alt="" coords="5,5,231,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="121,46,121,79,115,79,115,46"/>
 </map>
