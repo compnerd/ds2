@@ -104,16 +104,16 @@ int SoftwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
 #endif
 }
 
-void SoftwareBreakpointManager::getOpcode(uint32_t type,
+void SoftwareBreakpointManager::getOpcode(size_t size,
                                           ByteVector &opcode) const {
 #if defined(OS_WIN32) && defined(ARCH_ARM)
-  if (type == 4) {
+  if (size == 4) {
     static const uint32_t WinARMBPType = 2;
     DS2LOG(Warning,
            "requesting a breakpoint of size %u on Windows ARM, "
-           "adjusting to type %u",
-           type, WinARMBPType);
-    type = WinARMBPType;
+           "adjusting to size %u",
+           size, WinARMBPType);
+    size = WinARMBPType;
   }
 #endif
 
@@ -121,7 +121,7 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
 
   // TODO: We shouldn't have preprocessor checks for ARCH_ARM vs ARCH_ARM64
   // because we might be an ARM64 binary debugging an ARM inferior.
-  switch (type) {
+  switch (size) {
 #if defined(ARCH_ARM)
   case 2: // udf #1
     opcode.push_back('\xde');
@@ -152,8 +152,8 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
     break;
 #endif
   default:
-    DS2LOG(Error, "invalid breakpoint type %d", type);
-    DS2BUG("invalid breakpoint type");
+    DS2LOG(Error, "unsupported breakpoint width '%zu'", size);
+    DS2BUG("unsupported breakpoint width");
     break;
   }
 

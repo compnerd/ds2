@@ -47,9 +47,9 @@ int SoftwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
   return -1;
 }
 
-void SoftwareBreakpointManager::getOpcode(uint32_t type,
+void SoftwareBreakpointManager::getOpcode(size_t size,
                                           ByteVector &opcode) const {
-  DS2ASSERT(type == 1);
+  DS2ASSERT(size == 1);
   opcode.clear();
   opcode.push_back('\xcc'); // int 3
 }

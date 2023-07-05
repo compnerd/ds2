@@ -29,7 +29,7 @@ public:
   virtual int hit(Target::Thread *thread, Site &site) override;
 
 protected:
-  virtual void getOpcode(uint32_t type, ByteVector &opcode) const;
+  virtual void getOpcode(size_t size, ByteVector &opcode) const;
 
 protected:
   virtual ErrorCode enableLocation(Site const &site,
