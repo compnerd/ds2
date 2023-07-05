@@ -239,7 +239,7 @@ inline BOOL AllocateAndCopySid(const PSID pSid, PSID *ppSid) noexcept {
   if (!IsValidSid(pSid))
     return CreateWellKnownSid(WinNullSid, nullptr, ppSid, nullptr);
 
-  DWORD nSubAuthorityCount = *GetSidSubAuthorityCount(pSid);
+  UCHAR nSubAuthorityCount = *GetSidSubAuthorityCount(pSid);
   return AllocateAndInitializeSid(GetSidIdentifierAuthority(pSid),
                                   nSubAuthorityCount,
                                   nSubAuthorityCount > 0 ? *GetSidSubAuthority(pSid, 0) : 0,
