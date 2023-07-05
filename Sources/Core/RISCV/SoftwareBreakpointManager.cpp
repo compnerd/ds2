@@ -14,11 +14,11 @@ int SoftwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
   return super::hit(state.pc(), site) ? 0 : -1;
 }
 
-void SoftwareBreakpointManager::getOpcode(uint32_t type,
+void SoftwareBreakpointManager::getOpcode(size_t size,
                                           ByteVector &opcode) const {
   opcode.clear();
 
-  switch (type) {
+  switch (size) {
   case 2: // c.ebreak
     opcode.push_back('\x02');
     opcode.push_back('\x90');
@@ -30,7 +30,7 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
     opcode.push_back('\x00');
     break;
   default:
-    DS2LOG(Error, "unsupported breakpoint width '%u'", type);
+    DS2LOG(Error, "unsupported breakpoint width '%zu'", size);
     DS2BUG("unsupported breakpoint width");
     break;
   }
