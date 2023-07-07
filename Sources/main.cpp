@@ -470,16 +470,20 @@ static int GdbserverMain(int argc, char **argv) {
     ds2::Utils::Daemonize();
   }
 
-  ds2::Host::Channel *channel;
+  std::unique_ptr<ds2::Host::Channel> channel;
   switch (connection_type) {
   case channel_type::file_descriptor:
   case channel_type::named_pipe:
   case channel_type::network:
-    channel = (fd >= 0 || reverse) ? socket.get() : socket->accept().get();
+    if (fd >= 0 || reverse) {
+      channel.reset(socket.release());
+    } else {
+      channel = socket->accept();
+    }
     break;
   case channel_type::character_device:
 #if defined(OS_POSIX)
-    channel = device.get();
+    channel.reset(device.release());
 #else
     DS2BUG("connecting with chardev is not supported on this platform");
 #endif
@@ -495,7 +499,7 @@ static int GdbserverMain(int argc, char **argv) {
   else
     impl = ds2::make_unique<DebugSessionImpl>();
 
-  return RunDebugServer(channel, impl.get());
+  return RunDebugServer(channel.get(), impl.get());
 }
 
 #if !defined(OS_WIN32)
