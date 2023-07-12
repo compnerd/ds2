@@ -67,7 +67,7 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   switch (_state) {
   case kInvalid:
   case kRunning:
-    DS2BUG("trying to suspend tid %" PRI_PID " in state %s", tid(),
+    DS2BUG("trying to resume tid %" PRI_PID " in state %s", tid(),
            Stringify::ThreadState(_state));
     break;
 
@@ -88,10 +88,14 @@ ErrorCode Thread::resume(int signal, Address const &address) {
            _stopInfo.reason == StopInfo::kReasonUserException)
               ? DBG_EXCEPTION_NOT_HANDLED
               : DBG_CONTINUE;
-      BOOL result = ::ContinueDebugEvent(_process->pid(), _tid, continueStatus);
-      if (!result) {
+      DS2LOG(Debug, "ContinueDebugEvent with %s (%ld)",
+             continueStatus == DBG_EXCEPTION_NOT_HANDLED
+                 ? "DBG_EXCEPTION_NOT_HANDLED"
+             : continueStatus == DBG_CONTINUE ? "DBG_CONTINUE"
+                                              : "UNKNOWN",
+             continueStatus);
+      if (!::ContinueDebugEvent(_process->pid(), _tid, continueStatus))
         return Platform::TranslateError();
-      }
     }
 
     _state = kRunning;
@@ -119,9 +123,12 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     _state = kStopped;
 
     DS2LOG(
-        Debug, "exception from inferior, tid=%lu, code=%s, address=%" PRI_PTR,
+        Debug,
+        "exception from inferior, tid=%lu, code=%s, dwFirstChance=%lu, "
+        "address=%" PRI_PTR,
         tid(),
         Stringify::ExceptionCode(de.u.Exception.ExceptionRecord.ExceptionCode),
+        de.u.Exception.dwFirstChance,
         PRI_PTR_CAST(de.u.Exception.ExceptionRecord.ExceptionAddress));
 
     switch (de.u.Exception.ExceptionRecord.ExceptionCode) {
