@@ -259,7 +259,27 @@ ErrorCode Process::wait() {
       continue;
     }
 
-    case EXCEPTION_DEBUG_EVENT:
+    case EXCEPTION_DEBUG_EVENT: {
+      // First-chance exceptions may yet be caught by the debugee, so don't
+      // break for them. Breakpoints can never be handled by the inferior, so
+      // ignore here.
+      auto code = de.u.Exception.ExceptionRecord.ExceptionCode;
+      if (de.u.Exception.dwFirstChance && code != STATUS_BREAKPOINT) {
+        DS2LOG(Error,
+               "Ignoring first-chance exception and continuing; code: %s",
+               Stringify::ExceptionCode(
+                   de.u.Exception.ExceptionRecord.ExceptionCode));
+        // DS2_EXCEPTION_VC_THREAD_NAME_SET is a special case in the Windows
+        // debugging facilities.
+        if (!::ContinueDebugEvent(pid(), de.dwThreadId,
+                                  code == DS2_EXCEPTION_VC_THREAD_NAME_SET
+                                      ? DBG_CONTINUE
+                                      : DBG_EXCEPTION_NOT_HANDLED))
+          return Platform::TranslateError();
+        continue;
+      }
+      [[fallthrough]];
+    }
     case LOAD_DLL_DEBUG_EVENT:
     case UNLOAD_DLL_DEBUG_EVENT:
     case OUTPUT_DEBUG_STRING_EVENT: {
