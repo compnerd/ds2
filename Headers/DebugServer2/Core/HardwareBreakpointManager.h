@@ -75,7 +75,7 @@ protected:
 protected:
   virtual ErrorCode disableDebugCtrlReg(uint64_t &ctrlReg, int idx);
   virtual ErrorCode enableDebugCtrlReg(uint64_t &ctrlReg, int idx, Mode mode,
-                                       int size);
+                                       size_t size);
 #endif
 
 public:
