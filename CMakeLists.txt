@@ -410,7 +410,7 @@ if ("${OS_NAME}" MATCHES "FreeBSD")
 endif ()
 
 if ("${OS_NAME}" MATCHES "Windows")
-  target_link_libraries(ds2 PRIVATE shlwapi ws2_32)
+  target_link_libraries(ds2 PRIVATE shlwapi ws2_32 dbghelp)
   if ("${CMAKE_LINKER}" MATCHES "lld")
     target_link_libraries(ds2 PRIVATE advapi32)
   endif()

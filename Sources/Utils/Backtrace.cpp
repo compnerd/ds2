@@ -16,14 +16,16 @@
 #include <dlfcn.h>
 #include <execinfo.h>
 #elif defined(OS_WIN32)
+#include <dbghelp.h>
 #include <windows.h>
+#include <mutex>
+#include <sstream>
 #endif
 
 namespace ds2 {
 namespace Utils {
 
-#if defined(OS_DARWIN) || defined(OS_WIN32) ||                                 \
-    (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
+#if defined(OS_DARWIN) || (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
 static void PrintBacktraceEntrySimple(void *address) {
   DS2LOG(Error, "%" PRI_PTR, PRI_PTR_CAST(address));
 }
@@ -67,13 +69,76 @@ void PrintBacktrace() {
   }
 }
 #elif defined(OS_WIN32)
+
+static HANDLE SymGetCurrentProcess() {
+  // Based on
+  // https://learn.microsoft.com/en-us/windows/win32/debug/initializing-the-symbol-handler
+  HANDLE process = GetCurrentProcess();
+  // Explanation for this is at
+  // https://github.com/apple/swift/blob/0c56f1468c0f56ab9b96464ba0d63f7db4b84b69/stdlib/public/runtime/ImageInspectionCOFF.cpp#L42-L53.
+  if (!DuplicateHandle(process, process, process, &process, 0, false,
+                       DUPLICATE_SAME_ACCESS)) {
+    DS2LOG(Error, "failed to dup current process handle; proceeding anyway");
+  }
+  if (SymInitialize(process, NULL, TRUE)) {
+    return process;
+  }
+  // SymInitialize failed
+  DS2LOG(Error, "SymInitialize returned error : %lu", GetLastError());
+  return INVALID_HANDLE_VALUE;
+}
+
+static std::string SymbolForAddress(HANDLE currentProcess, void *pc) {
+  uintptr_t address = reinterpret_cast<uintptr_t>(pc);
+  // Based on
+  // https://learn.microsoft.com/en-us/windows/win32/debug/retrieving-symbol-information-by-address
+  char buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
+  PSYMBOL_INFO symbol = reinterpret_cast<PSYMBOL_INFO>(buffer);
+  symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+  symbol->MaxNameLen = MAX_SYM_NAME;
+  DWORD64 offset = 0;
+  if (!SymFromAddr(currentProcess, address, &offset, symbol)) {
+    auto error = GetLastError();
+    DS2LOG(Error, "SymFromAddr returned error : %lu", error);
+    return "<unknown>";
+  }
+  std::ostringstream os;
+  os << symbol->Name << " +0x" << std::hex << offset << std::dec;
+
+  IMAGEHLP_LINE64 line = {};
+  DWORD lineOffset = 0;
+  line.SizeOfStruct = sizeof(line);
+  if (SymGetLineFromAddr64(currentProcess, address, &lineOffset, &line)) {
+    os << " (" << line.FileName << ":" << line.LineNumber << ")";
+  } else {
+    auto error = GetLastError();
+    if (error == ERROR_INVALID_ADDRESS) {
+      // This is not an error, it just means that the address is not in a
+      // module that has line number information.
+      DS2LOG(Debug, "SymGetLineFromAddr64 returned error: %lu", error);
+    } else {
+      DS2LOG(Error, "SymGetLineFromAddr64 returned error: %lu", error);
+      os << " (<missing>)";
+    }
+  }
+  return os.str();
+}
+
 void PrintBacktrace() {
+  static std::mutex mutex;
+  // DbgHelp methods are all single-threaded and require exclusion per
+  // https://learn.microsoft.com/en-us/windows/win32/api/dbghelp/nf-dbghelp-symgetlinefromaddr.
+  std::unique_lock<std::mutex> lock(mutex);
+  static HANDLE currentProcess = SymGetCurrentProcess();
+  if (currentProcess == INVALID_HANDLE_VALUE) return;
   static const int kStackSize = 62;
   static PVOID stack[kStackSize];
   int stackEntries = CaptureStackBackTrace(0, kStackSize, stack, nullptr);
 
   for (int i = 0; i < stackEntries; ++i) {
-    PrintBacktraceEntrySimple(stack[i]);
+    auto address = stack[i];
+    DS2LOG(Info, "%" PRI_PTR " %s", PRI_PTR_CAST(address),
+           SymbolForAddress(currentProcess, address).c_str());
   }
 }
 #else
