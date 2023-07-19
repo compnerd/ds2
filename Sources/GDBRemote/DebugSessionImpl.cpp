@@ -462,9 +462,11 @@ ErrorCode DebugSessionImplBase::onQueryFileLoadAddress(
     return kErrorProcessNotFound;
   }
 
+  std::filesystem::path target(file_path);
   CHK(_process->enumerateMappedFiles([&](MappedFileInfo const &file) {
-    if (file.path == file_path ||
-        std::filesystem::path(file.path).filename().string() == file_path) {
+    std::filesystem::path candidate(file.path);
+    if (std::filesystem::equivalent(target, candidate) ||
+        candidate.filename().string() == file_path) {
       address = Address(file.baseAddress);
     }
   }));
