@@ -56,8 +56,6 @@ private:
                                std::vector<MemoryRegionInfo> &modifiedRegions);
   ErrorCode
   restoreRegionsProtection(const std::vector<MemoryRegionInfo> &regions);
-  ErrorCode getMemoryRegionInfoInternal(Address const &address,
-                                        MemoryRegionInfo &info);
 
 protected:
   DWORD convertMemoryProtectionToWindows(uint32_t protection) const;
@@ -65,9 +63,7 @@ protected:
 
 public:
   ErrorCode getMemoryRegionInfo(Address const &address,
-                                MemoryRegionInfo &info) override {
-    return kErrorUnsupported;
-  }
+                                MemoryRegionInfo &info) override;
 
 public:
   ErrorCode updateInfo() override;

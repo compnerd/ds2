@@ -388,8 +388,7 @@ Process::convertMemoryProtectionFromWindows(DWORD winProtection) const {
   }
 }
 
-// TODO: rename this function to getMemoryRegionInfo and make lldb work with it
-ErrorCode Process::getMemoryRegionInfoInternal(Address const &address,
+ErrorCode Process::getMemoryRegionInfo(Address const &address,
                                                MemoryRegionInfo &region) {
   _MEMORY_BASIC_INFORMATION64 mem;
   SIZE_T bytesQuery = VirtualQueryEx(
@@ -426,7 +425,7 @@ Process::makeMemoryWritable(Address const &address, size_t length,
 
   while (startAddress < endAddress) {
     MemoryRegionInfo region;
-    CHK(getMemoryRegionInfoInternal(address, region));
+    CHK(getMemoryRegionInfo(address, region));
 
     if (!region.protection || !(region.protection & kProtectionWrite)) {
       LPVOID allocError = VirtualAllocEx(
@@ -590,13 +589,9 @@ ErrorCode Process::enumerateSharedLibraries(
       return Platform::TranslateError();
     sl.path = ds2::Utils::WideToNarrowString(std::wstring(nameStr, nameSize));
 
-    // The following two transforms ensure that the paths we return to the
-    // debugger look like unix paths. This shouldn't be required but LLDB seems
-    // to be having trouble with paths when the host and the remote don't use
-    // the same path separator.
-    if (sl.path.length() >= 2 && sl.path[0] >= 'A' && sl.path[0] <= 'Z' &&
-        sl.path[1] == ':')
-      sl.path.erase(0, 2);
+    // Normalize paths to `/` as the arc separator. This shouldn't be required
+    // but LLDB seems to be having trouble with paths when the host and the remote
+    // don't use the same path separator.
     for (auto &c : sl.path)
       if (c == '\\')
         c = '/';
