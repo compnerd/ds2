@@ -589,10 +589,9 @@ ErrorCode Process::enumerateSharedLibraries(
       return Platform::TranslateError();
     sl.path = ds2::Utils::WideToNarrowString(std::wstring(nameStr, nameSize));
 
-    // The following transform ensures that the paths we return to the
-    // debugger look like unix paths. This shouldn't be required but LLDB seems
-    // to be having trouble with paths when the host and the remote don't use
-    // the same path separator.
+    // Normalize paths to `/` as the arc separator. This shouldn't be required
+    // but LLDB seems to be having trouble with paths when the host and the remote
+    // don't use the same path separator.
     for (auto &c : sl.path)
       if (c == '\\')
         c = '/';
