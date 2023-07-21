@@ -35,6 +35,15 @@ static uint8_t const gDebugBreakCode[] = {
     0x00, 0x00, 0x00, 0x00  // 08: RtlExitUserThread address
 };
 static const int gRtlExitUserThreadOffset = 0x08;
+#elif defined(ARCH_ARM64)
+static uint8_t const gDebugBreakCode[] = {
+    0x00, 0x00, 0x3e, 0xd4, // 00: brk #0xf000
+    0x50, 0x00, 0x00, 0x58, // 04: ldr x16, #8
+    0x00, 0x02, 0x1f, 0xd6, // 08: br x16
+    0x00, 0x00, 0x00, 0x00, // 0B: RtlExitUserThread address
+    0x00, 0x00, 0x00, 0x00,
+};
+static const int gRtlExitUserThreadOffset = 0x0b;
 #elif defined(ARCH_X86)
 static uint8_t const gDebugBreakCode[] = {
     0xCC,                         // 00: int 3
