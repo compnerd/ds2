@@ -13,6 +13,12 @@ uintptr_t sext(uintptr_t value) {
   return ((value & (1 << Width)) ? ~((value & (1 << Width)) - 1) : 0) |
          (value & ((1 << (Width + 1)) - 1));
 }
+
+template <size_t Begin, size_t End>
+uintptr_t bits(uintptr_t value) {
+  uintptr_t mask = ((1 << ((End + 1) - Begin)) - 1) << Begin;
+  return (value & mask) >> Begin;
+}
 }
 
 ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
@@ -29,20 +35,20 @@ ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
     uint32_t instruction;
     CHK(process->readMemory(location, &instruction, sizeof(instruction)));
 
-    switch (instruction & 0x0000007f) {
+    switch (bits<0, 6>(instructions)) {
     default:
       destination = location + 4;
       break;
     case 0x00000063: {                                      // BRANCH
-      uint8_t rs1 = ((instruction & 0x000f8000) >> 15);
-      uint8_t rs2 = ((instruction & 0x01f00000) >> 20);
-      uintptr_t immediate = (((instruction & 0x00000f00) >>  8) <<  1)
-                          | (((instruction & 0x7e000000) >> 25) <<  5)
-                          | (((instruction & 0x00000080) >>  7) << 11)
-                          | (((instruction & 0x80000000) >> 31) << 12);
+      uint8_t rs1 = bits<15, 19>(instruction);
+      uint8_t rs2 = bits<20, 24>(instruction);
+      uintptr_t immediate = (bits< 8, 11>(instruction) <<  1)
+                          | (bits<25, 30>(instruction) <<  5)
+                          | (bits< 7,  7>(instruction) << 11)
+                          | (bits<31, 31>(instruction) << 12);
       uintptr_t lhs = rs1 ? state.gp.regs[rs1] : 0;
       uintptr_t rhs = rs2 ? state.gp.regs[rs2] : 0;
-      switch ((instruction & 0x00007000) >> 12) {
+      switch (bits<12, 14>(instruction)) {
       case 0: // EQ
         destination = location + (lhs == rhs ? sext<12>(immediate) : 4);
         break;
@@ -77,14 +83,14 @@ ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
       break;
     }
     case 0x00000067: {
-      switch (instruction & 0x00007000) {
+      switch (bits<12, 14>(instruction)) {
       default:
         destination = location + 4;
         break;
       case 0: {                                             // JALR
-        uint8_t rs = ((instruction & 0x000f8000) >> 15);
-        uint8_t rd = ((instruction & 0x00000f80) >>  7);
-        uintptr_t immediate = (instruction & 0xfff00000) >> 20;
+        uint8_t rs = bits<15, 19>(instruction);
+        uint8_t rd = bits< 7, 11>(instruction);
+        uintptr_t immediate = bits<20, 31>(instruction);
         (void)rd;
         uintptr_t base = rs ? state.gp.regs[rs] : 0;
         destination = base + sext<11>(immediate);
@@ -94,47 +100,47 @@ ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
       break;
     }
     case 0x0000006f: {                                      // JAL
-      uintptr_t immediate = (((instruction & 0x7fe00000) >> 21) <<  1)
-                          | (((instruction & 0x00100000) >> 20) << 11)
-                          | (((instruction & 0x000ff000) >> 12) << 12)
-                          | (((instruction & 0x80000000) >> 31) << 20);
+      uintptr_t immediate = (bits<21, 30>(instruction) <<  1)
+                          | (bits<20, 20>(instruction) << 11)
+                          | (bits<12, 19>(instruction) << 12)
+                          | (bits<31, 31>(instruction) << 20);
       destination = location + sext<20>(immediate);
       break;
     }
     }
   } else {                                                  // RVC
     destination = location + 2;
-    switch ((instruction & 0x3) >>  0) {
+    switch (bits<0, 1>(instruction)) {
     default: break;
     case 0x01:
-      switch ((instruction & 0xe000) >> 13) {
+      switch (bits<13, 15>(instruction)) {
       default: break;
 #if __riscv_len == 32
       case 1:                                               // C.JAL
         [[fallthrough]];
 #endif
       case 5: {                                             // C.J
-        uintptr_t immediate = (((instruction & 0x0038) >>  3) <<  1)
-                            | (((instruction & 0x0800) >> 11) <<  4)
-                            | (((instruction & 0x0004) >>  2) <<  5)
-                            | (((instruction & 0x0080) >>  7) <<  6)
-                            | (((instruction & 0x0040) >>  6) <<  7)
-                            | (((instruction & 0x0600) >>  9) <<  8)
-                            | (((instruction & 0x0100) >>  8) << 10)
-                            | (((instruction & 0x1000) >> 12) << 11);
+        uintptr_t immediate = (bits< 3,  5>(instruction) <<  1)
+                            | (bits<11, 11>(instruction) <<  4)
+                            | (bits< 2,  2>(instruction) <<  5)
+                            | (bits< 7,  7>(instruction) <<  6)
+                            | (bits< 6,  6>(instruction) <<  7)
+                            | (bits< 9, 10>(instruction) <<  8)
+                            | (bits< 8,  8>(instruction) << 10)
+                            | (bits<12, 12>(instruction) << 11);
         destination = location + sext<11>(immediate);
         break;
       }
       case 6:                                               // C.BEQZ
         [[fallthrough]];
       case 7: {                                             // C.BNEZ
-        uintptr_t immediate = (((instruction & 0x0018) >>  3) << 1)
-                            | (((instruction & 0x0c00) >> 10) << 3)
-                            | (((instruction & 0x0004) >>  2) << 5)
-                            | (((instruction & 0x0060) >>  5) << 6)
-                            | (((instruction & 0x1000) >> 12) << 8);
-        uint8_t rs = (instruction & 0x0380) >> 7;
-        bool eq = ((instruction & 0xe000) >> 13) == 6;
+        uintptr_t immediate = (bits< 3,  4>(instruction) << 1)
+                            | (bits<10, 11>(instruction) << 3)
+                            | (bits< 2,  2>(instruction) << 5)
+                            | (bits< 5,  6>(instruction) << 6)
+                            | (bits<12, 12>(instruction) << 8);
+        uint8_t rs = bits<7, 9>(instruction);
+        bool eq = bits<13, 15>(instruction) == 6;
         destination = location +
                       ((eq ? state.gp.regs[rs + 8] == 0 : state.gp.regs[rs + 8])
                            ? sext<8>(immediate)
@@ -144,15 +150,15 @@ ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
       }
       break;
     case 0x02:
-      switch ((instruction & 0xf000) >> 12) {
+      switch (bits<12, 15>(instruction)) {
       default: break;
       case 8:                                               // C.JR
         [[fallthrough]];
       case 9: {                                             // C.JALR
-        if ((instruction & 0x007c) >> 2)
+        if (bits<2, 6>(instruction))                        // rs2 MBZ
           break;
 
-        uint8_t rs1 = ((instruction & 0x0f80) >> 7);
+        uint8_t rs1 = bits<7, 11>(instruction);
         destination = state.gp.regs[rs1];
         break;
       }
