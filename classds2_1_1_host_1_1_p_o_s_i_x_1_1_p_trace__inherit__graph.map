@@ -1,9 +1,9 @@
 <map id="ds2::Host::POSIX::PTrace" name="ds2::Host::POSIX::PTrace">
 <area shape="rect" id="Node000001" title=" " alt="" coords="140,5,311,31"/>
 <area shape="rect" id="Node000002" href="$classds2_1_1_host_1_1_darwin_1_1_p_trace.html" title=" " alt="" coords="5,79,134,120"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="190,40,110,81,107,76,187,36"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="189,41,110,81,107,76,187,36"/>
 <area shape="rect" id="Node000003" href="$classds2_1_1_host_1_1_free_b_s_d_1_1_p_trace.html" title=" " alt="" coords="158,79,293,120"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="228,46,228,79,223,79,223,46"/>
 <area shape="rect" id="Node000004" href="$classds2_1_1_host_1_1_linux_1_1_p_trace.html" title=" " alt="" coords="317,87,478,112"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="266,35,372,84,370,88,264,40"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="267,35,372,84,370,88,264,40"/>
 </map>

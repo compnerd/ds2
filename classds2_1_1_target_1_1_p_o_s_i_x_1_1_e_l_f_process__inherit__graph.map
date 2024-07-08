@@ -1,11 +1,11 @@
 <map id="ds2::Target::POSIX::ELFProcess" name="ds2::Target::POSIX::ELFProcess">
 <area shape="rect" id="Node000001" title=" " alt="" coords="90,168,222,208"/>
 <area shape="rect" id="Node000004" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_process.html" title=" " alt="" coords="5,256,150,297"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="131,221,97,258,93,254,127,218"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="130,222,97,258,93,254,126,218"/>
 <area shape="rect" id="Node000005" href="$classds2_1_1_target_1_1_linux_1_1_process.html" title=" " alt="" coords="174,256,296,297"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="186,218,219,254,215,258,182,221"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="186,218,219,254,215,258,182,222"/>
 <area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title=" " alt="" coords="90,79,222,120"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="159,134,159,167,154,167,154,134"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="159,135,159,167,154,167,154,135"/>
 <area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="71,5,241,31"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="159,46,159,79,154,79,154,46"/>
 </map>

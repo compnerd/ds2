@@ -1,7 +1,7 @@
 <map id="ds2::Architecture::GDBVectorUnion" name="ds2::Architecture::GDBVectorUnion">
 <area shape="rect" id="Node000001" title=" " alt="" coords="18,213,142,253"/>
 <area shape="rect" id="Node000002" href="$structds2_1_1_architecture_1_1_g_d_b_vector_union_field.html" title=" " alt="" coords="5,109,155,150"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,164,83,212,77,212,77,164"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,165,83,212,77,212,77,165"/>
 <area shape="rect" id="Node000003" href="$structds2_1_1_architecture_1_1_g_d_b_vector_def.html" title=" " alt="" coords="18,5,142,46"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="83,61,83,109,77,109,77,61"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="83,62,83,109,77,109,77,62"/>
 </map>

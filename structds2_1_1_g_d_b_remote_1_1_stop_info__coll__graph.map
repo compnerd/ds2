@@ -1,11 +1,11 @@
 <map id="ds2::GDBRemote::StopInfo" name="ds2::GDBRemote::StopInfo">
 <area shape="rect" id="Node000001" title=" " alt="" coords="58,183,234,208"/>
 <area shape="rect" id="Node000002" href="$structds2_1_1_stop_info.html" title=" " alt="" coords="5,94,103,120"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,128,135,180,131,184,76,132"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,129,135,180,131,184,76,133"/>
 <area shape="rect" id="Node000003" href="$classds2_1_1_address.html" title=" " alt="" coords="6,5,102,31"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="57,46,57,94,51,94,51,46"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="57,47,57,94,51,94,51,47"/>
 <area shape="rect" id="Node000004" href="$structds2_1_1_g_d_b_remote_1_1_process_thread_id.html" title=" " alt="" coords="126,94,353,120"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="218,132,161,184,157,180,214,128"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="217,132,161,184,157,180,214,128"/>
 <area shape="rect" id="Node000005" href="$structds2_1_1_process_thread_id.html" title=" " alt="" coords="166,5,313,31"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="242,46,242,94,237,94,237,46"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="242,47,242,94,237,94,237,47"/>
 </map>

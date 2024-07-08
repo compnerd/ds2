@@ -1,9 +1,9 @@
 <map id="ds2::Architecture::ARM::CPUState" name="ds2::Architecture::ARM::CPUState">
 <area shape="rect" id="Node000001" title=" " alt="" coords="209,71,333,111"/>
 <area shape="rect" id="Node000002" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_single.html" title=" " alt="" coords="5,5,130,46"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,48,209,69,207,74,143,53"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,48,209,69,207,74,144,53"/>
 <area shape="rect" id="Node000003" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_double.html" title=" " alt="" coords="5,71,130,111"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="144,88,208,88,208,94,144,94"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="145,88,208,88,208,94,145,94"/>
 <area shape="rect" id="Node000004" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_quad.html" title=" " alt="" coords="5,136,130,177"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="143,129,207,108,209,113,145,134"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="144,129,207,108,209,113,145,134"/>
 </map>
