@@ -33,14 +33,14 @@ private:
   void installCatcher() {
 #if defined(__APPLE__)
     long sz = SIGSTKSZ;
-    static std::unique_ptr<char[]> alt = std::make_unique<char[]>(sz);
+#elif defined(__ANDROID__)
+    long sz = MINSIGSTKSZ;
 #else
     long sz = sysconf(_SC_SIGSTKSZ);
     if (sz == -1)
       abort();
-
-    static std::unique_ptr<char[]> alt = std::make_unique<char[]>(sz);
 #endif
+    static std::unique_ptr<char[]> alt = std::make_unique<char[]>(sz);
     struct sigaction sa;
     stack_t ss;
 
