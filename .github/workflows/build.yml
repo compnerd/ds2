@@ -114,3 +114,32 @@ jobs:
           name: linux-${{ matrix.processor }}-ds2
           path: |
             ${{ github.workspace }}/BinaryCache/ds2/ds2
+
+  # Cross-compile for Android on a Windows host.
+  android-windows-ndk:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        abi: ['x86_64', 'x86', 'arm64-v8a', 'armeabi-v7a']
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Install Build Tools
+        run: choco install winflexbison3
+
+      # cmake finds the Android NDK from ANDROID_NDK in the environment, which
+      # is pre-installed and configured in the Windows runner image.
+      - name: Configure
+        run: cmake -B ${{ github.workspace }}/BinaryCache/ds2 -D CMAKE_BUILD_TYPE=Release -D CMAKE_SYSTEM_NAME=Android -D CMAKE_ANDROID_ARCH_ABI=${{ matrix.abi }} -G Ninja
+
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-${{ matrix.abi }}-ds2
+          path: |
+            ${{ github.workspace }}/BinaryCache/ds2/ds2
