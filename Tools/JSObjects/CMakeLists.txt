@@ -37,39 +37,36 @@ BISON_TARGET(JSON_PARSER
              COMPILE_FLAGS "--no-lines")
 ADD_FLEX_BISON_DEPENDENCY(JSON_SCANNER JSON_PARSER)
 
-set(JSOBJECTS_SOURCES
+add_library(jsobjects STATIC
     ${BISON_JSON_PARSER_OUTPUTS}
     ${FLEX_JSON_SCANNER_OUTPUTS}
     Sources/JSObjects.cpp
     Sources/libjson/json.c
-    Sources/libjson/qstring.c
-    )
+    Sources/libjson/qstring.c)
+target_include_directories(jsobjects PUBLIC
+    ${JSObjects_SOURCE_DIR}/Headers)
+target_include_directories(jsobjects PRIVATE
+    ${JSObjects_SOURCE_DIR}/Sources/libjson
+    ${JSObjects_BINARY_DIR})
 
-add_library(jsobjects STATIC ${JSOBJECTS_SOURCES})
-target_include_directories(jsobjects
-                           PUBLIC ${JSObjects_SOURCE_DIR}/Headers
-                           PRIVATE ${JSObjects_SOURCE_DIR}/Sources/libjson
-                           PRIVATE ${JSObjects_BINARY_DIR})
+if((CMAKE_C_COMPILER_ID MATCHES "GNU" AND
+    CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 4.6) OR
+   ((CMAKE_C_COMPILER_ID MATCHES "Clang" AND
+     NOT CMAKE_C_SIMULATE_ID MATCHES "MSVC") AND
+    CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 13.0))
+  # this warning is enabled by -Wall on newer compilers and must be disabled
+  # for the generated parser code
+  set_source_files_properties(${JSObjects_BINARY_DIR}/parser.c PROPERTIES
+      COMPILE_FLAGS -Wno-error=unused-but-set-variable)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
-    (CMAKE_CXX_COMPILER_ID MATCHES "Clang" 
-    AND NOT CMAKE_CXX_SIMULATE_ID MATCHES "MSVC"))
-
-  if ((CMAKE_C_COMPILER_ID MATCHES "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 4.6) OR
-      (CMAKE_C_COMPILER_ID MATCHES "Clang" AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 13.0))
-    # this warning is enabled by -Wall on newer compilers and must be disabled
-    # for the generated parser code
-    set_source_files_properties(${JSObjects_BINARY_DIR}/parser.c PROPERTIES
-        COMPILE_FLAGS -Wno-error=unused-but-set-variable)
-  endif()
-
+  target_compile_definitions(jsobjects PRIVATE
+    _POSIX_C_SOURCE=200809L)
   target_compile_options(jsobjects PRIVATE -Wall -Wextra -Werror)
-  target_compile_options(jsobjects PRIVATE -Wno-unused-parameter
-                                           -Wno-unused-function
-                                           -Wno-sign-compare)
-  target_compile_options(
-      jsobjects PRIVATE $<$<COMPILE_LANGUAGE:C>:-D_POSIX_C_SOURCE=200809L>)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  target_compile_options(jsobjects PRIVATE
+    -Wno-unused-parameter
+    -Wno-unused-function
+    -Wno-sign-compare)
+elseif(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   target_compile_options(jsobjects PRIVATE /W3 /DSTRICT /wd4996)
   target_compile_options(jsobjects PRIVATE /MP)
-endif ()
+endif()
