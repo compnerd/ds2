@@ -137,12 +137,18 @@ foreach(WORDSIZE 32 64 128)
     ${PROJECT_SOURCE_DIR}/Definitions/RISCV${WORDSIZE}.json @ONLY)
 endforeach()
 
+if(CMAKE_SYSTEM_NAME STREQUAL Android)
+  set(RegsGenOS linux)
+else()
+  set(RegsGenOS $<LOWER_CASE:${CMAKE_SYSTEM_NAME}>)
+endif()
+
 foreach(ARCH ARM ARM64 RISCV32 RISCV64 RISCV128 X86 X86_64)
   add_custom_command(OUTPUT
       ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
     COMMAND
       $<TARGET_FILE:RegsGen2::RegsGen2>
-        -a $<LOWER_CASE:${CMAKE_SYSTEM_NAME}>
+        -a ${RegsGenOS}
         -I DebugServer2/Architecture/RegisterLayout.h
         -h -o ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
         -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
@@ -154,7 +160,7 @@ foreach(ARCH ARM ARM64 RISCV32 RISCV64 RISCV128 X86 X86_64)
       ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/${ARCH}/RegistersDescriptors.cpp
     COMMAND
       $<TARGET_FILE:RegsGen2::RegsGen2>
-        -a $<LOWER_CASE:${CMAKE_SYSTEM_NAME}>
+        -a ${RegsGenOS}
         -I DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
         -c -o ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/${ARCH}/RegistersDescriptors.cpp
         -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
