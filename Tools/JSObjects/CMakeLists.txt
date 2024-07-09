@@ -54,8 +54,15 @@ target_include_directories(jsobjects
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
     (CMAKE_CXX_COMPILER_ID MATCHES "Clang" 
     AND NOT CMAKE_CXX_SIMULATE_ID MATCHES "MSVC"))
-  set_source_files_properties(${JSObjects_BINARY_DIR}/parser.c PROPERTIES
-      COMPILE_FLAGS -Wno-error=unused-but-set-variable)
+
+  if ((CMAKE_C_COMPILER_ID MATCHES "GNU" AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 4.6) OR
+      (CMAKE_C_COMPILER_ID MATCHES "Clang" AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 13.0))
+    # this warning is enabled by -Wall on newer compilers and must be disabled
+    # for the generated parser code
+    set_source_files_properties(${JSObjects_BINARY_DIR}/parser.c PROPERTIES
+        COMPILE_FLAGS -Wno-error=unused-but-set-variable)
+  endif()
+
   target_compile_options(jsobjects PRIVATE -Wall -Wextra -Werror)
   target_compile_options(jsobjects PRIVATE -Wno-unused-parameter
                                            -Wno-unused-function
