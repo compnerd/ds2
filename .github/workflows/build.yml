@@ -15,7 +15,7 @@ jobs:
         arch: ['Win32', 'x64'] # ['ARM', 'ARM64']
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Install Build Tools
         run: choco install winflexbison3
@@ -25,7 +25,7 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: windows-${{ matrix.arch }}-ds2
           path: |
@@ -57,14 +57,14 @@ jobs:
             mingw-w64-${{ matrix.env }}-toolchain
             mingw-w64-${{ matrix.env }}-ninja
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Configure
         run: cmake -B $(cygpath -u '${{ github.workspace }}/BinaryCache/ds2') -C $(cygpath -u '${{ github.workspace }}/cmake/caches/GNUWarnings.cmake') -D CMAKE_BUILD_TYPE=Release -G Ninja -S $(cygpath -u '${{ github.workspace }}')
       - name: Build
         run: cmake --build $(cygpath -u '${{ github.workspace }}/BinaryCache/ds2') --config Release
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: mingw-${{ matrix.system }}-ds2
           path: |
@@ -74,7 +74,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: seanmiddleditch/gha-setup-ninja@master
 
       - name: Configure
@@ -82,7 +82,7 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: macOS-x86_64-ds2
           path: |
@@ -99,7 +99,7 @@ jobs:
           - { processor: i686, cflags: "-m32", cxxflags: "-m32" }
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - run: |
           sudo apt-get update
           sudo apt-get install -qq --no-install-recommends bison flex gcc-multilib g++-multilib ninja-build
@@ -109,7 +109,7 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Releaase
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.processor }}-ds2
           path: |
