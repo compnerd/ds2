@@ -98,14 +98,17 @@ else()
   message(SEND_ERROR "Unknown host architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
-# FIXME(compnerd) properly compute the executable suffix for the host.
-# Currently, we are able to get away with this as we are not cross-compiling
-# Windows, but this would be incorrect if we were.
+if(CMAKE_HOST_SYSTEM STREQUAL Windows)
+  set(CMAKE_HOST_EXECUTABLE_SUFFIX .exe)
+else()
+  set(CMAKE_HOST_EXECUTABLE_SUFFIX)
+endif()
+
 get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(GENERATOR_IS_MULTI_CONFIG)
-  set(RegsGen2_RELATIVE_PATH Release/regsgen2${CMAKE_EXECUTABLE_SUFFIX})
+  set(RegsGen2_RELATIVE_PATH Release/regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
 else()
-  set(RegsGen2_RELATIVE_PATH regsgen2${CMAKE_EXECUTABLE_SUFFIX})
+  set(RegsGen2_RELATIVE_PATH regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
 endif()
 
 include(ExternalProject)
