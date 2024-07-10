@@ -71,7 +71,10 @@ jobs:
             ${{ github.workspace }}/BinaryCache/ds2/ds2.exe
 
   macos:
-    runs-on: macos-latest
+    # The macos-latest runner image runs on an M1 ARM CPU which is not currently
+    # supported by ds2. Build on macos-13, which is x86_64-based, until Darwin
+    # on ARM support is implemented.
+    runs-on: macos-13
 
     steps:
       - uses: actions/checkout@v4
