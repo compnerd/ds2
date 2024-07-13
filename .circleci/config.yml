@@ -97,26 +97,12 @@ jobs:
       PLATFORM: 1
       TARGET: Android-ARM
       EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=21"
-  Android-ARM-16:
-    <<: *build_only_defaults
-    environment:
-      TARGET: Android-ARM
-      EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=16"
   Android-ARM64:
     <<: *build_and_test_android
     environment:
       PLATFORM: 1
       TARGET: Android-ARM64
       EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=24"
-  Android-X86:
-    <<: *build_only_defaults
-  Android-X86-16:
-    <<: *build_only_defaults
-    environment:
-      TARGET: Android-X86
-      EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=16"
-  Android-X86_64:
-    <<: *build_only_defaults
   Tizen-X86:
     <<: *build_only_defaults
   Tizen-ARM:
@@ -135,8 +121,5 @@ workflows:
       - Android-ARM
       - Android-ARM-16
       - Android-ARM64
-      - Android-X86
-      - Android-X86-16
-      - Android-X86_64
       - Tizen-X86
       - Tizen-ARM
