@@ -55,3 +55,39 @@ jobs:
         run: |
           cmake --build ${{ github.workspace }}/llvm-project/build              \
                 --config Release
+
+      # Run a subset of the lldb API tests against ds2 runnint on an x86_64
+      # Android emulator.
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          # NOTE: because of structural changes and the remvoal of gcc, Android
+          # NDK r21e is the last NDK version that the lldb API tests can build
+          # test binaries against. The lldb test framework will need to be
+          # modified to run with a more recent NDK.
+          ndk-version: r21e
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: launch ds2 on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          arch: ${{ matrix.abi }}
+          emulator-options: -no-window -noaudio -no-boot-anim
+          script: |
+            $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432
+            $ANDROID_SDK_ROOT/platform-tools/adb push ${{ github.workspace }}/BinaryCache/ds2/ds2 /data/local/tmp
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "chmod +x /data/local/tmp/ds2"
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432 --log-file=/data/local/tmp/ds2.log"
+            ${{ github.workspace }}/llvm-project/build/bin/lldb-dotest --out-of-tree-debugserver --arch ${{ matrix.abi }} --platform-name remote-android --platform-url connect://localhost:5432 --platform-working-dir /data/local/tmp --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang ${{ github.workspace }}/llvm-project/lldb/test/API/api
+            $ANDROID_SDK_ROOT/platform-tools/adb pull /data/local/tmp/ds2.log ${{ github.workspace }}/BinaryCache/ds2/
+
+      # Upload the device-side ds2 logs generated during the test run.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lldb-dotest-android-${{ matrix.abi }}-ds2.log
+          path: |
+            ${{ github.workspace }}/BinaryCache/ds2/ds2.log
