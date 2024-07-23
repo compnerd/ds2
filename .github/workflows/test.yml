@@ -26,6 +26,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: seanmiddleditch/gha-setup-ninja@master
 
+      # Free up some disk space by removing some things we don't use. Without
+      # this step, we exhaust disk space while installing Android the emulator
+      # image in the setup-ndk step below.
+      - name: free-up disk space
+        run: |
+          df -h /home                                                 && \
+          sudo apt purge -q dotnet-* netstandard-* ghc ghc-* boost-*  && \
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"                         && \
+          df -h /home
+
       # Cross-compile ds2 for Android. Cmake finds the Android NDK from
       # ANDROID_NDK in the environment, which is pre-installed and configured
       # in the test runner image.
