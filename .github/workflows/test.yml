@@ -6,6 +6,7 @@ on:
       - main
   workflow_dispatch:
 
+
 jobs:
   # Test the Android ds2 binary on an emulator.
   android-test:
@@ -16,6 +17,10 @@ jobs:
         # We don't currently have a good way of running arm64-v8a tests on the
         # available GitHub test runners.
         abi: ['x86_64']
+
+    env:
+      ANDROID_API_LEVEL: 28
+      DEBUG_PORT: 5432
 
     steps:
       - uses: actions/checkout@v4
@@ -74,15 +79,15 @@ jobs:
       - name: launch ds2 on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: ${{ env.ANDROID_API_LEVEL }}
           arch: ${{ matrix.abi }}
           emulator-options: -no-window -noaudio -no-boot-anim
           script: |
-            $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432
+            $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:${{ env.DEBUG_PORT }} tcp:${{ env.DEBUG_PORT }}
             $ANDROID_SDK_ROOT/platform-tools/adb push ${{ github.workspace }}/BinaryCache/ds2/ds2 /data/local/tmp
             $ANDROID_SDK_ROOT/platform-tools/adb shell "chmod +x /data/local/tmp/ds2"
-            $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432 --log-file=/data/local/tmp/ds2.log"
-            ${{ github.workspace }}/llvm-project/build/bin/lldb-dotest --out-of-tree-debugserver --arch ${{ matrix.abi }} --platform-name remote-android --platform-url connect://localhost:5432 --platform-working-dir /data/local/tmp --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang ${{ github.workspace }}/llvm-project/lldb/test/API/api
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:${{ env.DEBUG_PORT}} --log-file=/data/local/tmp/ds2.log"
+            ${{ github.workspace }}/llvm-project/build/bin/lldb-dotest --out-of-tree-debugserver --arch ${{ matrix.abi }} --platform-name remote-android --platform-url connect://localhost:${{ env.DEBUG_PORT }} --platform-working-dir /data/local/tmp --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang ${{ github.workspace }}/llvm-project/lldb/test/API/api
             $ANDROID_SDK_ROOT/platform-tools/adb pull /data/local/tmp/ds2.log ${{ github.workspace }}/BinaryCache/ds2/
 
       # Upload the device-side ds2 logs generated during the test run.
