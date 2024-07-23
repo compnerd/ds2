@@ -21,6 +21,7 @@ jobs:
     env:
       ANDROID_API_LEVEL: 28
       DEBUG_PORT: 5432
+      SCCACHE_DIRECT: yes
 
     steps:
       - uses: actions/checkout@v4
@@ -67,6 +68,13 @@ jobs:
           cmake --build ${{ github.workspace }}/BinaryCache/ds2               \
                 --config Release
 
+      - name: Setup sccache
+        uses: hendrikmuhs/ccache-action@2e0e89e8d74340a03f75d58d02aae4c5ee1b15c6
+        with:
+          key: ubuntu-${{ matrix.arch }}-llvm
+          variant: sccache
+          append-timestamp: false
+
       # Build clang and a Python-enabled lldb binary to execute the lldb tests.
       - uses: actions/checkout@v4
         name: checkout llvm project
@@ -80,6 +88,8 @@ jobs:
                 -S ${{ github.workspace }}/llvm-project/llvm                    \
                 -D LLVM_ENABLE_PROJECTS='clang;lldb'                            \
                 -D LLDB_ENABLE_PYTHON=On                                        \
+                -D CMAKE_C_COMPILER_LAUNCHER=sccache                            \
+                -D CMAKE_CXX_COMPILER_LAUNCHER=sccache                          \
                 -D CMAKE_BUILD_TYPE=Release                                     \
                 -G Ninja
       - name: Build lldb
