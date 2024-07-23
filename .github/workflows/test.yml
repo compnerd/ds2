@@ -1,0 +1,57 @@
+name: test
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # Test the Android ds2 binary on an emulator.
+  android-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # We don't currently have a good way of running arm64-v8a tests on the
+        # available GitHub test runners.
+        abi: ['x86_64']
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: seanmiddleditch/gha-setup-ninja@master
+
+      # Cross-compile ds2 for Android. Cmake finds the Android NDK from
+      # ANDROID_NDK in the environment, which is pre-installed and configured
+      # in the test runner image.
+      - name: Configure ds2 NDK build
+        run: |
+          cmake -B ${{ github.workspace }}/BinaryCache/ds2                    \
+                -D CMAKE_BUILD_TYPE=Release                                   \
+                -D CMAKE_SYSTEM_NAME=Android                                  \
+                -D CMAKE_ANDROID_ARCH_ABI=${{ matrix.abi }}                   \
+                -G Ninja
+      - name: Build ds2
+        run: |
+          cmake --build ${{ github.workspace }}/BinaryCache/ds2               \
+                --config Release
+
+      # Build clang and a Python-enabled lldb binary to execute the lldb tests.
+      - uses: actions/checkout@v4
+        name: checkout llvm project
+        with:
+          repository: llvm/llvm-project.git
+          ref: main
+          path: ${{ github.workspace }}/llvm-project
+      - name: Configure lldb build
+        run: |
+          cmake -B ${{ github.workspace }}/llvm-project/build                   \
+            -S ${{ github.workspace }}/llvm-project/llvm                        \
+            -D LLVM_ENABLE_PROJECTS='clang;lldb'                                \
+            -D LLDB_ENABLE_PYTHON=On                                            \
+            -D CMAKE_BUILD_TYPE=Release                                         \
+            -G Ninja
+      - name: Build lldb
+        run: |
+          cmake --build ${{ github.workspace }}/llvm-project/build              \
+                --config Release
