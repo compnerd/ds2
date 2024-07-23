@@ -61,11 +61,11 @@ jobs:
       - name: Configure lldb build
         run: |
           cmake -B ${{ github.workspace }}/llvm-project/build                   \
-            -S ${{ github.workspace }}/llvm-project/llvm                        \
-            -D LLVM_ENABLE_PROJECTS='clang;lldb'                                \
-            -D LLDB_ENABLE_PYTHON=On                                            \
-            -D CMAKE_BUILD_TYPE=Release                                         \
-            -G Ninja
+                -S ${{ github.workspace }}/llvm-project/llvm                    \
+                -D LLVM_ENABLE_PROJECTS='clang;lldb'                            \
+                -D LLDB_ENABLE_PYTHON=On                                        \
+                -D CMAKE_BUILD_TYPE=Release                                     \
+                -G Ninja
       - name: Build lldb
         run: |
           cmake --build ${{ github.workspace }}/llvm-project/build              \
