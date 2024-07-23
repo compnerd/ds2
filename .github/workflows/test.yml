@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: seanmiddleditch/gha-setup-ninja@v5
 
       # Free up some disk space by removing some things we don't use. Without
       # this step, we exhaust disk space while installing Android the emulator
