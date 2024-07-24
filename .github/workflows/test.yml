@@ -45,7 +45,6 @@ jobs:
                             firefox \
                             dotnet-* \
                             mono-* \
-                            temurin-* \
                             mysql-* \
                             postgresql-* \
                             containerd.io \
