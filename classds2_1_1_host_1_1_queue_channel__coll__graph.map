@@ -1,8 +1,8 @@
 <map id="ds2::Host::QueueChannel" name="ds2::Host::QueueChannel">
-<area shape="rect" id="Node000001" title=" " alt="" coords="17,94,184,120"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="30,94,198,120"/>
 <area shape="rect" id="Node000002" href="$classds2_1_1_host_1_1_channel.html" title=" " alt="" coords="5,5,135,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="78,45,86,69,97,93,92,95,81,71,73,47"/>
-<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="82,45,99,93,94,95,77,47"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,45,91,69,106,92,102,95,86,71,76,47"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="85,44,110,92,106,95,81,46"/>
 <area shape="rect" id="Node000003" href="$classds2_1_1_message_queue.html" title=" " alt="" coords="159,5,298,31"/>
-<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="200,42,120,96,117,91,197,38"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="202,43,132,95,129,91,199,38"/>
 </map>

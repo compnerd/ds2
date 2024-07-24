@@ -1,13 +1,13 @@
 <map id="ds2::HardwareBreakpointManager" name="ds2::HardwareBreakpointManager">
-<area shape="rect" id="Node000001" title=" " alt="" coords="88,271,305,297"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="88,273,305,298"/>
 <area shape="rect" id="Node000002" href="$classds2_1_1_breakpoint_manager.html" title=" " alt="" coords="116,198,277,223"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="199,239,199,271,194,271,194,239"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="199,239,199,272,194,272,194,239"/>
 <area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="112,109,281,135"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="199,150,199,197,194,197,194,150"/>
 <area shape="rect" id="Node000004" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,31"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="94,39,182,106,179,111,91,43"/>
 <area shape="rect" id="Node000005" href="$classds2_1_1_address.html" title=" " alt="" coords="148,5,245,31"/>
 <area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="199,47,199,109,194,109,194,47"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="269,5,330,31"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="268,5,330,31"/>
 <area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="294,47,285,68,272,87,254,101,235,111,232,106,251,96,268,83,281,65,290,45"/>
 </map>

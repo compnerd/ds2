@@ -1,6 +1,6 @@
 <map id="ds2::Host::Socket" name="ds2::Host::Socket">
 <area shape="rect" id="Node000001" title=" " alt="" coords="96,94,220,120"/>
-<area shape="rect" id="Node000002" href="$classds2_1_1_host_1_1_channel.html" title=" " alt="" coords="5,13,135,39"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_host_1_1_channel.html" title=" " alt="" coords="5,13,135,38"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="96,47,146,91,143,95,93,51"/>
 <area shape="rect" id="Node000003" href="$structds2_1_1make__unique__enabler.html" title=" " alt="" coords="159,5,333,46"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="215,58,173,95,170,91,211,54"/>
