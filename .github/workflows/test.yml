@@ -100,6 +100,7 @@ jobs:
           cmake -B ${{ github.workspace }}/llvm-project/build                   \
                 -S ${{ github.workspace }}/llvm-project/llvm                    \
                 -D LLVM_ENABLE_PROJECTS='clang;lldb'                            \
+                -D LLVM_TARGETS_TO_BUILD="AArch64;ARM;RISCV;WebAssembly;X86"    \
                 -D LLDB_ENABLE_PYTHON=On                                        \
                 -D CMAKE_C_COMPILER_LAUNCHER=sccache                            \
                 -D CMAKE_CXX_COMPILER_LAUNCHER=sccache                          \
