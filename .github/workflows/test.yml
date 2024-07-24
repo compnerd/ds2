@@ -117,6 +117,7 @@ jobs:
           api-level: ${{ env.ANDROID_API_LEVEL }}
           arch: ${{ matrix.abi }}
           emulator-options: -no-window -noaudio -no-boot-anim
+          disk-size: 2048M
           script: |
             $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:${{ env.DEBUG_PORT }} tcp:${{ env.DEBUG_PORT }}
             $ANDROID_SDK_ROOT/platform-tools/adb push ${{ github.workspace }}/BinaryCache/ds2/ds2 /data/local/tmp
