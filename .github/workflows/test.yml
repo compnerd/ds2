@@ -108,7 +108,8 @@ jobs:
                 -G Ninja
       - name: Build lldb
         run: |
-          cmake --build ${{ github.workspace }}/llvm-project/build              \
+          cmake --build  ${{ github.workspace }}/llvm-project/build             \
+                --target tools/lldb/test/API/lldb-api-test-deps                 \
                 --config Release
 
       # Run a subset of the lldb API tests against ds2 runnint on an x86_64
