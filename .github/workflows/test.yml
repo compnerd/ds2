@@ -37,18 +37,29 @@ jobs:
       - name: free-up disk space
         run: |
           df -h /home
-          sudo apt purge -q azure-cli \
-                            google-cloud-cli* \
-                            powershell \
-                            microsoft-edge-stable \
-                            google-chrome-stable \
-                            firefox \
-                            dotnet-* \
-                            mono-* \
-                            mysql-* \
-                            postgresql-* \
+          sudo apt purge -q aspnetcore-* \
+                            azure-* \
                             containerd.io \
-                            docker-ce*
+                            containernetworking-plugins \
+                            docker-ce* \
+                            dotnet-* \
+                            firefox \
+                            gfortran-* \
+                            google-chrome-stable \
+                            google-cloud-cli* \
+                            kubectl \
+                            linux-azure-* \
+                            linux-modules-*-azure \
+                            microsoft-edge-stable \
+                            mono-* \
+                            monodoc-* \
+                            msbuild \
+                            mysql-* \
+                            podman \
+                            postgresql-* \
+                            powershell \
+                            r-base-core \
+                            vim-runtime
           sudo apt autoremove
           df -h /home
 
