@@ -9,7 +9,7 @@ on:
 
 jobs:
   # Test the Android ds2 binary on an emulator.
-  android-test:
+  android:
     runs-on: ubuntu-latest
 
     strategy:
@@ -25,6 +25,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: seanmiddleditch/gha-setup-ninja@v5
 
       # Free up some disk space by removing some things we don't use. Without
@@ -148,3 +149,118 @@ jobs:
           name: lldb-dotest-android-${{ matrix.abi }}-ds2.log
           path: |
             ${{ github.workspace }}/BinaryCache/ds2/ds2.log
+
+  linux:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { processor: x86_64, cflags: "", cxxflags: "" }
+          - { processor: i686, cflags: "-m32", cxxflags: "-m32" }
+
+    env:
+      DEBUG_PORT: 5432
+      SCCACHE_DIRECT: yes
+
+    steps:
+      - name: Free up disk space
+        run: |
+          df -h /home
+
+          packages=(
+            'aspnetcore-*'
+            'azure-*'
+            'containerd.io'
+            'containernetworking-plugins'
+            'docker-ce*'
+            'dotnet-*'
+            'firefox'
+            'gfortran-*'
+            'google-chrome*'
+            'google-cloud-cli*'
+            'kubectl'
+            'linux-azure-*'
+            'linux-modules-*-azure'
+            'microsoft-edge-*'
+            'mono-*'
+            'monodoc-*'
+            'msbuild'
+            'mysql-*'
+            'podman'
+            'postgresql-*'
+            'powershell'
+            'r-base-core'
+          )
+          sudo apt purge -q ${packages[@]}
+          sudo apt autoremove
+
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /var/lib/docker
+          sudo rm -rf /usr/share/swift
+
+          df -h /home
+
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -qq --no-install-recommends bison flex gcc-multilib g++-multilib ninja-build
+
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - name: Configure
+        run: |
+          cmake -B ${{ github.workspace }}/BinaryCache/ds2                    \
+                -C ${{ github.workspace }}/SourceCache/ds2/cmake/caches/GNUWarnings.cmake \
+                -D CMAKE_BUILD_TYPE=Release                                   \
+                -D CMAKE_SYSTEM_NAME=Linux                                    \
+                -D CMAKE_SYSTEM_PROCESSOR=${{ matrix.processor }}             \
+                -D CMAKE_C_FLAGS=${{ matrix.cflags }}                         \
+                -D CMAKE_CXX_FLAGS=${{ matrix.cxxflags }}                     \
+                -G Ninja                                                      \
+                -S ${{ github.workspace }}/SourceCache/ds2
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
+
+      - name: Setup sccache
+        uses: hendrikmuhs/ccache-action@2e0e89e8d74340a03f75d58d02aae4c5ee1b15c6
+        with:
+          key: llvm-${{ runner.os }}-${{ runner.arch }}
+          variant: sccache
+          append-timestamp: false
+
+      # Build clang and a Python-enabled lldb binary to execute the lldb tests.
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.workspace }}/SourceCache/llvm-project
+          ref: main
+          repository: llvm/llvm-project
+
+      - name: Configure
+        run: |
+          cmake -B ${{ github.workspace }}/BinaryCache/llvm                     \
+                -D CMAKE_C_COMPILER_LAUNCHER=sccache                            \
+                -D CMAKE_CXX_COMPILER_LAUNCHER=sccache                          \
+                -D CMAKE_BUILD_TYPE=Release                                     \
+                -D LLDB_ENABLE_PYTHON=YES                                       \
+                -D LLVM_ENABLE_PROJECTS='clang;lldb'                            \
+                -D LLVM_TARGETS_TO_BUILD="X86"                                  \
+                -G Ninja                                                        \
+                -S ${{ github.workspace }}/SourceCache/llvm-project/llvm
+
+      - name: Build
+        run: |
+          cmake --build ${{ github.workspace }}/BinaryCache/llvm                \
+                --target tools/lldb/test/API/lldb-api-test-deps                 \
+                --config Release
+
+      - run: |
+          ${{ github.workspace }}/BinaryCache/ds2/ds2 platform --server --daemonize --listen localhost:${{ env.DEBUG_PORT }} --log-file=${{ github.workspace }}/BinaryCache/ds2/ds2.log
+          ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest              \
+              --out-of-tree-debugserver                                         \
+              --arch ${{ matrix.processor }}                                    \
+              --platform-name remote-linux                                      \
+              --platform-url connect://localhost:${{ env.DEBUG_PORT }}          \
+              ${{ github.workspace }}/SourceCache/llvm-project/lldb/test/API/api
