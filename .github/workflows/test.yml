@@ -127,7 +127,7 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: launch ds2 on emulator
+      - name: Run lldb tests against ds2 on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ env.ANDROID_API_LEVEL }}
@@ -139,7 +139,7 @@ jobs:
             $ANDROID_SDK_ROOT/platform-tools/adb push ${{ github.workspace }}/BinaryCache/ds2/ds2 /data/local/tmp
             $ANDROID_SDK_ROOT/platform-tools/adb shell "chmod +x /data/local/tmp/ds2"
             $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:${{ env.DEBUG_PORT}} --log-file=/data/local/tmp/ds2.log"
-            ${{ github.workspace }}/llvm-project/build/bin/lldb-dotest --out-of-tree-debugserver --arch ${{ matrix.abi }} --platform-name remote-android --platform-url connect://localhost:${{ env.DEBUG_PORT }} --platform-working-dir /data/local/tmp --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang ${{ github.workspace }}/llvm-project/lldb/test/API/api
+            ${{ github.workspace }}/llvm-project/build/bin/lldb-dotest --out-of-tree-debugserver --arch ${{ matrix.abi }} --platform-name remote-android --platform-url connect://localhost:${{ env.DEBUG_PORT }} --platform-working-dir /data/local/tmp --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --excluded ${{ github.workspace }}/Support/Testing/Excluded/ds2/android-x86_64.excluded --excluded ${{ github.workspace }}/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
             $ANDROID_SDK_ROOT/platform-tools/adb pull /data/local/tmp/ds2.log ${{ github.workspace }}/BinaryCache/ds2/
 
       # Upload the device-side ds2 logs generated during the test run.
