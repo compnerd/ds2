@@ -1,4 +1,2 @@
 xfail
 TestCallWithTimeout.ExprCommandWithTimeoutsTestCase
-ExprSyscallTestCase.test_setpgid
-TestUnwindExpression.UnwindFromExpressionTest.test_unwind_expression
