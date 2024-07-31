@@ -1,0 +1,4 @@
+xfail
+TestFormatters.ExprFormattersTestCase
+TestIRInterpreter.IRInterpreterTestCase.test_ir_interpreter
+TestRegisters.RegisterCommandsTestCase.test_register_expressions

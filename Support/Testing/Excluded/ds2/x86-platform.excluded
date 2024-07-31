@@ -1,0 +1,11 @@
+xfail
+TestProcessAttach.ProcessAttachTestCase.test_attach_to_process_from_different_dir_by_id
+TestFloatTypes.FloatTypesTestCase.test_float_type_dwarf
+TestFloatTypesExpr.FloatTypesExprTestCase.test_float_type_dwarf
+
+skip
+TestTargetSourceMap.TestTargetSourceMap.test_source_map
+lldbsuite.test.lldbtest.TestDataFormatterInvalidStdUniquePtr.test
+lldbsuite.test.lldbtest.TestLLVMStyle.test_dwarf
+lldbsuite.test.lldbtest.TestNamespaceConflicts.test_dwarf
+lldbsuite.test.lldbtest.TestSampleInlineTest.test_dwarf

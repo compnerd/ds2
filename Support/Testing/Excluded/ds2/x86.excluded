@@ -1,0 +1,8 @@
+xfail
+TestLoadUsingPaths.LoadUsingPathsTestCase.test_load_using_paths
+TestProcessLaunch.ProcessLaunchTestCase.test_set_working_dir_existing
+
+skip
+TestReturnValue
+TestSettings.SettingsCommandTestCase.test_pass_host_env_vars
+TestSettings.SettingsCommandTestCase.test_run_args_and_env_vars

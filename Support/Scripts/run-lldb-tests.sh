@@ -56,8 +56,8 @@ host_platform_name=$(get_host_platform_name)
 [ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
 
 opt_fast=false
-opt_no_ds2_blacklists=false
-opt_no_upstream_blacklists=false
+opt_no_ds2_excluded=false
+opt_no_upstream_excluded=false
 opt_log=false
 opt_pudb=false
 opt_strace=false
@@ -68,8 +68,8 @@ opt_dotest_extra_args=""
 while test $# -gt 0; do
   case "$1" in
     --fast) opt_fast=true;;
-    --no-ds2-blacklists) opt_no_ds2_blacklists=true;;
-    --no-upstream-blacklists) opt_no_upstream_blacklists=true;;
+    --no-ds2-excluded) opt_no_ds2_excluded=true;;
+    --no-upstream-excluded) opt_no_upstream_excluded=true;;
     --log) opt_log=true;;
     --pudb) opt_pudb=true;;
     --strace) opt_strace=true;;
@@ -168,44 +168,44 @@ fi
 
 cd "$lldb_path/test"
 
-blacklist_dir="$top/Support/Testing/Blacklists"
+excluded_dir="$top/Support/Testing/Excluded"
 args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v)
 
-if ! $opt_no_upstream_blacklists; then
-  args+=("--excluded" "$blacklist_dir/upstream/general.blacklist"
-         "--excluded" "$blacklist_dir/upstream/non-debugserver-tests.blacklist")
+if ! $opt_no_upstream_excluded; then
+  args+=("--excluded" "$excluded_dir/upstream/general.excluded"
+         "--excluded" "$excluded_dir/upstream/non-debugserver-tests.excluded")
 fi
 
-if ! $opt_no_ds2_blacklists; then
-  args+=("--excluded" "$blacklist_dir/ds2/general.blacklist")
+if ! $opt_no_ds2_excluded; then
+  args+=("--excluded" "$excluded_dir/ds2/general.excluded")
   if [ "$(linux_distribution)" == "centos" ]; then
-    args+=("--excluded" "$blacklist_dir/ds2/centos.blacklist")
+    args+=("--excluded" "$excluded_dir/ds2/centos.excluded")
   fi
 fi
 
 if [ -n "${TARGET-}" ]; then
   if [[ "${TARGET}" == "Linux-X86_64" || "${TARGET}" == "Linux-X86_64-Clang" ]]; then
     args+=("--arch=x86_64")
-    if ! $opt_no_ds2_blacklists; then
-      args+=("--excluded" "$blacklist_dir/ds2/x86_64.blacklist")
+    if ! $opt_no_ds2_excluded; then
+      args+=("--excluded" "$excluded_dir/ds2/x86_64.excluded")
       if [[ "${PLATFORM-}" = "1" ]]; then
-        args+=("--excluded" "$blacklist_dir/ds2/x86_64-platform.blacklist")
+        args+=("--excluded" "$excluded_dir/ds2/x86_64-platform.excluded")
       fi
     fi
   elif [[ "${TARGET}" == "Linux-X86" || "${TARGET}" == "Linux-X86-Clang" || "${TARGET}" == "Android-X86" ]]; then
     args+=("--arch=i386")
-    if ! $opt_no_upstream_blacklists; then
-      args+=("--excluded" "$blacklist_dir/upstream/x86.blacklist")
+    if ! $opt_no_upstream_excluded; then
+      args+=("--excluded" "$excluded_dir/upstream/x86.excluded")
     fi
-    if ! $opt_no_ds2_blacklists; then
-      args+=("--excluded" "$blacklist_dir/ds2/x86.blacklist")
+    if ! $opt_no_ds2_excluded; then
+      args+=("--excluded" "$excluded_dir/ds2/x86.excluded")
     fi
     if [[ "${PLATFORM-}" = "1" ]]; then
-      if ! $opt_no_upstream_blacklists; then
-        args+=("--excluded" "$blacklist_dir/upstream/x86-platform.blacklist")
+      if ! $opt_no_upstream_excluded; then
+        args+=("--excluded" "$excluded_dir/upstream/x86-platform.excluded")
       fi
-      if ! $opt_no_ds2_blacklists; then
-        args+=("--excluded" "$blacklist_dir/ds2/x86-platform.blacklist")
+      if ! $opt_no_ds2_excluded; then
+        args+=("--excluded" "$excluded_dir/ds2/x86-platform.excluded")
       fi
     fi
   elif [[ "${TARGET}" == "Android-ARM" ]]; then
@@ -243,11 +243,11 @@ if [[ "${PLATFORM-}" = "1" ]]; then
     working_dir="$build_dir"
   elif [[ "$platform_name" = "android" ]]; then
     working_dir="/data/local/tmp"
-    if ! $opt_no_ds2_blacklists; then
-      args+=("--excluded" "$blacklist_dir/ds2/android.blacklist")
-      args+=("--excluded" "$blacklist_dir/ds2/android_invalid_tests.blacklist")
+    if ! $opt_no_ds2_excluded; then
+      args+=("--excluded" "$excluded_dir/ds2/android.excluded")
+      args+=("--excluded" "$excluded_dir/ds2/android_invalid_tests.excluded")
       if [[ "$TARGET" = 'Android-ARM64' ]]; then
-        args+=("--excluded" "$blacklist_dir/ds2/android-arm64.blacklist")
+        args+=("--excluded" "$excluded_dir/ds2/android-arm64.excluded")
       fi
     fi
   fi
@@ -256,11 +256,11 @@ if [[ "${PLATFORM-}" = "1" ]]; then
 
   args+=("--platform-name=remote-$platform_name" "--platform-url=connect://localhost:$server_port"
          "--platform-working-dir=$working_dir" "--no-multiprocess")
-  if ! $opt_no_upstream_blacklists; then
-    args+=("--excluded" "$blacklist_dir/upstream/platform.blacklist")
+  if ! $opt_no_upstream_excluded; then
+    args+=("--excluded" "$excluded_dir/upstream/platform.excluded")
   fi
-  if ! $opt_no_ds2_blacklists; then
-    args+=("--excluded" "$blacklist_dir/ds2/platform.blacklist")
+  if ! $opt_no_ds2_excluded; then
+    args+=("--excluded" "$excluded_dir/ds2/platform.excluded")
   fi
 
   server_args=("p" "--server" "--listen" "127.0.0.1:$server_port")
