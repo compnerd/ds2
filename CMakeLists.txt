@@ -98,37 +98,43 @@ else()
   message(SEND_ERROR "Unknown host architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
-if(CMAKE_HOST_SYSTEM STREQUAL Windows)
-  set(CMAKE_HOST_EXECUTABLE_SUFFIX .exe)
+if(DS2_REGSGEN2)
+  add_executable(RegsGen2::RegsGen2 IMPORTED)
+  set_target_properties(RegsGen2::RegsGen2 PROPERTIES
+	IMPORTED_LOCATION ${DS2_REGSGEN2})
 else()
-  set(CMAKE_HOST_EXECUTABLE_SUFFIX)
+  if(CMAKE_HOST_SYSTEM STREQUAL Windows)
+	set(CMAKE_HOST_EXECUTABLE_SUFFIX .exe)
+  else()
+	set(CMAKE_HOST_EXECUTABLE_SUFFIX)
+  endif()
+
+  get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+  if(GENERATOR_IS_MULTI_CONFIG)
+	set(RegsGen2_RELATIVE_PATH Release/regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
+  else()
+	set(RegsGen2_RELATIVE_PATH regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
+  endif()
+
+  include(ExternalProject)
+  ExternalProject_Add(RegsGen2
+	SOURCE_DIR ${PROJECT_SOURCE_DIR}/Tools/RegsGen2
+	BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/RegsGen2
+	CMAKE_ARGS
+	  -DCMAKE_BUILD_TYPE:STRING=Release
+	  -DCMAKE_SYSTEM_NAME:STRING=${CMAKE_HOST_SYSTEM_NAME}
+	  -DCMAKE_SYSTEM_PROCESSOR:STRING=${CMAKE_HOST_SYSTEM_PROCESSOR}
+	BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
+	INSTALL_COMMAND ""
+	BUILD_BYPRODUCTS
+	  <BINARY_DIR>/${RegsGen2_RELATIVE_PATH})
+  ExternalProject_Get_Property(RegsGen2 BINARY_DIR)
+
+  add_executable(RegsGen2::RegsGen2 IMPORTED)
+  set_target_properties(RegsGen2::RegsGen2 PROPERTIES
+	IMPORTED_LOCATION ${BINARY_DIR}/${RegsGen2_RELATIVE_PATH})
+  add_dependencies(RegsGen2::RegsGen2 RegsGen2)
 endif()
-
-get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if(GENERATOR_IS_MULTI_CONFIG)
-  set(RegsGen2_RELATIVE_PATH Release/regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
-else()
-  set(RegsGen2_RELATIVE_PATH regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
-endif()
-
-include(ExternalProject)
-ExternalProject_Add(RegsGen2
-  SOURCE_DIR ${PROJECT_SOURCE_DIR}/Tools/RegsGen2
-  BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/RegsGen2
-  CMAKE_ARGS
-    -DCMAKE_BUILD_TYPE:STRING=Release
-    -DCMAKE_SYSTEM_NAME:STRING=${CMAKE_HOST_SYSTEM_NAME}
-    -DCMAKE_SYSTEM_PROCESSOR:STRING=${CMAKE_HOST_SYSTEM_PROCESSOR}
-  BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
-  INSTALL_COMMAND ""
-  BUILD_BYPRODUCTS
-    <BINARY_DIR>/${RegsGen2_RELATIVE_PATH})
-ExternalProject_Get_Property(RegsGen2 BINARY_DIR)
-
-add_executable(RegsGen2::RegsGen2 IMPORTED)
-set_target_properties(RegsGen2::RegsGen2 PROPERTIES
-  IMPORTED_LOCATION ${BINARY_DIR}/${RegsGen2_RELATIVE_PATH})
-add_dependencies(RegsGen2::RegsGen2 RegsGen2)
 
 # Generate different pointer size RISC-V definitions.
 # FIXME(compnerd) this assumes all targets are RISCVnnnG, which may not be true.
