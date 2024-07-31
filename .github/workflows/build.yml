@@ -7,7 +7,34 @@ on:
   workflow_dispatch:
 
 jobs:
+  windows_tools:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: compnerd/gha-setup-vsdevenv@main
+
+      - name: Install Build Tools
+        run: choco install winflexbison3
+
+      - name: Configure
+        run: |
+          cmake -B ${{ github.workspace }}/BinaryCache/RegsGen2 `
+                -C ${{ github.workspace }}/cmake/caches/MSVCWarnings.cmake `
+                -G "Visual Studio 17 2022" `
+                -A x64 `
+                -S ${{ github.workspace }}/Tools/RegsGen2
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/BinaryCache/RegsGen2 --config Release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-regsgen2
+          path: |
+            ${{ github.workspace }}/BinaryCache/RegsGen2/Release/regsgen2.exe
+
   windows:
+    needs: [windows_tools]
     runs-on: windows-latest
 
     strategy:
@@ -20,13 +47,18 @@ jobs:
       - name: Install Build Tools
         run: choco install winflexbison3
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-regsgen2
+          path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
+
       - name: Configure
         run: |
           cmake -B ${{ github.workspace }}/BinaryCache/ds2 `
                 -C ${{ github.workspace }}/cmake/caches/MSVCWarnings.cmake `
-                -D CMAKE_BUILD_TYPE=Release `
                 -G "Visual Studio 17 2022" `
                 -A ${{ matrix.arch }} `
+                -D DS2_REGSGEN2=${{ github.workspace }}/BinaryCache/RegsGen2/Release/regsgen2.exe `
                 -S ${{ github.workspace }}
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
@@ -39,6 +71,7 @@ jobs:
 
 
   mingw:
+    needs: [windows_tools]
     runs-on: windows-latest
 
     defaults:
@@ -65,12 +98,18 @@ jobs:
 
       - uses: actions/checkout@v4
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-regsgen2
+          path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
+
       - name: Configure
         run: |
           cmake -B $(cygpath -u '${{ github.workspace }}/BinaryCache/ds2')      \
                 -C $(cygpath -u '${{ github.workspace }}/cmake/caches/GNUWarnings.cmake') \
                 -D CMAKE_BUILD_TYPE=Release                                     \
                 -G Ninja                                                        \
+                -D DS2_REGSGEN2=$(cygpath -u '${{ github.workspace }}/BinaryCache/RegsGen2/Release/regsgen2.exe') \
                 -S $(cygpath -u '${{ github.workspace }}')
       - name: Build
         run: cmake --build $(cygpath -u '${{ github.workspace }}/BinaryCache/ds2') --config Release
@@ -145,6 +184,7 @@ jobs:
 
   # Cross-compile for Android on a Windows host.
   android-windows-ndk:
+    needs: [windows_tools]
     runs-on: windows-latest
 
     strategy:
@@ -154,6 +194,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-regsgen2
+          path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
 
       - name: Install Build Tools
         run: choco install winflexbison3
@@ -166,6 +210,7 @@ jobs:
                 -D CMAKE_BUILD_TYPE=Release `
                 -D CMAKE_SYSTEM_NAME=Android `
                 -D CMAKE_ANDROID_ARCH_ABI=${{ matrix.abi }} `
+                -D DS2_REGSGEN2=${{ github.workspace }}/BinaryCache/RegsGen2/Release/regsgen2.exe `
                 -G Ninja
 
       - name: Build
