@@ -1,9 +1,9 @@
 name: nightly
 
 on:
-  # Run once daily at 8:45 PM.
+  # Run once daily at 4:45 AM UTC.
   schedule:
-    - cron: "45 20 * * */1"
+    - cron: "45 04 * * */1"
 
   # Allow manually-triggered runs.
   workflow_dispatch:
