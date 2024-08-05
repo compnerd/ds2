@@ -19,19 +19,12 @@ set(CMAKE_CXX_EXTENSIONS NO)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if(CMAKE_SYSTEM_NAME MATCHES Windows)
+if(WIN32)
   # NOTE(compnerd) disable exceptions in STL
   add_compile_definitions(_HAS_EXCEPTIONS=0)
 endif()
 
-set(OS_NAME ${CMAKE_SYSTEM_NAME})
-
-string(STRIP "${OS_NAME}" OS_NAME)
-if (OS_NAME MATCHES "WindowsStore")
-  set(OS_NAME "Windows")
-endif ()
-
-if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
+if(ANDROID OR LINUX)
   include(CheckIncludeFile)
   CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
   CHECK_INCLUDE_FILE(termios.h HAVE_TERMIOS_H)
@@ -146,7 +139,7 @@ foreach(WORDSIZE 32 64 128)
     ${PROJECT_SOURCE_DIR}/Definitions/RISCV${WORDSIZE}.json @ONLY)
 endforeach()
 
-if(CMAKE_SYSTEM_NAME STREQUAL Android)
+if(ANDROID)
   set(RegsGenOS linux)
 else()
   set(RegsGenOS $<LOWER_CASE:${CMAKE_SYSTEM_NAME}>)
@@ -276,7 +269,7 @@ elseif(DS2_ARCHITECTURE STREQUAL RISCV)
 endif()
 
 # OS Sources
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
+if(WIN32 OR WINDOWS_STORE)
   target_sources(ds2 PRIVATE
     Sources/Host/Windows/File.cpp
     Sources/Host/Windows/Platform.cpp
@@ -305,7 +298,7 @@ else()
     Sources/Utils/POSIX/FaultHandler.cpp
     Sources/Utils/POSIX/Stringify.cpp)
 
-  if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  if(APPLE)
     target_sources(ds2 PRIVATE
       Sources/Target/Darwin/MachOProcess.cpp)
   else()
@@ -316,7 +309,7 @@ else()
       Sources/Target/POSIX/ELFProcess.cpp)
   endif()
 
-  if(CMAKE_SYSTEM_NAME MATCHES "Android|Linux")
+  if(ANDROID OR LINUX)
     target_sources(ds2 PRIVATE
       Sources/Host/Linux/Platform.cpp
       Sources/Host/Linux/ProcFS.cpp
@@ -326,7 +319,7 @@ else()
       Sources/Target/Linux/Process.cpp
       Sources/Target/Linux/Thread.cpp
       Sources/Target/Linux/${DS2_ARCHITECTURE}/Process${DS2_ARCHITECTURE}.cpp)
-  elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  elseif(APPLE)
     target_sources(ds2 PRIVATE
       Sources/Host/Darwin/LibProc.cpp
       Sources/Host/Darwin/Platform.cpp
@@ -339,7 +332,7 @@ else()
       Sources/Target/Darwin/Thread.cpp
       Sources/Target/Darwin/${DS2_ARCHITECTURE}/Process${DS2_ARCHITECTURE}.cpp
       Sources/Target/Darwin/${DS2_ARCHITECTURE}/Thread${DS2_ARCHITECTURE}.cpp)
-  elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+  elseif("${BSD}" STREQUAL "FreeBSD")
     target_sources(ds2 PRIVATE
       Sources/Host/FreeBSD/Platform.cpp
       Sources/Host/FreeBSD/ProcStat.cpp
@@ -368,13 +361,13 @@ execute_process(COMMAND git rev-parse --short HEAD
 set_property(SOURCE Sources/main.cpp APPEND PROPERTY COMPILE_DEFINITIONS
              DS2_GIT_HASH="${DS2_GIT_HASH}")
 
-if ("${OS_NAME}" MATCHES "Windows")
+if(WIN32)
   target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)
   target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6
                                          _WIN32_WINNT=_WIN32_WINNT_WIN6)
-endif ()
+endif()
 
-if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
+if(ANDROID OR LINUX)
   foreach (CHECK SYS_PERSONALITY_H TERMIOS_H GETTID POSIX_OPENPT TGKILL
            PROCESS_VM_READV PROCESS_VM_WRITEV
            ENUM_PTRACE_REQUEST)
@@ -382,7 +375,7 @@ if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
       target_compile_definitions(ds2 PRIVATE HAVE_${CHECK})
     endif ()
   endforeach ()
-elseif ("${OS_NAME}" MATCHES "Windows")
+elseif(WIN32)
   set(CMAKE_EXTRA_INCLUDE_FILES windows.h)
 
   include(CheckFunctionExists)
@@ -408,36 +401,33 @@ elseif ("${OS_NAME}" MATCHES "Windows")
   endforeach ()
 
   set(CMAKE_EXTRA_INCLUDE_FILES)
-endif ()
+endif()
 
-if (TIZEN)
+if(TIZEN)
   target_compile_definitions(ds2 PRIVATE __TIZEN__)
-endif ()
+endif()
 
 add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
 target_link_libraries(ds2 PRIVATE jsobjects)
 
-if ("${OS_NAME}" MATCHES "Android")
+if(ANDROID)
   target_link_libraries(ds2 PRIVATE log)
-elseif ("${OS_NAME}" MATCHES "Linux" AND NOT TIZEN)
+elseif(LINUX AND NOT TIZEN)
   target_link_libraries(ds2 PRIVATE dl)
-endif ()
+endif()
 
-if ("${OS_NAME}" MATCHES "FreeBSD")
+if("${BSD}" STREQUAL "FreeBSD")
   target_link_libraries(ds2 PRIVATE util procstat)
-endif ()
+endif()
 
-if ("${OS_NAME}" MATCHES "Windows")
-  target_link_libraries(ds2 PRIVATE shlwapi ws2_32 dbghelp)
-  if ("${CMAKE_LINKER}" MATCHES "lld")
-    target_link_libraries(ds2 PRIVATE advapi32)
-  endif()
-  if ("${CMAKE_SYSTEM_NAME}" MATCHES "WindowsStore")
+if(WIN32)
+  target_link_libraries(ds2 PRIVATE advapi32 shlwapi ws2_32 dbghelp)
+  if(WINDOWS_STORE)
     target_link_libraries(ds2 PRIVATE onecore)
-  else ()
+  else()
     target_link_libraries(ds2 PRIVATE psapi)
-  endif ()
-endif ()
+  endif()
+endif()
 
 if (COVERAGE)
   if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
