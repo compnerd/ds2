@@ -51,33 +51,36 @@ if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
   set(CMAKE_EXTRA_INCLUDE_FILES)
 endif ()
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # Global options (these apply for other subprojects like JSObjects) and must
   # be set before we include subdirectories.
-  if (STATIC)
+  if(STATIC)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
-  endif ()
+  endif()
 
-  if (SANITIZER)
-    set(COMMON_FLAGS "${COMMON_FLAGS} -g -fno-omit-frame-pointer")
-  endif ()
+  if(SANITIZER)
+    # TODO(compnerd) require that sanitization is only enabled with Debug Info
+    add_compile_options(-g)
+    # Disable FPO to get better stack traces on a sanitization issue.
+    add_compile_options(-fno-omit-frame-pointer)
+    if(SANITIZER STREQUAL "asan")
+      add_compile_options(-fsanitize=address)
+    elseif(SANITIZER STREQUAL "ubsan")
+      add_compile_options(-fsanitize=integer)
+      add_compile_options(-fsanitize=undefined)
+    elseif(SANITIZER STREQUAL "tsan")
+      add_compile_options(-fsanitize=thread)
+    endif()
+  endif()
 
-  if (SANITIZER STREQUAL "asan")
-    set(COMMON_FLAGS "${COMMON_FLAGS} -fsanitize=address")
-  elseif (SANITIZER STREQUAL "ubsan")
-    set(COMMON_FLAGS "${COMMON_FLAGS} -fsanitize=integer -fsanitize=undefined")
-  elseif (SANITIZER STREQUAL "tsan")
-    set(COMMON_FLAGS "${COMMON_FLAGS} -fsanitize=thread")
-  endif ()
-
-  if (COVERAGE)
-    set(COMMON_FLAGS "${COMMON_FLAGS} -g -fprofile-arcs -ftest-coverage")
+  if(COVERAGE)
+    # TODO(compnerd) require that coverage is only enabled with Debug Info
+    add_compile_options(-g)
+    add_compile_options(-fprofile-arcs -ftest-coverage)
+    # FIXME(compnerd) add these flags via `add_link_options`
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
-  endif ()
-
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
-endif ()
+  endif()
+endif()
 
 if(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "ARM64" OR
    CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|AArch64|ARM64|arm64")
