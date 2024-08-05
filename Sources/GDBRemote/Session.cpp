@@ -251,48 +251,46 @@ std::string Session::formatAddress(Address const &address,
   return ss.str();
 }
 
+// Map the flags specified by the lldb server protocl for vFile:open: to
+// internal flags used by the session delegate.
+//
+// The protocol flag values are documented at
+// https://github.com/llvm/llvm-project/blob/main/lldb/include/lldb/Host/File.h
+//
 OpenFlags Session::ConvertOpenFlags(uint32_t protocolFlags) {
-  int flags = 0;
-  if (_compatMode == kCompatibilityModeLLDB) {
-    if (protocolFlags & (1u << 0)) // eOpenOptionRead
-      flags |= kOpenFlagRead;
-    if (protocolFlags & (1u << 1)) // eOpenOptionWrite
-      flags |= kOpenFlagWrite;
-    if (flags == 0)
-      return kOpenFlagInvalid;
+  uint32_t flags = 0;
 
-    if (protocolFlags & (1u << 2)) // eOpenOptionAppend
-      flags |= kOpenFlagAppend;
-    if (protocolFlags & (1u << 3)) // eOpenOptionTruncate
-      flags |= kOpenFlagTruncate;
-    if (protocolFlags & (1u << 4)) // eOpenOptionNonBlocking
-      flags |= kOpenFlagNonBlocking;
-    if (protocolFlags & (1u << 5)) // eOpenOptionCanCreate
-      flags |= kOpenFlagCreate;
-    if (protocolFlags & (1u << 6)) // eOpenOptionCanCreateNewOnly
-      flags |= (kOpenFlagCreate | kOpenFlagNewOnly);
-    if (protocolFlags & (1u << 7)) // eOpenOptionDontFollowSymlinks
-      flags |= kOpenFlagNoFollow;
-    if (protocolFlags & (1u << 8)) // eOpenOptionCloseOnExec
-      flags |= kOpenFlagCloseOnExec;
+  if ((protocolFlags & 0x3) == 0x0) { // eOpenOptionReadOnly (O_RDONLY)
+    flags |= kOpenFlagRead;
+  } else if (protocolFlags & 0x1) { // eOpenOptionWriteOnly (O_WRONLY)
+    flags |= kOpenFlagWrite;
+  } else if (protocolFlags & 0x2) { // eOpenOptionReadWrite (O_RDWR)
+    flags |= (kOpenFlagRead | kOpenFlagWrite);
   } else {
-    if ((protocolFlags & 0x3) == 0x0) // O_RDONLY
-      flags |= kOpenFlagRead;
-    else if (protocolFlags & 0x1) // O_WRONLY
-      flags |= kOpenFlagWrite;
-    else if (protocolFlags & 0x2) // O_RDWR
-      flags |= (kOpenFlagRead | kOpenFlagWrite);
-    else
-      return kOpenFlagInvalid; // Invalid mode
+    return kOpenFlagInvalid; // Invalid mode
+  }
 
-    if (protocolFlags & 0x8) // O_APPEND
-      flags |= kOpenFlagAppend;
-    if (protocolFlags & 0x200) // O_CREAT
-      flags |= kOpenFlagCreate;
-    if (protocolFlags & 0x400) // O_TRUNC
-      flags |= kOpenFlagTruncate;
-    if (protocolFlags & 0x800) // O_EXCL
-      flags |= kOpenFlagNewOnly;
+  if (protocolFlags & 0x200) { // eOpenOptionCanCreate (O_CREAT)
+    flags |= kOpenFlagCreate;
+  }
+  if (protocolFlags & 0x400) { // eOpenOptionTruncate (O_TRUNC)
+    flags |= kOpenFlagTruncate;
+  }
+  if (protocolFlags & 0x800) { // eOpenOptionCanCreateNewOnly (O_EXCL)
+    flags |= (kOpenFlagCreate | kOpenFlagNewOnly);
+  }
+
+  if (_compatMode == kCompatibilityModeLLDB) {
+    // Flags supported only by LLDB
+    if (protocolFlags & (1u << 28)) { // eOpenOptionNonBlocking
+      flags |= kOpenFlagNonBlocking;
+    }
+    if (protocolFlags & (1u << 29)) { // eOpenOptionDontFollowSymlinks
+      flags |= kOpenFlagNoFollow;
+    }
+    if (protocolFlags & (1u << 30)) { // eOpenOptionCloseOnExec
+      flags |= kOpenFlagCloseOnExec;
+    }
   }
 
   return static_cast<OpenFlags>(flags);
