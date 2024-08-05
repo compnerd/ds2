@@ -5,7 +5,7 @@ on:
     branches:
       - main
   workflow_dispatch:
-
+  workflow_call:
 
 jobs:
   # Test the Android ds2 binary on an emulator.
