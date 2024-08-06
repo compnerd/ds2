@@ -44,13 +44,9 @@ if(ANDROID OR LINUX)
   set(CMAKE_EXTRA_INCLUDE_FILES)
 endif ()
 
+# Global options (these apply for other subprojects like JSObjects) and must be
+# set before we include subdirectories.
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  # Global options (these apply for other subprojects like JSObjects) and must
-  # be set before we include subdirectories.
-  if(STATIC)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
-  endif()
-
   if(SANITIZER)
     # TODO(compnerd) require that sanitization is only enabled with Debug Info
     add_compile_options(-g)
@@ -70,8 +66,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # TODO(compnerd) require that coverage is only enabled with Debug Info
     add_compile_options(-g)
     add_compile_options(-fprofile-arcs -ftest-coverage)
-    # FIXME(compnerd) add these flags via `add_link_options`
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
   endif()
 endif()
 
@@ -429,11 +423,15 @@ if(WIN32)
   endif()
 endif()
 
-if (COVERAGE)
-  if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  if(STATIC)
+    target_link_options(ds2 PRIVATE -static)
+  endif()
+  if(COVERAGE)
+    target_link_options(ds2 PRIVATE -coverage)
     target_link_libraries(ds2 PRIVATE gcov)
-  endif ()
-endif ()
+  endif()
+endif()
 
 include(FindThreads)
 if (STATIC AND DEFINED CMAKE_THREAD_LIBS_INIT AND
