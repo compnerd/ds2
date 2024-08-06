@@ -256,41 +256,35 @@ std::string Session::formatAddress(Address const &address,
 //
 // The protocol flag values are documented at
 // https://github.com/llvm/llvm-project/blob/main/lldb/include/lldb/Host/File.h
-//
 OpenFlags Session::ConvertOpenFlags(uint32_t protocolFlags) {
   uint32_t flags = 0;
 
-  if ((protocolFlags & 0x3) == 0x0) { // eOpenOptionReadOnly (O_RDONLY)
-    flags |= kOpenFlagRead;
-  } else if (protocolFlags & 0x1) { // eOpenOptionWriteOnly (O_WRONLY)
-    flags |= kOpenFlagWrite;
-  } else if (protocolFlags & 0x2) { // eOpenOptionReadWrite (O_RDWR)
-    flags |= (kOpenFlagRead | kOpenFlagWrite);
-  } else {
+  switch (protocolFlags & 0x3) {
+  case 0x0: // eOpenOptionReadOnly (O_RDONLY)
+    flags = kOpenFlagRead;
+    break;
+  case 0x1: // eOpenOptionWriteOnly (O_WRONLY)
+    flags = kOpenFlagWrite;
+    break;
+  case 0x2: // eOpenOptionReadWrite (O_RDWR)
+    flags = kOpenFlagRead | kOpenFlagWrite;
+    break;
+  default:
     return kOpenFlagInvalid; // Invalid mode
   }
 
-  if (protocolFlags & 0x200) { // eOpenOptionCanCreate (O_CREAT)
-    flags |= kOpenFlagCreate;
-  }
-  if (protocolFlags & 0x400) { // eOpenOptionTruncate (O_TRUNC)
-    flags |= kOpenFlagTruncate;
-  }
-  if (protocolFlags & 0x800) { // eOpenOptionCanCreateNewOnly (O_EXCL)
-    flags |= (kOpenFlagCreate | kOpenFlagNewOnly);
-  }
+  flags = flags
+    | (protocolFlags & 0x200 ? kOpenFlagCreate : 0) // eOpenOptionCanCreate (O_CREAT)
+    | (protocolFlags & 0x400 ? kOpenFlagTruncate : 0) // eOpenOptionTruncate (O_TRUNC)
+    | (protocolFlags & 0x800 ? kOpenFlagCreate | kOpenFlagNewOnly : 0); // eOpenOptionCanCreateNewOnly (O_EXCL)
 
   if (_compatMode == kCompatibilityModeLLDB) {
-    // Flags supported only by LLDB
-    if (protocolFlags & (1u << 28)) { // eOpenOptionNonBlocking
-      flags |= kOpenFlagNonBlocking;
-    }
-    if (protocolFlags & (1u << 29)) { // eOpenOptionDontFollowSymlinks
-      flags |= kOpenFlagNoFollow;
-    }
-    if (protocolFlags & (1u << 30)) { // eOpenOptionCloseOnExec
-      flags |= kOpenFlagCloseOnExec;
-    }
+    if (flags & (1u << 31)) return kOpenFlagInvalid; // eOpenOptionInvalid
+
+    flags = flags
+      | (protocolFlags & (1u << 28) ? kOpenFlagNonBlocking : 0) // eOpenOptionNonBlocking
+      | (protocolFlags & (1u << 29) ? kOpenFlagNoFollow : 0) // eOpenOptionDontFollowSymlinks
+      | (protocolFlags & (1u << 30) ? kOpenFlagCloseOnExec : 0); // eOpenOptionCloseOnExec
   }
 
   return static_cast<OpenFlags>(flags);
