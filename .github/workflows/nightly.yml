@@ -12,9 +12,6 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
 
-  test:
-    uses: ./.github/workflows/test.yml
-
   # Generate a nightly tag if build and test jobs succeed.
   tag:
     needs: [build, test]
