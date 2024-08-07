@@ -8,6 +8,7 @@ on:
   workflow_call:
 
 env:
+  LLVM_REF: ca102b2114fa8a00096d71ff9fc3b1b218f0f01a
   SCCACHE_DIRECT: yes
 
 jobs:
@@ -249,6 +250,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: llvm/llvm-project
+          ref: ${{ env.LLVM_REF }}
           path: ${{ github.workspace }}/SourceCache/llvm
 
       # Build clang and a Python-enabled lldb binary to execute the lldb tests
@@ -313,6 +315,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: llvm/llvm-project
+          ref: ${{ env.LLVM_REF }}
           path: ${{ github.workspace }}/SourceCache/llvm
 
       - name: Checkout ds2
@@ -399,6 +402,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: llvm/llvm-project
+          ref: ${{ env.LLVM_REF }}
           path: ${{ github.workspace }}/SourceCache/llvm
 
       - name: Checkout ds2
