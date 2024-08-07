@@ -1,4 +1,4 @@
-name: build
+name: Build and Test
 
 on:
   pull_request:
@@ -7,7 +7,11 @@ on:
   workflow_dispatch:
   workflow_call:
 
+env:
+  SCCACHE_DIRECT: yes
+
 jobs:
+
   windows_tools:
     runs-on: windows-latest
 
@@ -177,11 +181,14 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Releaase
 
+      # Tar the output to preserve permissions.
+      - name: tar output
+        run: tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/ds2.tar ds2
+
       - uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.processor }}-ds2
-          path: |
-            ${{ github.workspace }}/BinaryCache/ds2/ds2
+          path: ${{ github.workspace }}/BinaryCache/ds2.tar
 
   # Cross-compile for Android on a Windows host.
   android-windows-ndk:
@@ -217,8 +224,212 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
 
+      # Tar the output to preserve permissions.
+      - name: tar output
+        run: tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/ds2.tar ds2
+
       - uses: actions/upload-artifact@v4
         with:
           name: android-${{ matrix.abi }}-ds2
-          path: |
-            ${{ github.workspace }}/BinaryCache/ds2/ds2
+          path: ${{ github.workspace }}/BinaryCache/ds2.tar
+
+  linux-lldb:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: seanmiddleditch/gha-setup-ninja@v5
+
+      - name: Setup sccache
+        uses: hendrikmuhs/ccache-action@2e0e89e8d74340a03f75d58d02aae4c5ee1b15c6
+        with:
+          key: llvm-${{ runner.os }}-${{ runner.arch }}
+          variant: sccache
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v4
+        with:
+          repository: llvm/llvm-project
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      # Build clang and a Python-enabled lldb binary to execute the lldb tests
+      - name: Configure lldb build
+        run: |
+          cmake -B ${{ github.workspace }}/BinaryCache/llvm                     \
+                -S ${{ github.workspace }}/SourceCache/llvm/llvm                \
+                -D LLVM_ENABLE_PROJECTS='clang;lldb'                            \
+                -D LLVM_TARGETS_TO_BUILD="X86"                                  \
+                -D LLDB_ENABLE_PYTHON=On                                        \
+                -D CMAKE_C_COMPILER_LAUNCHER=sccache                            \
+                -D CMAKE_CXX_COMPILER_LAUNCHER=sccache                          \
+                -D CMAKE_BUILD_TYPE=Release                                     \
+                -G Ninja
+
+      - name: Build llvm
+        run: |
+          cmake --build  ${{ github.workspace }}/BinaryCache/llvm               \
+                --target tools/lldb/test/API/lldb-api-test-deps                 \
+                --config Release
+
+      # Tar the build output to preserve permissions.
+      - name: tar output
+        run: tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/llvm.tar llvm
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: llvm-${{ runner.os }}-${{ runner.arch }}
+          path: ${{ github.workspace }}/BinaryCache/llvm.tar
+
+  test-linux:
+    needs: [linux, linux-lldb]
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        processor: [x86_64, i686]
+
+    steps:
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -qq --no-install-recommends gcc-multilib g++-multilib
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: llvm-${{ runner.os }}-${{ runner.arch }}
+          path: ${{ github.workspace }}/BinaryCache
+      - name: untar llvm artifacts
+        run: |
+          tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux-${{ matrix.processor }}-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - name: untar ds2 artifacts
+        run: |
+          tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v4
+        with:
+          repository: llvm/llvm-project
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v4
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - run: |
+          ${{ github.workspace }}/BinaryCache/ds2/ds2 platform --server --daemonize --listen localhost:5432
+          ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest              \
+              --out-of-tree-debugserver                                         \
+              --arch ${{ matrix.processor }}                                    \
+              --platform-name remote-linux                                      \
+              --platform-url connect://localhost:5432                           \
+              ${{ github.workspace }}/SourceCache/llvm/lldb/test/API/api
+
+  test-android:
+    needs: [android-windows-ndk, linux-lldb]
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # We don't currently have a good way to run arm64 Android emulator on
+        # the available GitHub test runners.
+        processor: ['x86_64']
+
+    steps:
+      # Free up some disk space by removing some things we don't use. Without
+      # this step, we exhaust disk space while installing Android the emulator
+      # image in the setup-ndk step below. The list of packages sorted by on
+      # disk size can be generated by running the command:
+      #
+      #     dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n
+      #
+      - name: free-up disk space
+        run: |
+          df -h /home
+          sudo apt purge -q aspnetcore-* \
+                            azure-* \
+                            containerd.io \
+                            containernetworking-plugins \
+                            docker-ce* \
+                            dotnet-* \
+                            firefox \
+                            gfortran-* \
+                            google-chrome-stable \
+                            google-cloud-cli* \
+                            kubectl \
+                            linux-azure-* \
+                            linux-modules-*-azure \
+                            microsoft-edge-stable \
+                            mono-* \
+                            monodoc-* \
+                            msbuild \
+                            mysql-* \
+                            podman \
+                            postgresql-* \
+                            powershell \
+                            r-base-core \
+                            vim-runtime
+          sudo apt autoremove
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /var/lib/docker
+          sudo rm -rf /usr/share/swift
+          df -h /home
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: llvm-${{ runner.os }}-${{ runner.arch }}
+          path: ${{ github.workspace }}/BinaryCache
+      - name: untar llvm artifacts
+        run: |
+          tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-${{ matrix.processor }}-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - name: untar ds2 artifacts
+        run: |
+          tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v4
+        with:
+          repository: llvm/llvm-project
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v4
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          # NOTE: because of structural changes and the remvoal of gcc, Android
+          # NDK r21e is the last NDK version that the lldb API tests can build
+          # test binaries against. The lldb test framework will need to be
+          # modified to run with a more recent NDK.
+          ndk-version: r21e
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run lldb tests against ds2 on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          arch: ${{ matrix.processor }}
+          emulator-options: -no-window -noaudio -no-boot-anim
+          script: |
+            $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432
+            $ANDROID_SDK_ROOT/platform-tools/adb push ${{ github.workspace }}/BinaryCache/ds2/ds2 /data/local/tmp
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "chmod +x /data/local/tmp/ds2"
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432"
+            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest --out-of-tree-debugserver --arch ${{ matrix.processor}} --platform-name remote-android --platform-url connect://localhost:5432 --platform-working-dir /data/local/tmp --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-x86_64.excluded --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android.excluded
