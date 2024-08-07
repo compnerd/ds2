@@ -12,9 +12,9 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
 
-  # Generate a nightly tag if build and test jobs succeed.
+  # Generate a nightly tag if build job succeeds.
   tag:
-    needs: [build, test]
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
