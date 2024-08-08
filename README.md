@@ -27,8 +27,9 @@ The build instructions include instructions assuming that the [ninja-build](http
 ### Building with CMake + Ninja
 
 > **Windows Only**
->
-> **NOTE:** ds2 requires Visual Studio (with at least the Windows SDK, though the C/C++ workload support is recommended).  CMake can be installed as part of Visual Studio 2019 or through an official release if desired. The build currently requires flex and bison, which can be satisfied by the WinFlexBison project. Visual Studio, MSBuild, and Ninja generators are supported. The Ninja build tool can be installed through Visual Studio by installing the CMake support or can be downloaded from the project's home page.
+
+> [!NOTE]
+> ds2 requires Visual Studio (with at least the Windows SDK, though the C/C++ workload support is recommended).  CMake can be installed as part of Visual Studio 2019 or through an official release if desired. The build currently requires flex and bison, which can be satisfied by the WinFlexBison project. Visual Studio, MSBuild, and Ninja generators are supported. The Ninja build tool can be installed through Visual Studio by installing the CMake support or can be downloaded from the project's home page.
 
 After cloning the ds2 repository, run the following commands to build for the current host:
 
