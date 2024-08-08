@@ -356,10 +356,12 @@ set_property(SOURCE Sources/main.cpp APPEND PROPERTY COMPILE_DEFINITIONS
              DS2_GIT_HASH="${DS2_GIT_HASH}")
 
 if(WIN32)
-  target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)
-  target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6
-                                         _WIN32_WINNT=_WIN32_WINNT_WIN6)
-endif()
+  target_compile_definitions(ds2 PRIVATE
+    NOMINMAX
+    WIN32_LEAN_AND_MEAN
+    WINVER=_WIN32_WINNT_WIN6
+    _WIN32_WINNT=_WIN32_WINNT_WIN6)
+endif ()
 
 if(ANDROID OR LINUX)
   foreach (CHECK SYS_PERSONALITY_H TERMIOS_H GETTID POSIX_OPENPT TGKILL
