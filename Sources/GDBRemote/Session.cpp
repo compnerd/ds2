@@ -2950,11 +2950,6 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
   std::string op = args.substr(op_start, op_end);
   op_end++;
 
-  // lldb encodes count and fd's in decimal, gdb encodes them in hex
-  int base = (_compatMode == kCompatibilityModeLLDB) ? 10 : 16;
-  auto baseModifier =
-      (_compatMode == kCompatibilityModeLLDB) ? std::dec : std::hex;
-
   //
   // GDB:  vFile:open:path,flags,mode
   //       vFile:close:fd
@@ -2997,10 +2992,10 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
-      ss << 'F' << baseModifier << fd;
+      ss << 'F' << std::hex << fd;
     }
   } else if (op == "close") {
-    int fd = std::strtol(&args[op_end], nullptr, base);
+    int fd = std::strtol(&args[op_end], nullptr, 16);
     ErrorCode error = _delegate->onFileClose(*this, fd);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
@@ -3009,34 +3004,34 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
   } else if (op == "pread") {
     char *eptr;
-    int fd = std::strtol(&args[op_end], &eptr, base);
+    int fd = std::strtol(&args[op_end], &eptr, 16);
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
     }
-    uint64_t count = strtoull(eptr, &eptr, base);
+    uint64_t count = strtoull(eptr, &eptr, 16);
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
     }
-    uint64_t offset = strtoull(eptr, &eptr, base);
+    uint64_t offset = strtoull(eptr, &eptr, 16);
 
     ByteVector buffer;
     ErrorCode error = _delegate->onFileRead(*this, fd, count, offset, buffer);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
-      ss << 'F' << baseModifier << count << ';' << Escape(buffer);
+      ss << 'F' << std::hex << count << ';' << Escape(buffer);
       escaped = true;
     }
   } else if (op == "pwrite") {
     char *eptr;
-    int fd = std::strtol(&args[op_end], &eptr, base);
+    int fd = std::strtol(&args[op_end], &eptr, 16);
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
     }
-    uint64_t offset = strtoull(eptr, &eptr, base);
+    uint64_t offset = strtoull(eptr, &eptr, 16);
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
@@ -3053,7 +3048,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
-      ss << 'F' << baseModifier << length;
+      ss << 'F' << std::hex << length;
     }
   } else if (op == "unlink") {
     ErrorCode error =
@@ -3098,7 +3093,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     if (error != kSuccess) {
       ss << 'E' << std::hex << error;
     } else {
-      ss << 'F' << baseModifier << size;
+      ss << 'F' << std::hex << size;
     }
   } else {
     sendError(kErrorUnsupported);
