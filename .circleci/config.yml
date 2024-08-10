@@ -28,17 +28,6 @@ test_step: &test_step
     name: Test
     command: cd build && ../Support/Scripts/run-${DEBUGGER-lldb}-tests.sh --log
 
-check_dirty_step: &check_dirty_step
-  run:
-    name: Check for dirty state
-    command: git --no-pager diff --exit-code
-
-start_android_emulator_step: &start_android_emulator_step
-  run:
-    name: Start Android emulator
-    command: ./Support/Scripts/start-android-emulator.py --target ${TARGET}
-    background: true
-
 build_only_defaults: &build_only_defaults
   <<: *docker_config
   steps:
@@ -52,15 +41,6 @@ build_and_test_defaults: &build_and_test_defaults
     - checkout
     - *configure_step
     - *build_step
-    - *test_step
-
-build_and_test_android: &build_and_test_android
-  <<: *docker_config
-  steps:
-    - checkout
-    - *configure_step
-    - *build_step
-    - *start_android_emulator_step
     - *test_step
 
 version: 2
@@ -91,18 +71,6 @@ jobs:
       TARGET: Linux-X86_64-Clang
       DEBUGGER: gdb
       GDB_TESTS: "gdb.base/break;gdb.base/printcmds;gdb.base/step-bt"
-  Android-ARM:
-    <<: *build_and_test_android
-    environment:
-      PLATFORM: 1
-      TARGET: Android-ARM
-      EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=21"
-  Android-ARM64:
-    <<: *build_and_test_android
-    environment:
-      PLATFORM: 1
-      TARGET: Android-ARM64
-      EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=24"
   Tizen-X86:
     <<: *build_only_defaults
   Tizen-ARM:
@@ -118,8 +86,5 @@ workflows:
       - Linux-X86_64-Clang-platform
       - Linux-X86_64-GDB
       - Linux-X86_64-GDB-Clang
-      - Android-ARM
-      - Android-ARM-16
-      - Android-ARM64
       - Tizen-X86
       - Tizen-ARM
