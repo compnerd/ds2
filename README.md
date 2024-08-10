@@ -41,30 +41,15 @@ ninja -C out
 ### Compiling for Android
 
 For Android native debugging, it is possible to build ds2 with the Android NDK.
-A script is provided to download the Android NDK automatically for you.
-
-`Support/Scripts/prepare-android-ndk.py` will download a working version
-of the NDK, extract it, and install it to `/tmp/android-ndk`.
 
 ```sh
-cd ds2
-./Support/Scripts/prepare-android-ndk.py
-mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
-make
+cmake -B out -D CMAKE_SYSTEM_NAME=Android -D CMAKE_ANDROID_ARCH_ABI=armeabi-v7a -G Ninja -S ds2
+ninja -C out
 ```
 
 Note that this will build ds2 targeting the highest level API level that the
 NDK supports. If you want to target another api level, e.g. 21, add the flag
-`-DCMAKE_SYSTEM_VERSION=21` to your cmake invocation.
-
-#### Testing on Android device
-
-If you would like to use ds2 to run tests in the LLDB test suite using an
-Android device, you should use the script
-`Support/Scripts/prepare-android-ndk.py` to get a checkout of the android NDK.
-The LLDB test suite expects an NDK to exist on your host, and that script will
-download and unpack it where the CMake Toolchain files expect it to be.
+`-DCMAKE_SYSTEM_VERSION=21` to your CMake invocation.
 
 ### Compiling for Linux ARM
 
