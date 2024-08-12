@@ -2906,7 +2906,9 @@ void Session::Handle_vCont(ProtocolInterpreter::Handler const &,
           return;
         }
         if (*eptr++ == ':') {
-          if (!action.ptid.parse(eptr, _compatMode)) {
+          // always parse as GDB multi-process if format is p<pid>.<tid> format
+          auto mode = (*eptr == 'p') ? kCompatibilityModeGDBMultiprocess : _compatMode;
+          if (!action.ptid.parse(eptr, mode)) {
             sendError(kErrorInvalidArgument); // Not supported
             return;
           }
