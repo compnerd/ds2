@@ -73,6 +73,8 @@ struct ProcessThreadId {
 
   inline bool any() const { return !validPid() && !validTid(); }
 
+  inline bool all() const { return tid == kAllThreadId; }
+
   inline void clear() {
     pid = kAnyProcessId;
     tid = kAnyThreadId;
