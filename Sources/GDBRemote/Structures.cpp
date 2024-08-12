@@ -79,60 +79,74 @@ bool Feature::parse(std::string const &string) {
 //
 
 bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
-#define CHECK_AND_RESET(RESULT, RESET_VAL)                                     \
-  do {                                                                         \
-    if (errno != 0) {                                                          \
-      (RESULT) = (RESET_VAL);                                                  \
-      return false;                                                            \
-    }                                                                          \
-  } while (0)
-
-  pid = kAllProcessId;
-  tid = kAllThreadId;
+  this->pid = kAllProcessId;
+  this->tid = kAllThreadId;
 
   if (string.empty())
     return false;
 
-  errno = 0;
+  unsigned long new_pid = kAllProcessId;
+  unsigned long new_tid = kAllThreadId;
 
-  if (mode == kCompatibilityModeGDB ||
-      mode == kCompatibilityModeGDBMultiprocess) {
-    if (string[0] == 'p') {
-      char *eptr;
-      pid = strtoul(string.c_str() + 1, &eptr, 16);
-      CHECK_AND_RESET(pid, kAllProcessId);
+  const char *str = string.c_str();
+  char *eptr = nullptr;
+
+  auto parse_hex = [&eptr](const char *str, unsigned long &value) -> bool {
+    errno = 0;
+    value = std::strtoul(str, &eptr, 16);
+    return str != eptr && errno == 0;
+  };
+
+  switch (mode) {
+  case kCompatibilityModeGDB:
+  case kCompatibilityModeGDBMultiprocess:
+    if (*str == 'p') {
+      str += 1;
+      if (!parse_hex(str, new_pid))
+        return false;
+
       if (*eptr++ == '.') {
-        tid = strtoul(eptr, nullptr, 16);
-        CHECK_AND_RESET(tid, kAllThreadId);
+        str = eptr;
+        if (!parse_hex(str, new_tid))
+          return false;
       }
     } else {
-      pid = std::strtoul(string.c_str(), nullptr, 16);
-      CHECK_AND_RESET(pid, kAllProcessId);
+      if (!parse_hex(str, new_pid))
+        return false;
     }
-  } else if (mode == kCompatibilityModeLLDB) {
-    char *eptr;
-    pid = strtoul(string.c_str(), &eptr, 16);
-    CHECK_AND_RESET(pid, kAllProcessId);
+    break;
+
+  case kCompatibilityModeLLDB:
+    if (!parse_hex(str, new_pid))
+      return false;
+
     if (*eptr++ == ';') {
       if (std::strncmp(eptr, "thread:", 7) == 0) {
-        tid = strtoul(eptr + 7, nullptr, 16);
-        CHECK_AND_RESET(tid, kAllThreadId);
+        str = eptr + 7;
+        if (!parse_hex(str, new_tid))
+          return false;
       }
     } else {
-      tid = pid;
-      pid = kAnyProcessId;
+      new_tid = new_pid;
+      new_pid = kAnyProcessId;
     }
-  } else if (mode == kCompatibilityModeLLDBThread) {
-    if (std::strncmp(string.c_str(), "thread:", 7) == 0) {
-      tid = strtoul(string.c_str() + 7, nullptr, 16);
-      CHECK_AND_RESET(tid, kAllThreadId);
+    break;
+
+  case kCompatibilityModeLLDBThread:
+    if (std::strncmp(str, "thread:", 7) == 0) {
+      str += 7;
+      if (!parse_hex(str, new_tid))
+        return false;
     }
-  } else {
+    break;
+
+  default:
     return false;
   }
 
+  this->pid = new_pid;
+  this->tid = new_tid;
   return true;
-#undef CHECK_AND_RESET
 }
 
 std::string ProcessThreadId::encode(CompatibilityMode mode) const {
