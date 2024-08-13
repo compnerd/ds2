@@ -418,6 +418,7 @@ jobs:
           # test binaries against. The lldb test framework will need to be
           # modified to run with a more recent NDK.
           ndk-version: r21e
+          local-cache: true
 
       - name: Enable KVM
         run: |
