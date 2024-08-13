@@ -340,7 +340,8 @@ jobs:
       matrix:
         # We don't currently have a good way to run arm64 Android emulator on
         # the available GitHub test runners.
-        processor: ['x86_64']
+        include:
+          - { processor: x86_64, api-level: 28 }
 
     steps:
       # Free up some disk space by removing some things we don't use. Without
@@ -426,12 +427,34 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.processor }}-${{ matrix.api-level }}
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: ${{ matrix.processor }}
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
       - name: Run lldb tests against ds2 on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: ${{ matrix.api-level }}
           arch: ${{ matrix.processor }}
-          emulator-options: -no-window -noaudio -no-boot-anim
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
           script: |
             $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432
             $ANDROID_SDK_ROOT/platform-tools/adb push ${{ github.workspace }}/BinaryCache/ds2/ds2 /data/local/tmp
