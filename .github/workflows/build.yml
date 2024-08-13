@@ -340,7 +340,8 @@ jobs:
       matrix:
         # We don't currently have a good way to run arm64 Android emulator on
         # the available GitHub test runners.
-        processor: ['x86_64']
+        include:
+          - { processor: x86_64, api-level: 28 }
 
     steps:
       # Free up some disk space by removing some things we don't use. Without
@@ -420,18 +421,46 @@ jobs:
           ndk-version: r21e
           local-cache: true
 
+      # Cache the contents of $HOME/.android which contains emulators,
+      # snapshots, and adb state.
+      - name: Setup AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: ~/.android/**
+          key: avd-${{ runner.os }}-${{ matrix.processor }}-${{ matrix.api-level }}
+
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: ${{ matrix.processor }}
+          force-avd-creation: false
+          emulator-options: -no-window -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
       - name: Run lldb tests against ds2 on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 28
+          api-level: ${{ matrix.api-level }}
           arch: ${{ matrix.processor }}
-          emulator-options: -no-window -noaudio -no-boot-anim
+          force-avd-creation: false
+          # NOTE: -no-snapshot will not load or save state and the emulator will
+          # cold boot. Ideally, we would specify -no-snapshot-save instead so it
+          # would load the snapshot created in the caching step (but not save a
+          # new one). However, doing that causes the emulator to hang during
+          # shutdown. We're still saving time by reusing the device created in
+          # the caching step and not wiping userdata on boot.
+          emulator-options: -no-snapshot -no-window -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           script: |
             $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432
             $ANDROID_SDK_ROOT/platform-tools/adb push ${{ github.workspace }}/BinaryCache/ds2/ds2 /data/local/tmp
