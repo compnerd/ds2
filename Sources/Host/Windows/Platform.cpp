@@ -375,6 +375,11 @@ void Platform::EnumerateProcesses(
   }
 }
 
+bool Platform::TerminateProcess(ProcessId pid) {
+  // TODO(andrurogerz): implement using OpenProcess and TerminateProcess.
+  return false;
+}
+
 std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   // Note(sas): There is no thread name concept on Windows.
   // http://msdn.microsoft.com/en-us/library/xcb2z8hs.aspx describes a
