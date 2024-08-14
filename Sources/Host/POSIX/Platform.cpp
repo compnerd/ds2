@@ -22,6 +22,8 @@
 #include <string>
 #include <unistd.h>
 
+#include <sys/wait.h>
+
 #if defined(OS_FREEBSD) || defined(OS_DARWIN)
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -123,6 +125,23 @@ bool Platform::SetWorkingDirectory(std::string const &directory) {
 }
 
 ds2::ProcessId Platform::GetCurrentProcessId() { return ::getpid(); }
+
+// Termiantes the process and waits for it to exit before returning.
+bool Platform::TerminateProcess(ProcessId pid) {
+  if (::kill(pid, SIGKILL) < 0)
+    return false;
+
+  int status;
+  pid_t ret;
+  do {
+    ret = ::waitpid(pid, &status, 0);
+  } while (ret == -1 && errno == EINTR);
+
+  if (ret != pid)
+    return false;
+
+  return WIFEXITED(status) || WIFSIGNALED(status);
+}
 
 bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
   for (int i = 0; environ[i] != nullptr; ++i) {

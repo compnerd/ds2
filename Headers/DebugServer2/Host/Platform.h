@@ -74,6 +74,7 @@ public:
   static void
   EnumerateProcesses(bool allUsers, UserId const &uid,
                      std::function<void(ProcessInfo const &info)> const &cb);
+  static bool TerminateProcess(ProcessId pid);
 
 public:
   static std::string GetThreadName(ProcessId pid, ThreadId tid);
