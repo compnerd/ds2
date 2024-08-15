@@ -159,6 +159,9 @@ Thread *DebugSessionImplBase::findThread(ProcessThreadId const &ptid) const {
   if (_process == nullptr)
     return nullptr;
 
+  if (ptid.tid == kAllThreadId)
+    return nullptr;
+
   if (ptid.validPid() && ptid.pid != _process->pid())
     return nullptr;
 
@@ -864,7 +867,7 @@ DebugSessionImplBase::onResume(Session &session,
   // save the global and trigger it later.
   //
   for (auto const &action : actions) {
-    if (action.ptid.any()) {
+    if (action.ptid.any() || action.ptid.all()) {
       if (hasGlobalAction) {
         DS2LOG(Error, "more than one global action specified");
         error = kErrorAlreadyExist;
@@ -917,6 +920,9 @@ DebugSessionImplBase::onResume(Session &session,
   // Now trigger the global action
   //
   if (hasGlobalAction) {
+    if (globalAction.ptid.validPid() && globalAction.ptid.pid != _process->pid())
+      return kErrorInvalidArgument;
+
     if (globalAction.action == kResumeActionContinue ||
         globalAction.action == kResumeActionContinueWithSignal) {
       if (globalAction.address.valid()) {
