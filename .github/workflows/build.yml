@@ -345,28 +345,32 @@ jobs:
           - test-category: misc
             processor: x86_64
             api-level: 28
-            test-subdirs: "SourceCache/llvm/lldb/test/API/android \
-                           SourceCache/llvm/lldb/test/API/api \
-                           SourceCache/llvm/lldb/test/API/lang \
-                           SourceCache/llvm/lldb/test/API/linux \
-                           SourceCache/llvm/lldb/test/API/tools \
-                           SourceCache/llvm/lldb/test/API/sanity \
-                           SourceCache/llvm/lldb/test/API/types"
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/android
+              SourceCache/llvm/lldb/test/API/api
+              SourceCache/llvm/lldb/test/API/lang
+              SourceCache/llvm/lldb/test/API/linux
+              SourceCache/llvm/lldb/test/API/tools
+              SourceCache/llvm/lldb/test/API/sanity
+              SourceCache/llvm/lldb/test/API/types
 
           - test-category: commands
             processor: x86_64
             api-level: 28
-            test-subdirs: "SourceCache/llvm/lldb/test/API/commands"
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/commands
 
           - test-category: Python API
             processor: x86_64
             api-level: 28
-            test-subdirs: "SourceCache/llvm/lldb/test/API/python_api"
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/python_api
 
           - test-category: functionalities
             processor: x86_64
             api-level: 28
-            test-subdirs: "SourceCache/llvm/lldb/test/API/functionalities"
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/functionalities
 
     name: Android ${{ matrix.processor }} test ${{ matrix.test-category}}
 
@@ -488,19 +492,23 @@ jobs:
           # the caching step and not wiping userdata on boot.
           emulator-options: -no-snapshot -no-window -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: "\
-            $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432 \n
-            $ANDROID_SDK_ROOT/platform-tools/adb push \"${{ github.workspace }}/BinaryCache/ds2/ds2\" /data/local/tmp \n
-            $ANDROID_SDK_ROOT/platform-tools/adb shell \"chmod +x /data/local/tmp/ds2\" \n
-            $ANDROID_SDK_ROOT/platform-tools/adb shell \"/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432\" \n
-            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest \
-              --out-of-tree-debugserver \
-              --arch ${{ matrix.processor}} \
-              --platform-name remote-android \
-              --platform-url connect://localhost:5432 \
-              --platform-working-dir /data/local/tmp \
-              --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang \
-              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-${{ matrix.processor }}.excluded \
-              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded \
-              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android.excluded \
-              ${{ matrix.test-subdirs }}"
+          script: >
+            $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432
+
+            $ANDROID_SDK_ROOT/platform-tools/adb push "${{ github.workspace }}/BinaryCache/ds2/ds2" /data/local/tmp
+
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "chmod +x /data/local/tmp/ds2"
+
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432"
+
+            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
+            --out-of-tree-debugserver
+            --arch ${{ matrix.processor}}
+            --platform-name remote-android
+            --platform-url connect://localhost:5432
+            --platform-working-dir /data/local/tmp
+            --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-${{ matrix.processor }}.excluded
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android.excluded
+            ${{ matrix.test-subdirs }}
