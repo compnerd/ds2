@@ -509,6 +509,6 @@ jobs:
             --platform-working-dir /data/local/tmp
             --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-${{ matrix.processor }}.excluded
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-${{ matrix.processor }}.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
-            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android.excluded
             ${{ matrix.test-subdirs }}
