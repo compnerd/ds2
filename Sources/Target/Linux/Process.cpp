@@ -364,7 +364,15 @@ bool Process::isAlive() const {
     break;
   }
 
-  return super::isAlive();
+  if (_pid <= 0)
+    return false;
+
+  auto dir = ProcFS::OpenDIR(_pid, "");
+  if (dir == nullptr)
+    return false;
+
+  closedir(dir);
+  return true;
 }
 
 ds2::Host::Linux::PTrace &Process::ptrace() const {
