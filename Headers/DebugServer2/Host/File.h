@@ -61,6 +61,9 @@ public:
 public:
   static ErrorCode createDirectory(std::string const &path, uint32_t flags);
 
+public:
+  static ErrorCode fileSize(std::string const &path, uint64_t &size);
+
 protected:
   int _fd;
   ErrorCode _lastError;

@@ -154,5 +154,15 @@ ErrorCode File::createDirectory(std::string const &path, uint32_t flags) {
 
   return kSuccess;
 }
+
+ErrorCode File::fileSize(std::string const &path, uint64_t &size) {
+  struct stat stbuf;
+  const auto result = stat(path.c_str(), &stbuf);
+  if (result < 0)
+    return Platform::TranslateError();
+
+  size = static_cast<uint64_t>(stbuf.st_size);
+  return kSuccess;
+}
 } // namespace Host
 } // namespace ds2
