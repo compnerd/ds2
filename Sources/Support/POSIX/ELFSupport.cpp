@@ -9,8 +9,10 @@
 //
 
 #include "DebugServer2/Support/POSIX/ELFSupport.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <elf.h>
+#include <fcntl.h>
 
 namespace ds2 {
 namespace Support {
@@ -67,6 +69,94 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
     subType = kCPUSubTypeInvalid;
     return false;
   }
+  return true;
+}
+
+bool ELFSupport::GetELFFileBuildID(std::string const &path, ByteVector &buildId) {
+  int fd = ::open(path.c_str(), O_RDONLY);
+  if (fd < 0)
+    return false;
+
+  Elf32_Ehdr e32hdr;
+  if (::pread(fd, &e32hdr, sizeof(e32hdr), 0) != sizeof(e32hdr) ||
+      e32hdr.e_ident[EI_MAG0] != ELFMAG0 || e32hdr.e_ident[EI_MAG1] != ELFMAG1 ||
+      e32hdr.e_ident[EI_MAG2] != ELFMAG2 || e32hdr.e_ident[EI_MAG3] != ELFMAG3) {
+    DS2LOG(Warning, "File \"%s\" is not valid ELF format", path.c_str());
+    ::close(fd);
+    return false;
+  }
+
+  bool result = false;
+  switch (e32hdr.e_ident[EI_CLASS]) {
+    case ELFCLASS32:
+      Elf32_Shdr s32hdr;
+      Elf32_Nhdr n32hdr;
+      result = ReadBuildID(fd, e32hdr, s32hdr, n32hdr, buildId);
+      break;
+
+    case ELFCLASS64:
+      Elf64_Ehdr e64hdr;
+      if (::pread(fd, &e64hdr, sizeof(e64hdr), 0) != sizeof(e64hdr))
+        break;
+
+      Elf64_Shdr s64hdr;
+      Elf64_Nhdr n64hdr;
+      result = ReadBuildID(fd, e64hdr, s64hdr, n64hdr, buildId);
+      break;
+
+    default:
+      DS2LOG(Warning, "File \"%s\" contains unsupported ELF class identifier %i",
+             path.c_str(), e32hdr.e_ident[EI_CLASS]);
+      break;
+  }
+
+  ::close(fd);
+
+  if (!result)
+    DS2LOG(Warning, "Failed to query build ID for ELF file \"%s\"", path.c_str());
+
+  return result;
+}
+
+template <class T_EHDR, class T_SHDR, class T_NHDR>
+bool ELFSupport::ReadBuildID(int fd, const T_EHDR &ehdr, T_SHDR &shdr,
+                             T_NHDR &nhdr, ByteVector &id) {
+    // Build ID is found in a note section with note type NT_GNU_BUILD_ID.
+    // The section is typically named .note.gnu.build-id.
+    for (size_t i = 0; i < ehdr.e_shnum; i++) {
+      if (!ReadSectionHeader(fd, ehdr, shdr, i))
+        return false;
+
+      if (shdr.sh_type != SHT_NOTE)
+        continue;
+
+      if (::pread(fd, &nhdr, sizeof(nhdr), shdr.sh_offset) != sizeof(nhdr))
+        return false;
+
+      if (nhdr.n_type != NT_GNU_BUILD_ID)
+        continue;
+
+      id.resize(nhdr.n_descsz);
+      const off_t pos = shdr.sh_offset + sizeof(nhdr) + nhdr.n_namesz;
+      if (::pread(fd, id.data(), nhdr.n_descsz, pos) != nhdr.n_descsz)
+        return false;
+
+      return true;
+    }
+
+    return false;
+}
+
+template <class T_EHDR, class T_SHDR>
+bool ELFSupport::ReadSectionHeader(int fd, const T_EHDR &ehdr, T_SHDR &shdr,
+                                   size_t idx) {
+  if (idx >= ehdr.e_shnum)
+    return false;
+
+  const off_t shdr_pos = ehdr.e_shoff + (idx * ehdr.e_shentsize);
+  if (::pread(fd, &shdr, ehdr.e_shentsize, shdr_pos) != ehdr.e_shentsize)
+    return false;
+
   return true;
 }
 } // namespace Support
