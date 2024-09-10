@@ -103,6 +103,9 @@ protected: // Debugging Session
                                              std::string const &path,
                                              std::string const &triple,
                                              SharedLibraryInfo &info) const = 0;
+  virtual ErrorCode onQueryModuleInfo(Session &session, std::string &path,
+                                      std::string &triple,
+                                      ModuleInfo &info) const = 0;
 
   virtual ErrorCode onRestart(Session &session, ProcessId pid) = 0;
   virtual ErrorCode onInterrupt(Session &session) = 0;

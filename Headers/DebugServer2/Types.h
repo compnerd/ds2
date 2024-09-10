@@ -410,4 +410,13 @@ struct MappedFileInfo {
   uint64_t baseAddress;
   uint64_t size;
 };
+
+struct ModuleInfo {
+  std::string uuid;
+  std::string triple;
+  std::string file_path;
+  uint64_t file_offset;
+  uint64_t file_size;
+};
+
 } // namespace ds2

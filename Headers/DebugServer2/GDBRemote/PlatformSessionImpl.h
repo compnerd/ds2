@@ -43,6 +43,10 @@ protected:
   ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
                              std::string &name) const override;
 
+  ErrorCode onQueryModuleInfo(Session &session, std::string &path,
+                              std::string &triple,
+                              ModuleInfo &info) const override;
+
 protected:
   ErrorCode onLaunchDebugServer(Session &session, std::string const &host,
                                 uint16_t &port, ProcessId &pid) override;
