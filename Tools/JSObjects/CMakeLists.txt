@@ -49,6 +49,11 @@ target_include_directories(jsobjects PRIVATE
     ${JSObjects_SOURCE_DIR}/Sources/libjson
     ${JSObjects_BINARY_DIR})
 
+if("${BSD}" STREQUAL "FreeBSD")
+  target_compile_definitions(jsobjects PRIVATE
+    _XOPEN_SOURCE=600)
+endif()
+
 if((CMAKE_C_COMPILER_ID MATCHES "GNU" AND
     CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 4.6) OR
    ((CMAKE_C_COMPILER_ID MATCHES "Clang" AND

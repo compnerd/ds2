@@ -79,7 +79,7 @@ elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "X86" OR
       CMAKE_SYSTEM_PROCESSOR MATCHES "i[3-6]86")
   set(DS2_ARCHITECTURE X86)
 elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "X64" OR
-      CMAKE_SYSTEM_PROCESSOR MATCHES "AMD64|x86_64")
+      CMAKE_SYSTEM_PROCESSOR MATCHES "amd64|AMD64|x86_64")
   set(DS2_ARCHITECTURE X86_64)
 elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "RISCV32|RISCV64|RISCV128" OR
        CMAKE_SYSTEM_PROCESSOR MATCHES "riscv32|riscv64|riscv128")
@@ -140,25 +140,29 @@ else()
 endif()
 
 foreach(ARCH ARM ARM64 RISCV32 RISCV64 RISCV128 X86 X86_64)
+  set(ArchHeadersDir ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/${ARCH})
+  file(MAKE_DIRECTORY ${ArchHeadersDir})
   add_custom_command(OUTPUT
-      ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
+      ${ArchHeadersDir}/RegistersDescriptors.h
     COMMAND
       $<TARGET_FILE:RegsGen2::RegsGen2>
         -a ${RegsGenOS}
         -I DebugServer2/Architecture/RegisterLayout.h
-        -h -o ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
+	-h -o ${ArchHeadersDir}/RegistersDescriptors.h
         -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
     DEPENDS
       Definitions/${ARCH}.json
       RegsGen2::RegsGen2)
 
+  set(ArchSourcesDir ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/${ARCH})
+  file(MAKE_DIRECTORY ${ArchSourcesDir})
   add_custom_command(OUTPUT
-      ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/${ARCH}/RegistersDescriptors.cpp
+      ${ArchSourcesDir}/RegistersDescriptors.cpp
     COMMAND
       $<TARGET_FILE:RegsGen2::RegsGen2>
         -a ${RegsGenOS}
         -I DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
-        -c -o ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/${ARCH}/RegistersDescriptors.cpp
+	-c -o ${ArchSourcesDir}/RegistersDescriptors.cpp
         -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
     DEPENDS
       Definitions/${ARCH}.json

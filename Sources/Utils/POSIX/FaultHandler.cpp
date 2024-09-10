@@ -31,7 +31,7 @@ private:
   }
 
   void installCatcher() {
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__FreeBSD__)
     long sz = SIGSTKSZ;
 #elif defined(__ANDROID__)
     long sz = MINSIGSTKSZ;
