@@ -77,6 +77,9 @@ public:
 
 public:
   static std::string GetThreadName(ProcessId pid, ThreadId tid);
+
+public:
+  static bool GetExecutableFileBuildID(std::string const &path, ByteVector &buildId);
 };
 } // namespace Host
 } // namespace ds2

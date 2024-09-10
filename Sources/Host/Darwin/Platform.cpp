@@ -140,5 +140,10 @@ void Platform::EnumerateProcesses(
 std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   return Host::Darwin::LibProc::GetThreadName(ProcessThreadId(pid, tid));
 }
+
+bool Platform::GetExecutableFileBuildID(std::string const &path, ByteVector &buildId) {
+  // TODO(andrurogerz): implement for Mach-O files
+  return false;
+}
 } // namespace Host
 } // namespace ds2
