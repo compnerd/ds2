@@ -410,6 +410,12 @@ endif()
 add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
 target_link_libraries(ds2 PRIVATE jsobjects)
 
+if(APPLE OR ANDROID OR LINUX)
+  # include all symbols on debug builds to print a readable backtrace on ds2 crash
+  target_link_options(ds2 PRIVATE
+    $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:-rdynamic>)
+endif()
+
 if(ANDROID)
   target_link_libraries(ds2 PRIVATE log)
 elseif(LINUX AND NOT TIZEN)
