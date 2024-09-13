@@ -27,12 +27,12 @@ public:
                                    CPUType &type, CPUSubType &subType);
   static bool GetELFFileBuildID(std::string const &path, ByteVector &buildID);
 private:
-  template <class T_EHDR, class T_SHDR, class T_NHDR>
-  static bool ReadBuildID(int fd, const T_EHDR &ehdr, T_SHDR &shdr,
-                          T_NHDR &nhdr, ByteVector &id);
+  template <typename ELFHeader, typename SectionHeader, typename NotesHeader>
+  static bool ReadBuildID(int fd, const ELFHeader &ehdr, SectionHeader &shdr,
+                          NotesHeader &nhdr, ByteVector &id);
 
-  template <class T_EHDR, class T_SHDR>
-  static bool ReadSectionHeader(int fd, const T_EHDR &ehdr, T_SHDR &shdr,
+  template <typename ELFHeader, typename SectionHeader>
+  static bool ReadSectionHeader(int fd, const ELFHeader &ehdr, SectionHeader &shdr,
                                 size_t idx);
 };
 } // namespace Support

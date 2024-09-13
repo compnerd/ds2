@@ -88,11 +88,12 @@ bool ELFSupport::GetELFFileBuildID(std::string const &path, ByteVector &buildId)
 
   bool result = false;
   switch (e32hdr.e_ident[EI_CLASS]) {
-    case ELFCLASS32:
-      Elf32_Shdr s32hdr;
-      Elf32_Nhdr n32hdr;
-      result = ReadBuildID(fd, e32hdr, s32hdr, n32hdr, buildId);
+    case ELFCLASS32: {
+      Elf32_Shdr shdr;
+      Elf32_Nhdr nhdr;
+      result = ReadBuildID(fd, e32hdr, shdr, nhdr, buildId);
       break;
+    }
 
     case ELFCLASS64:
       Elf64_Ehdr e64hdr;
@@ -118,9 +119,9 @@ bool ELFSupport::GetELFFileBuildID(std::string const &path, ByteVector &buildId)
   return result;
 }
 
-template <class T_EHDR, class T_SHDR, class T_NHDR>
-bool ELFSupport::ReadBuildID(int fd, const T_EHDR &ehdr, T_SHDR &shdr,
-                             T_NHDR &nhdr, ByteVector &id) {
+template <typename ELFHeader, typename SectionHeader, typename NotesHeader>
+bool ELFSupport::ReadBuildID(int fd, const ELFHeader &ehdr, SectionHeader &shdr,
+                             NotesHeader &nhdr, ByteVector &id) {
     // Build ID is found in a note section with note type NT_GNU_BUILD_ID.
     // The section is typically named .note.gnu.build-id.
     for (size_t i = 0; i < ehdr.e_shnum; i++) {
@@ -147,8 +148,8 @@ bool ELFSupport::ReadBuildID(int fd, const T_EHDR &ehdr, T_SHDR &shdr,
     return false;
 }
 
-template <class T_EHDR, class T_SHDR>
-bool ELFSupport::ReadSectionHeader(int fd, const T_EHDR &ehdr, T_SHDR &shdr,
+template <typename ELFHeader, typename SectionHeader>
+bool ELFSupport::ReadSectionHeader(int fd, const ELFHeader &ehdr, SectionHeader &shdr,
                                    size_t idx) {
   if (idx >= ehdr.e_shnum)
     return false;
