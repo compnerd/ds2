@@ -77,37 +77,38 @@ bool ELFSupport::GetELFFileBuildID(std::string const &path, ByteVector &buildId)
   if (fd < 0)
     return false;
 
-  Elf32_Ehdr e32hdr;
-  if (::pread(fd, &e32hdr, sizeof(e32hdr), 0) != sizeof(e32hdr) ||
-      e32hdr.e_ident[EI_MAG0] != ELFMAG0 || e32hdr.e_ident[EI_MAG1] != ELFMAG1 ||
-      e32hdr.e_ident[EI_MAG2] != ELFMAG2 || e32hdr.e_ident[EI_MAG3] != ELFMAG3) {
+  Elf32_Ehdr ehdr;
+  if (::pread(fd, &ehdr, sizeof(ehdr), 0) != sizeof(ehdr) ||
+      ehdr.e_ident[EI_MAG0] != ELFMAG0 || ehdr.e_ident[EI_MAG1] != ELFMAG1 ||
+      ehdr.e_ident[EI_MAG2] != ELFMAG2 || ehdr.e_ident[EI_MAG3] != ELFMAG3) {
     DS2LOG(Warning, "File \"%s\" is not valid ELF format", path.c_str());
     ::close(fd);
     return false;
   }
 
   bool result = false;
-  switch (e32hdr.e_ident[EI_CLASS]) {
+  switch (ehdr.e_ident[EI_CLASS]) {
     case ELFCLASS32: {
       Elf32_Shdr shdr;
       Elf32_Nhdr nhdr;
-      result = ReadBuildID(fd, e32hdr, shdr, nhdr, buildId);
+      result = ReadBuildID(fd, ehdr, shdr, nhdr, buildId);
       break;
     }
 
-    case ELFCLASS64:
-      Elf64_Ehdr e64hdr;
-      if (::pread(fd, &e64hdr, sizeof(e64hdr), 0) != sizeof(e64hdr))
+    case ELFCLASS64: {
+      Elf64_Ehdr ehdr;
+      if (::pread(fd, &ehdr, sizeof(ehdr), 0) != sizeof(ehdr))
         break;
 
-      Elf64_Shdr s64hdr;
-      Elf64_Nhdr n64hdr;
-      result = ReadBuildID(fd, e64hdr, s64hdr, n64hdr, buildId);
+      Elf64_Shdr shdr;
+      Elf64_Nhdr nhdr;
+      result = ReadBuildID(fd, ehdr, shdr, nhdr, buildId);
       break;
+    }
 
     default:
       DS2LOG(Warning, "File \"%s\" contains unsupported ELF class identifier %i",
-             path.c_str(), e32hdr.e_ident[EI_CLASS]);
+             path.c_str(), ehdr.e_ident[EI_CLASS]);
       break;
   }
 
