@@ -94,10 +94,12 @@ void PrintBacktrace() {
       name = "<unknown>";
     }
 
-    DS2LOG(Error, "%" PRI_PTR " %s+%#" PRIxPTR " (%s)", PRI_PTR_CAST(stack[i]),
+    DS2LOG(Error, "%" PRI_PTR " %s+%#" PRIxPTR " (%s+%#" PRIxPTR ")",
+           PRI_PTR_CAST(stack[i]),
            name,
            static_cast<char *>(stack[i]) - static_cast<char *>(info.dli_saddr),
-           info.dli_fname);
+           info.dli_fname,
+           static_cast<char *>(stack[i]) - static_cast<char *>(info.dli_fbase));
 
     ::free(demangled);
   }
