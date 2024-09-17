@@ -180,7 +180,7 @@ jobs:
                 -G Ninja                                                        \
                 -S ${{ github.workspace }}
       - name: Build
-        run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Releaase
+        run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
 
       # Tar the output to preserve permissions.
       - name: tar output
@@ -189,6 +189,39 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.processor }}-ds2
+          path: ${{ github.workspace }}/BinaryCache/ds2.tar
+
+  freebsd:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        processor: [ x86_64 ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - uses: vmactions/freebsd-vm@v1
+        name: Build on FreeBSD VM
+        with:
+          prepare: |
+            pkg install -y cmake bison flex ninja
+
+          run: |
+            cmake -B ${{ github.workspace }}/BinaryCache/ds2                  \
+                  -D CMAKE_BUILD_TYPE=Release                                 \
+                  -D CMAKE_SYSTEM_NAME=FreeBSD                                \
+                  -D CMAKE_SYSTEM_PROCESSOR=${{ matrix.processor }}           \
+                  -G Ninja                                                    \
+                  -S ${{ github.workspace }}/SourceCache/ds2
+            cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
+            tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/ds2.tar ds2
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: freebsd-${{ matrix.processor }}-ds2
           path: ${{ github.workspace }}/BinaryCache/ds2.tar
 
   # Cross-compile for Android on a Windows host.
