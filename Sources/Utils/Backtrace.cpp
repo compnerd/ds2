@@ -50,7 +50,7 @@ static _Unwind_Reason_Code UnwindTrace(struct _Unwind_Context* context,
 }
 
 // An approximation of glibc's backtrace using _Unwind_Backtrace
-static int backtrace(void *stack_buffer[], int stack_size) {
+static int UnwindBacktrace(void *stack_buffer[], int stack_size) {
   unwind_state state = {
     .buffer_cursor = stack_buffer,
     .buffer_end = stack_buffer + stack_size,
@@ -58,6 +58,11 @@ static int backtrace(void *stack_buffer[], int stack_size) {
 
   _Unwind_Backtrace(UnwindTrace, &state);
   return state.buffer_cursor - stack_buffer;
+}
+#else
+// Forward to glibc's backtrace
+static int UnwindBacktrace(void *stack_buffer[], int stack_size) {
+  return ::backtrace(stack_buffer, stack_size);
 }
 #endif
 
@@ -69,7 +74,7 @@ static void PrintBacktraceEntrySimple(void *address) {
 void PrintBacktrace() {
   static const int kStackSize = 100;
   static void *stack[kStackSize];
-  int stackEntries = backtrace(stack, kStackSize);
+  int stackEntries = UnwindBacktrace(stack, kStackSize);
 
   for (int i = 0; i < stackEntries; ++i) {
     Dl_info info;
