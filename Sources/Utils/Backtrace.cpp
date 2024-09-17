@@ -59,7 +59,7 @@ static int UnwindBacktrace(void *stack_buffer[], int stack_size) {
   _Unwind_Backtrace(UnwindTrace, &state);
   return state.buffer_cursor - stack_buffer;
 }
-#else
+#elif defined(OS_DARWIN) || (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
 // Forward to glibc's backtrace
 static int UnwindBacktrace(void *stack_buffer[], int stack_size) {
   return ::backtrace(stack_buffer, stack_size);
