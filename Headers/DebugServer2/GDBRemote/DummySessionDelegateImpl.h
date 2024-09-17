@@ -95,6 +95,9 @@ protected: // Debugging Session
   ErrorCode onQuerySharedLibraryInfo(Session &session, std::string const &path,
                                      std::string const &triple,
                                      SharedLibraryInfo &info) const override;
+  ErrorCode onQueryModuleInfo(Session &session, std::string &path,
+                              std::string &triple,
+                              ModuleInfo &info) const override;
 
   ErrorCode onRestart(Session &session, ProcessId pid) override;
   ErrorCode onInterrupt(Session &session) override;

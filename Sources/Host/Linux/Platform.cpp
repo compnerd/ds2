@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
+#include "DebugServer2/Support/POSIX/ELFSupport.h"
 #include "DebugServer2/Utils/String.h"
 
 #include <sys/utsname.h>
@@ -117,6 +118,10 @@ void Platform::EnumerateProcesses(
 
 std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   return Host::Linux::ProcFS::GetThreadName(pid, tid);
+}
+
+bool Platform::GetExecutableFileBuildID(std::string const &path, ByteVector &buildId) {
+  return Support::ELFSupport::GetELFFileBuildID(path, buildId);
 }
 } // namespace Host
 } // namespace ds2

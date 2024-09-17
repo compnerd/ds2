@@ -31,6 +31,10 @@ struct MemoryRegionInfo : public ds2::MemoryRegionInfo {
   std::string encode() const;
 };
 
+struct ModuleInfo : public ds2::ModuleInfo {
+  std::string encode() const;
+};
+
 struct StopInfo : public ds2::StopInfo {
 public:
   // Allow copying and constructing from a ds2::StopInfo directly.

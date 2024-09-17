@@ -384,5 +384,10 @@ std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   // might end up using something similar for the inferior.
   return "";
 }
+
+bool Platform::GetExecutableFileBuildID(std::string const &path, ByteVector &buildId) {
+  // TODO(andrurogerz): implement for Windows executable files.
+  return false;
+}
 } // namespace Host
 } // namespace ds2

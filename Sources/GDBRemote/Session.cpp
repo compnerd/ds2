@@ -1843,12 +1843,11 @@ void Session::Handle_qModuleInfo(ProtocolInterpreter::Handler const &,
   size_t semicolon = args.find(';');
   std::string path(HexToString(args.substr(0, semicolon)));
   std::string triple(HexToString(args.substr(semicolon + 1)));
-  SharedLibraryInfo info;
+  ModuleInfo info;
 
-  CHK_SEND(_delegate->onQuerySharedLibraryInfo(*this, path, triple, info));
+  CHK_SEND(_delegate->onQueryModuleInfo(*this, path, triple, info));
 
-  // FIXME: send the actual response.
-  sendOK();
+  send(info.encode());
 }
 
 //

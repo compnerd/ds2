@@ -844,5 +844,15 @@ std::string ProgramResult::encode() const {
      << ',' << Escape(output);
   return ss.str();
 }
+
+std::string ModuleInfo::encode() const {
+  std::ostringstream ss;
+  ss << "uuid:" << ToHex(uuid) << ";";
+  ss << "triple:" << ToHex(triple) << ";";
+  ss << "file_path:" << ToHex(file_path) << ";";
+  ss << "file_offset:" << HEX(16) << file_offset << ";";
+  ss << "file_size:" << HEX(16) << file_size << ";";
+  return ss.str();
+}
 } // namespace GDBRemote
 } // namespace ds2

@@ -25,6 +25,15 @@ public:
 public:
   static bool MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
                                    CPUType &type, CPUSubType &subType);
+  static bool GetELFFileBuildID(std::string const &path, ByteVector &buildID);
+private:
+  template <typename ELFHeader, typename SectionHeader, typename NotesHeader>
+  static bool ReadBuildID(int fd, const ELFHeader &ehdr, SectionHeader &shdr,
+                          NotesHeader &nhdr, ByteVector &id);
+
+  template <typename ELFHeader, typename SectionHeader>
+  static bool ReadSectionHeader(int fd, const ELFHeader &ehdr, SectionHeader &shdr,
+                                size_t idx);
 };
 } // namespace Support
 } // namespace ds2

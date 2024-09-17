@@ -159,6 +159,9 @@ DUMMY_IMPL_EMPTY_CONST(onQuerySharedLibraryInfo, Session &,
                        std::string const &path, std::string const &triple,
                        SharedLibraryInfo &info)
 
+DUMMY_IMPL_EMPTY_CONST(onQueryModuleInfo, Session &, std::string &path,
+                       std::string &triple, ModuleInfo &info)
+
 DUMMY_IMPL_EMPTY(onRestart, Session &, ProcessId)
 
 DUMMY_IMPL_EMPTY(onInterrupt, Session &)
