@@ -11,7 +11,7 @@
 #include "DebugServer2/Utils/Backtrace.h"
 #include "DebugServer2/Utils/Log.h"
 
-#if defined(OS_DARWIN) || defined(__GLIBC__)
+#if defined(ANDROID) || defined(OS_DARWIN) || defined(__GLIBC__)
 #include <cxxabi.h>
 #include <dlfcn.h>
 #include <execinfo.h>
@@ -22,20 +22,59 @@
 #include <sstream>
 #endif
 
+#if defined(ANDROID)
+// Android provides libunwind in the NDK instead of glibc backtrace
+#include <unwind.h>
+#endif
+
 namespace ds2 {
 namespace Utils {
 
-#if defined(OS_DARWIN) || (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
-static void PrintBacktraceEntrySimple(void *address) {
-  DS2LOG(Error, "%" PRI_PTR, PRI_PTR_CAST(address));
+#if defined(ANDROID)
+struct unwind_state {
+    void **buffer_cursor;
+    void **buffer_end;
+};
+
+static _Unwind_Reason_Code UnwindTrace(struct _Unwind_Context* context,
+                                       void* arg) {
+  struct unwind_state* state = reinterpret_cast<struct unwind_state*>(arg);
+  uintptr_t ip = _Unwind_GetIP(context);
+  if (ip != 0) {
+    if (state->buffer_cursor >= state->buffer_end)
+      return _URC_END_OF_STACK; // Backtrace will be truncated
+
+    *(state->buffer_cursor++) = reinterpret_cast<void*>(ip);
+  }
+  return _URC_NO_REASON;
+}
+
+// An approximation of glibc's backtrace using _Unwind_Backtrace
+static int UnwindBacktrace(void *stack_buffer[], int stack_size) {
+  unwind_state state = {
+    .buffer_cursor = stack_buffer,
+    .buffer_end = stack_buffer + stack_size,
+  };
+
+  _Unwind_Backtrace(UnwindTrace, &state);
+  return state.buffer_cursor - stack_buffer;
+}
+#elif defined(OS_DARWIN) || (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
+// Forward to glibc's backtrace
+static int UnwindBacktrace(void *stack_buffer[], int stack_size) {
+  return ::backtrace(stack_buffer, stack_size);
 }
 #endif
 
-#if defined(OS_DARWIN) || (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
+#if defined(ANDROID) || defined(OS_DARWIN) || (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
+static void PrintBacktraceEntrySimple(void *address) {
+  DS2LOG(Error, "%" PRI_PTR, PRI_PTR_CAST(address));
+}
+
 void PrintBacktrace() {
   static const int kStackSize = 100;
   static void *stack[kStackSize];
-  int stackEntries = ::backtrace(stack, kStackSize);
+  int stackEntries = UnwindBacktrace(stack, kStackSize);
 
   for (int i = 0; i < stackEntries; ++i) {
     Dl_info info;
@@ -60,10 +99,12 @@ void PrintBacktrace() {
       name = "<unknown>";
     }
 
-    DS2LOG(Error, "%" PRI_PTR " %s+%#" PRIxPTR " (%s)", PRI_PTR_CAST(stack[i]),
+    DS2LOG(Error, "%" PRI_PTR " %s+%#" PRIxPTR " (%s+%#" PRIxPTR ")",
+           PRI_PTR_CAST(stack[i]),
            name,
            static_cast<char *>(stack[i]) - static_cast<char *>(info.dli_saddr),
-           info.dli_fname);
+           info.dli_fname,
+           static_cast<char *>(stack[i]) - static_cast<char *>(info.dli_fbase));
 
     ::free(demangled);
   }
