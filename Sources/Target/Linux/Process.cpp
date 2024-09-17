@@ -209,7 +209,7 @@ ErrorCode Process::wait() {
     }
 
     stepping = _currentThread->_state == Thread::kStepped;
-    _currentThread->updateStopInfo(status);
+    CHK(_currentThread->updateStopInfo(status));
 
     switch (_currentThread->_stopInfo.event) {
     case StopInfo::kEventNone:
@@ -236,14 +236,14 @@ ErrorCode Process::wait() {
       switch (_currentThread->_stopInfo.reason) {
       case StopInfo::kReasonNone: // (1)
         if (stepping)
-          _currentThread->step();
+          CHK(_currentThread->step());
         else
-          _currentThread->resume();
+          CHK(_currentThread->resume());
         break;
 
       case StopInfo::kReasonThreadSpawn:
         if (!stepping) // (2a)
-          _currentThread->resume();
+          CHK(_currentThread->resume());
         else { // (2b)
           unsigned long spawnedThreadIdData;
           CHK(ptrace().getEventMessage(_pid, spawnedThreadIdData));
@@ -262,14 +262,14 @@ ErrorCode Process::wait() {
             DS2LOG(Debug, "child thread tid %d %s", returnedThreadId,
                   Stringify::WaitStatus(spawnedThreadStatus));
 
-            _currentThread->step();
+            CHK(_currentThread->step());
             auto newThread = new Thread(this, returnedThreadId);
-            newThread->beforeResume();
+            CHK(newThread->beforeResume());
           } else {
             // The new thread corresponding to this kReasonThreadSpawn was already
             // caught by waitpid(2). Therefore, we only need to step the current
             // thread.
-            _currentThread->step();
+            CHK(_currentThread->step());
           }
         }
         break;
