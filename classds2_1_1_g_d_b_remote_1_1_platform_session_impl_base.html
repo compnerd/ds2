@@ -134,6 +134,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a12103d4edc68f69f0b358b0336844534"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adabbf7e2a30642b7424b685feb054753" id="r_adabbf7e2a30642b7424b685feb054753"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adabbf7e2a30642b7424b685feb054753">onQueryGroupName</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, GroupId const &amp;gid, std::string &amp;name) const override</td></tr>
 <tr class="separator:adabbf7e2a30642b7424b685feb054753"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f351484475cc292852b911ae3f9c023" id="r_a7f351484475cc292852b911ae3f9c023"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f351484475cc292852b911ae3f9c023">onQueryModuleInfo</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string &amp;path, std::string &amp;triple, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_module_info.html">ModuleInfo</a> &amp;info) const override</td></tr>
+<tr class="separator:a7f351484475cc292852b911ae3f9c023"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5de301ae25e8dabd34bd27df838acd4" id="r_aa5de301ae25e8dabd34bd27df838acd4"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5de301ae25e8dabd34bd27df838acd4">onLaunchDebugServer</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;host, uint16_t &amp;port, ProcessId &amp;pid) override</td></tr>
 <tr class="separator:aa5de301ae25e8dabd34bd27df838acd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html">ds2::GDBRemote::DummySessionDelegateImpl</a></td></tr>
@@ -434,6 +436,47 @@ Protected Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>name</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html">ds2::GDBRemote::DummySessionDelegateImpl</a>.</p>
+
+</div>
+</div>
+<a id="a7f351484475cc292852b911ae3f9c023" name="a7f351484475cc292852b911ae3f9c023"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f351484475cc292852b911ae3f9c023">&#9670;&#160;</a></span>onQueryModuleInfo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ErrorCode ds2::GDBRemote::PlatformSessionImplBase::onQueryModuleInfo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>session</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>triple</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structds2_1_1_g_d_b_remote_1_1_module_info.html">ModuleInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span>&#160;) const</td>
         </tr>
       </table>
   </td>

@@ -121,10 +121,19 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">public</span>:</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  <span class="keyword">static</span> <span class="keywordtype">bool</span> MachineTypeToCPUType(uint32_t machineType, <span class="keywordtype">bool</span> is64Bit,</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>                                   CPUType &amp;type, CPUSubType &amp;subType);</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>};</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>  <span class="keyword">static</span> <span class="keywordtype">bool</span> GetELFFileBuildID(std::string <span class="keyword">const</span> &amp;path, ByteVector &amp;buildID);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ELFHeader, <span class="keyword">typename</span> SectionHeader, <span class="keyword">typename</span> NotesHeader&gt;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>  <span class="keyword">static</span> <span class="keywordtype">bool</span> ReadBuildID(<span class="keywordtype">int</span> fd, <span class="keyword">const</span> ELFHeader &amp;ehdr, SectionHeader &amp;shdr,</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>                          NotesHeader &amp;nhdr, ByteVector &amp;<span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> ELFHeader, <span class="keyword">typename</span> SectionHeader&gt;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>  <span class="keyword">static</span> <span class="keywordtype">bool</span> ReadSectionHeader(<span class="keywordtype">int</span> fd, <span class="keyword">const</span> ELFHeader &amp;ehdr, SectionHeader &amp;shdr,</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>                                <span class="keywordtype">size_t</span> idx);</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>};</div>
 </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>} <span class="comment">// namespace Support</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>} <span class="comment">// namespace ds2</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>} <span class="comment">// namespace Support</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>} <span class="comment">// namespace ds2</span></div>
 <div class="ttc" id="aclassds2_1_1_support_1_1_e_l_f_support_html"><div class="ttname"><a href="classds2_1_1_support_1_1_e_l_f_support.html">ds2::Support::ELFSupport</a></div><div class="ttdef"><b>Definition</b> ELFSupport.h:18</div></div>
 <div class="ttc" id="astructds2_1_1_support_1_1_e_l_f_support_1_1_auxiliary_vector_entry_html"><div class="ttname"><a href="structds2_1_1_support_1_1_e_l_f_support_1_1_auxiliary_vector_entry.html">ds2::Support::ELFSupport::AuxiliaryVectorEntry</a></div><div class="ttdef"><b>Definition</b> ELFSupport.h:20</div></div>
 </div><!-- fragment --></div><!-- contents -->
