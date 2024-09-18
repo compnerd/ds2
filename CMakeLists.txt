@@ -288,6 +288,7 @@ else()
     Sources/Host/POSIX/Platform.cpp
     Sources/Host/POSIX/ProcessSpawner.cpp
     Sources/Host/POSIX/PTrace.cpp
+    Sources/Host/POSIX/WaitInterrupter.cpp
 
     Sources/Target/POSIX/Process.cpp
     Sources/Target/POSIX/Thread.cpp

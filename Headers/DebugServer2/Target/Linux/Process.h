@@ -11,6 +11,7 @@
 #pragma once
 
 #include "DebugServer2/Host/Linux/PTrace.h"
+#include "DebugServer2/Host/POSIX/WaitInterrupter.h"
 #include "DebugServer2/Target/POSIX/ELFProcess.h"
 
 namespace ds2 {
@@ -20,11 +21,13 @@ namespace Linux {
 class Process : public POSIX::ELFProcess {
 protected:
   Host::Linux::PTrace _ptrace;
+  Host::POSIX::WaitInterrupter _interrupter;
 
 protected:
   ErrorCode attach(int waitStatus) override;
 
 public:
+  ErrorCode interrupt() override;
   ErrorCode terminate() override;
   bool isAlive() const override;
 
