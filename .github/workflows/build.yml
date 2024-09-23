@@ -224,6 +224,60 @@ jobs:
           name: freebsd-${{ matrix.processor }}-ds2
           path: ${{ github.workspace }}/BinaryCache/ds2.tar
 
+  tizen:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - processor: arm
+            cmake_args: |
+              -D CMAKE_SYSTEM_PROCESSOR=arm               \
+              -D CMAKE_C_COMPILER=arm-linux-gnueabi-gcc   \
+              -D CMAKE_CXX_COMPILER=arm-linux-gnueabi-g++
+            packages: gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
+
+          - processor: x86
+            cmake_args: |
+              -D CMAKE_SYSTEM_PROCESSOR=i686  \
+              -D CMAKE_C_COMPILER=gcc         \
+              -D CMAKE_CXX_COMPILER=g++       \
+              -D CMAKE_C_FLAGS=-m32           \
+              -D CMAKE_CXX_FLAGS=-m32
+            packages: gcc-multilib g++-multilib
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - name: Install compilers
+        run: |
+          sudo apt-get install -qq --no-install-recommends ${{ matrix.packages }}
+
+      - name: Configure
+        run: |
+          cmake -B ${{ github.workspace }}/BinaryCache/ds2        \
+                -S ${{ github.workspace }}/SourceCache/ds2        \
+                -D CMAKE_SYSTEM_NAME=Linux                        \
+                -D CMAKE_BUILD_TYPE=Release                       \
+                -D TIZEN=1                                        \
+                -D STATIC=1                                       \
+                ${{ matrix.cmake_args }}                          \
+
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
+
+      - name: tar output
+        run: tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/ds2.tar ds2
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tizen-${{ matrix.processor }}-ds2
+          path: ${{ github.workspace }}/BinaryCache/ds2.tar
+
+
   # Cross-compile for Android on a Windows host.
   android-windows-ndk:
     needs: [windows_tools]
