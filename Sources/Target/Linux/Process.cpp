@@ -189,7 +189,7 @@ ErrorCode Process::wait() {
     DS2LOG(Debug, "tid %" PRI_PID " %s", tid, Stringify::WaitStatus(status));
 
     auto threadIt = _threads.find(tid);
-    if (_interrupter.checkInterrupt(tid, status)) {
+    if (super::checkInterrupt(tid, status)) {
       DS2ASSERT(threadIt == _threads.end());
       // We were explicitly interrupted. In this scenario, check the state of
       // all threads and resume a stopped one if none is running.
@@ -214,7 +214,6 @@ ErrorCode Process::wait() {
     }
 
     if (threadIt == _threads.end()) {
-
       // If we don't know about this thread yet, but it has a WIFEXITED() or a
       // WIFSIGNALED() status (i.e.: it terminated), it means we already
       // cleaned up the thread object (e.g.: in Process::suspend), but we
@@ -370,12 +369,12 @@ ErrorCode Process::wait() {
 }
 
 ErrorCode Process::interrupt() {
-  // Unconditionally invoke the interrupter here even if sending kill(STOP)
-  // to the inferior will generate waitpid() events. Because this method can be
-  // called off of the main thread, it is potentially unsafe to inspect process
-  // state here. Instead, state is inspected on receipt of the interrupt in
+  // Unconditionally send an interrupt here even if sending kill(STOP) to the
+  // inferior will generate waitpid() events. Because this method can be called
+  // off of the main thread, it is potentially unsafe to inspect process state
+  // here. Instead, state is inspected on receipt of the interrupt in
   // Linux::Process:wait(), which will ignore any unnecessary interrupts.
-  CHK(_interrupter.sendInterrupt());
+  CHK(super::sendInterrupt());
   return super::interrupt();
 }
 
