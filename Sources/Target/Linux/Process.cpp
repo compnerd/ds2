@@ -242,17 +242,16 @@ ErrorCode Process::wait() {
         break;
 
       case StopInfo::kReasonThreadSpawn:
-        if (!stepping) // (2a)
+        if (!stepping) { // (2a)
           CHK(_currentThread->resume());
-        else { // (2b)
+        } else { // (2b)
           unsigned long spawnedThreadIdData;
           CHK(ptrace().getEventMessage(_pid, spawnedThreadIdData));
           auto const spawnedThreadId = static_cast<ThreadId>(spawnedThreadIdData);
           if (_threads.find(spawnedThreadId) == _threads.end()) {
             // If the newly cloned thread does not yet exist within the _threads
             // vector then we have not yet seen it with waitpid(2). The most
-            // recent
-            // waitpid(2) returns a status guaranteeing a clone event did happen.
+            // recent waitpid(2) returns a status guaranteeing a clone event did happen.
             // Therefore, we wait and block until we see the cloned thread.
             int spawnedThreadStatus;
             ThreadId returnedThreadId =
