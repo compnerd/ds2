@@ -259,7 +259,7 @@ ErrorCode Process::wait() {
             if (spawnedThreadId != returnedThreadId)
               return kErrorProcessNotFound;
             DS2LOG(Debug, "child thread tid %d %s", returnedThreadId,
-                  Stringify::WaitStatus(spawnedThreadStatus));
+                   Stringify::WaitStatus(spawnedThreadStatus));
 
             CHK(_currentThread->step());
             auto newThread = new Thread(this, returnedThreadId);
