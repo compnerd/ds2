@@ -209,7 +209,7 @@ ErrorCode Process::wait() {
     }
 
     stepping = _currentThread->_state == Thread::kStepped;
-    _currentThread->updateStopInfo(status);
+    CHK(_currentThread->updateStopInfo(status));
 
     switch (_currentThread->_stopInfo.event) {
     case StopInfo::kEventNone:
@@ -217,7 +217,7 @@ ErrorCode Process::wait() {
       // 1. stopped because another thread of the inferior stopped (e.g. because
       //    of a breakpoint or received a signal, etc) and ds2 sent a SIGSTOP
       //    to pause this thread while the other thread's stop is evaluated. In
-      //    this case we just resume the thread.
+      //    this case we just resume or step the thread.
       // 2. stopped because this thread called clone(2) (or similar e.g.
       //    pthread_create). In this case we have two subcases:
       //    a. The thread was running and hit the clone/spawn and thus was
@@ -232,48 +232,53 @@ ErrorCode Process::wait() {
       //       waitpid(3) call and thus have to handle the cloned thread
       //       and the currentThread at once. So we call step on the
       //       _currentThread and then beforeResume the cloned thread.
-      //
-      // We also have another theoretically possible case where we are not
-      // stopped by a clone but still stepping while encountering a kEventNone.
-      // This should not happen and we just assert that it does not.
 
-      if (_currentThread->_stopInfo.reason == StopInfo::kReasonThreadSpawn &&
-          stepping) { //(2b)
-        unsigned long spawnedThreadIdData;
-        CHK(ptrace().getEventMessage(_pid, spawnedThreadIdData));
-        auto const spawnedThreadId = static_cast<ThreadId>(spawnedThreadIdData);
+      switch (_currentThread->_stopInfo.reason) {
+      case StopInfo::kReasonNone: // (1)
+        if (stepping)
+          CHK(_currentThread->step());
+        else
+          CHK(_currentThread->resume());
+        break;
 
-        if (_threads.find(spawnedThreadId) == _threads.end()) {
-          // If the newly cloned thread does not yet exist within the _threads
-          // vector then we have not yet seen it with waitpid(2). The most
-          // recent
-          // waitpid(2) returns a status guaranteeing a clone event did happen.
-          // Therefore, we wait and block until we see the cloned thread.
-          int spawnedThreadStatus;
-          ThreadId returnedThreadId =
-              blocking_waitpid(spawnedThreadId, &spawnedThreadStatus, __WALL);
-          if (spawnedThreadId != returnedThreadId)
-            return kErrorProcessNotFound;
-          DS2LOG(Debug, "child thread tid %d %s", returnedThreadId,
-                 Stringify::WaitStatus(spawnedThreadStatus));
+      case StopInfo::kReasonThreadSpawn:
+        if (!stepping) { // (2a)
+          CHK(_currentThread->resume());
+        } else { // (2b)
+          unsigned long spawnedThreadIdData;
+          CHK(ptrace().getEventMessage(_pid, spawnedThreadIdData));
+          auto const spawnedThreadId = static_cast<ThreadId>(spawnedThreadIdData);
+          if (_threads.find(spawnedThreadId) == _threads.end()) {
+            // If the newly cloned thread does not yet exist within the _threads
+            // vector then we have not yet seen it with waitpid(2). The most
+            // recent waitpid(2) returns a status guaranteeing a clone event did happen.
+            // Therefore, we wait and block until we see the cloned thread.
+            int spawnedThreadStatus;
+            ThreadId returnedThreadId =
+                blocking_waitpid(spawnedThreadId, &spawnedThreadStatus, __WALL);
+            if (spawnedThreadId != returnedThreadId)
+              return kErrorProcessNotFound;
+            DS2LOG(Debug, "child thread tid %d %s", returnedThreadId,
+                   Stringify::WaitStatus(spawnedThreadStatus));
 
-          _currentThread->step();
-          auto newThread = new Thread(this, returnedThreadId);
-          newThread->beforeResume();
-        } else {
-          // The new thread corresponding to this kReasonThreadSpawn was already
-          // caught by waitpid(2). Therefore, we only need to step the current
-          // thread.
-          _currentThread->step();
+            CHK(_currentThread->step());
+            auto newThread = new Thread(this, returnedThreadId);
+            CHK(newThread->beforeResume());
+          } else {
+            // The new thread corresponding to this kReasonThreadSpawn was already
+            // caught by waitpid(2). Therefore, we only need to step the current
+            // thread.
+            CHK(_currentThread->step());
+          }
         }
-      } else if (stepping) {
+        break;
+
+      default:
         // We should never see a case where we're:
         //   1. stopped for event kEventNone
-        //   2. stepping
-        //   3. not stopped for reason kReasonThreadSpawn
+        //   2. not stopped for reason kReasonThreadSpawn or kReasonNone
         DS2BUG("inconsistent thread stop info");
-      } else {
-        _currentThread->resume(); // (1) and (2a)
+        break;
       }
       goto continue_waiting;
 
