@@ -139,6 +139,8 @@ Collaboration diagram for ds2::Target::Linux::Process:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ac8975543285881ceb9f78acb75fb0879" id="r_ac8975543285881ceb9f78acb75fb0879"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac8975543285881ceb9f78acb75fb0879">interrupt</a> () override</td></tr>
+<tr class="separator:ac8975543285881ceb9f78acb75fb0879"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18dd26e1e78cb7e6e31bd069f52b3596" id="r_a18dd26e1e78cb7e6e31bd069f52b3596"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a18dd26e1e78cb7e6e31bd069f52b3596">terminate</a> () override</td></tr>
 <tr class="separator:a18dd26e1e78cb7e6e31bd069f52b3596"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a293788f0832bbdac022f91c540102a" id="r_a2a293788f0832bbdac022f91c540102a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2a293788f0832bbdac022f91c540102a">isAlive</a> () const override</td></tr>
@@ -294,6 +296,12 @@ ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>writeCPUState</b
 <tr class="inherit_header pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html">ds2::Target::POSIX::Process</a></td></tr>
 <tr class="memitem:abc269c3bcc558eb43929e8893a0e7dd8 inherit pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_abc269c3bcc558eb43929e8893a0e7dd8"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html#abc269c3bcc558eb43929e8893a0e7dd8">initialize</a> (ProcessId pid, uint32_t flags) override</td></tr>
 <tr class="separator:abc269c3bcc558eb43929e8893a0e7dd8 inherit pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd15797b38c0c7c95392bb4bb36e0c7b inherit pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_abd15797b38c0c7c95392bb4bb36e0c7b"><td class="memItemLeft" align="right" valign="top">
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>sendInterrupt</b> ()</td></tr>
+<tr class="separator:abd15797b38c0c7c95392bb4bb36e0c7b inherit pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6b070aadd7274e67c6b4d66db9089dd inherit pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_ac6b070aadd7274e67c6b4d66db9089dd"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>checkInterrupt</b> (ThreadId tid, int waitStatus)</td></tr>
+<tr class="separator:ac6b070aadd7274e67c6b4d66db9089dd inherit pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab62361330360d6b62834235ca701e8f2 inherit pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_ab62361330360d6b62834235ca701e8f2"><td class="memItemLeft" align="right" valign="top">
 int&#160;</td><td class="memItemRight" valign="bottom"><b>convertMemoryProtectionToPOSIX</b> (uint32_t protection) const</td></tr>
 <tr class="separator:ab62361330360d6b62834235ca701e8f2 inherit pro_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -330,6 +338,17 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>_auxiliaryVect
 <tr class="memitem:a9d793c9f120dcdd1051306f74dc4e3ed inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_a9d793c9f120dcdd1051306f74dc4e3ed"><td class="memItemLeft" align="right" valign="top">
 std::set&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_passthruSignals</b></td></tr>
 <tr class="separator:a9d793c9f120dcdd1051306f74dc4e3ed inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69c7d2c14baf00d7a4f2f2d47677d437 inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_a69c7d2c14baf00d7a4f2f2d47677d437"><td class="memItemLeft" >
+struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator: inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc5ce0aa34a5b0df6bb22c4643b21f52 inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_abc5ce0aa34a5b0df6bb22c4643b21f52"><td class="memItemLeft" >
+&#160;&#160;&#160;std::mutex&#160;&#160;&#160;<b>mutex</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:abc5ce0aa34a5b0df6bb22c4643b21f52 inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ddde78fe9974563df4c27d7e4376881 inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_a0ddde78fe9974563df4c27d7e4376881"><td class="memItemLeft" >
+&#160;&#160;&#160;ProcessId&#160;&#160;&#160;<b>pid</b> = 0&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a0ddde78fe9974563df4c27d7e4376881 inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69c7d2c14baf00d7a4f2f2d47677d437 inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_a69c7d2c14baf00d7a4f2f2d47677d437"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>_interruptState</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a69c7d2c14baf00d7a4f2f2d47677d437 inherit pro_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classds2_1_1_target_1_1_process_base"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_classds2_1_1_target_1_1_process_base')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classds2_1_1_target_1_1_process_base.html">ds2::Target::ProcessBase</a></td></tr>
 <tr class="memitem:a18a5ee2b7537db1db70196bdaffc24a3 inherit pro_attribs_classds2_1_1_target_1_1_process_base" id="r_a18a5ee2b7537db1db70196bdaffc24a3"><td class="memItemLeft" align="right" valign="top">
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>_terminated</b></td></tr>
@@ -374,10 +393,10 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>POSIX::Process</b></
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_types_classds2_1_1_target_1_1_process_base"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_types_classds2_1_1_target_1_1_process_base')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classds2_1_1_target_1_1_process_base.html">ds2::Target::ProcessBase</a></td></tr>
-<tr class="memitem:a7b35be57f4906ce336406bc8c4c900b9 inherit pub_types_classds2_1_1_target_1_1_process_base" id="r_a7b35be57f4906ce336406bc8c4c900b9"><td class="memItemLeft" align="right" valign="top"><a id="a7b35be57f4906ce336406bc8c4c900b9" name="a7b35be57f4906ce336406bc8c4c900b9"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <b>kFlagNewProcess</b> = (1 &lt;&lt; 0)
+<tr class="memitem:ad574e63928af9b150928d91bcd6b5f2a inherit pub_types_classds2_1_1_target_1_1_process_base" id="r_ad574e63928af9b150928d91bcd6b5f2a"><td class="memItemLeft" align="right" valign="top"><a id="ad574e63928af9b150928d91bcd6b5f2a" name="ad574e63928af9b150928d91bcd6b5f2a"></a>enum &#160;</td><td class="memItemRight" valign="bottom">{ <b>kFlagNewProcess</b> = (1 &lt;&lt; 0)
 , <b>kFlagAttachedProcess</b> = (1 &lt;&lt; 1)
  }</td></tr>
-<tr class="separator:a7b35be57f4906ce336406bc8c4c900b9 inherit pub_types_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:ad574e63928af9b150928d91bcd6b5f2a inherit pub_types_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83d99dd09439af0d514943a3885bf805 inherit pub_types_classds2_1_1_target_1_1_process_base" id="r_a83d99dd09439af0d514943a3885bf805"><td class="memItemLeft" align="right" valign="top">
 typedef std::map&lt; ThreadId, Thread * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>IdentityMap</b></td></tr>
 <tr class="separator:a83d99dd09439af0d514943a3885bf805 inherit pub_types_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -388,6 +407,7 @@ static ds2::Target::Process *&#160;</td><td class="memItemRight" valign="bottom"
 <tr class="memitem:a1dbb7bb2a59720407a2030fcb511a362 inherit pub_static_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process" id="r_a1dbb7bb2a59720407a2030fcb511a362"><td class="memItemLeft" align="right" valign="top">
 static ds2::Target::Process *&#160;</td><td class="memItemRight" valign="bottom"><b>Attach</b> (ProcessId pid)</td></tr>
 <tr class="separator:a1dbb7bb2a59720407a2030fcb511a362 inherit pub_static_methods_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_attribs_classds2_1_1_target_1_1_p_o_s_i_x_1_1_process')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html">ds2::Target::POSIX::Process</a></td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="ae9c5315cc91e32b7aa2daa9714878d68" name="ae9c5315cc91e32b7aa2daa9714878d68"></a>
@@ -502,6 +522,33 @@ static ds2::Target::Process *&#160;</td><td class="memItemRight" valign="bottom"
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structds2_1_1_memory_region_info.html">MemoryRegionInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classds2_1_1_target_1_1_process_base.html">ds2::Target::ProcessBase</a>.</p>
+
+</div>
+</div>
+<a id="ac8975543285881ceb9f78acb75fb0879" name="ac8975543285881ceb9f78acb75fb0879"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8975543285881ceb9f78acb75fb0879">&#9670;&#160;</a></span>interrupt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ErrorCode ds2::Target::Linux::Process::interrupt </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
