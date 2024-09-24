@@ -50,6 +50,9 @@ protected:
 protected:
   ErrorCode onFileSetPermissions(Session &session, std::string const &path,
                                  uint32_t mode) override;
+  ErrorCode onQueryModuleInfo(Session &session, std::string &path,
+                              std::string &triple,
+                              ModuleInfo &info) const override;
 
 #if 0
     // more F packets:

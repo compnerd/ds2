@@ -14,10 +14,6 @@
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Utils/Log.h"
 
-#include <sstream>
-
-using ds2::Host::File;
-using ds2::Host::Platform;
 using ds2::Host::ProcessSpawner;
 
 namespace ds2 {
@@ -94,31 +90,6 @@ ErrorCode PlatformSessionImplBase::onQueryGroupName(Session &,
     return kErrorNotFound;
   else
     return kSuccess;
-}
-
-ErrorCode PlatformSessionImplBase::onQueryModuleInfo(Session &session,
-                                                     std::string &path,
-                                                     std::string &triple,
-                                                     ModuleInfo &info) const {
-  ByteVector buildId;
-  if (!Platform::GetExecutableFileBuildID(path, buildId))
-    return kErrorUnknown;
-
-  // send the uuid as a hex-encoded, upper-case string
-  std::ostringstream ss;
-  for(const auto b : buildId)
-    ss << std::uppercase << std::hex << std::setfill('0') << std::setw(2) << int(b);
-
-  auto error = File::fileSize(path, info.file_size);
-  if (error != kSuccess)
-    return error;
-
-  info.uuid = ss.str();
-  info.triple = triple;
-  info.file_path = path;
-  info.file_offset = 0;
-
-  return kSuccess;
 }
 
 ErrorCode PlatformSessionImplBase::onLaunchDebugServer(Session &session,
