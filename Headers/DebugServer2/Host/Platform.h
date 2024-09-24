@@ -40,7 +40,7 @@ public:
   static char const *GetOSVendorName();
   static char const *GetOSVersion();
   static char const *GetOSBuild();
-  static char const *GetOSKernelPath();
+  static char const *GetOSKernelVersion();
 
 public:
   static bool GetUserName(UserId const &uid, std::string &name);

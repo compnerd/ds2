@@ -98,7 +98,7 @@ ErrorCode DummySessionDelegateImpl::onQueryHostInfo(Session &,
     info.osBuild = build;
   }
 
-  char const *kernel = Platform::GetOSKernelPath();
+  char const *kernel = Platform::GetOSKernelVersion();
   if (kernel != nullptr) {
     info.osKernel = kernel;
   }
