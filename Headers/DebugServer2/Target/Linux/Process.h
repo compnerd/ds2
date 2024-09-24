@@ -25,6 +25,7 @@ protected:
   ErrorCode attach(int waitStatus) override;
 
 public:
+  ErrorCode interrupt() override;
   ErrorCode terminate() override;
   bool isAlive() const override;
 

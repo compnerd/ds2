@@ -14,6 +14,8 @@
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Target/ProcessBase.h"
 
+#include <mutex>
+
 namespace ds2 {
 namespace Target {
 namespace POSIX {
@@ -22,9 +24,19 @@ class Process : public ds2::Target::ProcessBase {
 protected:
   std::set<int> _passthruSignals;
 
+  // state used by sendInterrupt and checkInterrupt
+  struct {
+    std::mutex mutex;
+    ProcessId pid = 0;
+  } _interruptState;
+
 protected:
   ErrorCode initialize(ProcessId pid, uint32_t flags) override;
   virtual ErrorCode attach(int waitStatus) = 0;
+
+protected:
+  ErrorCode sendInterrupt();
+  bool checkInterrupt(ThreadId tid, int waitStatus);
 
 public:
   ErrorCode detach() override;
