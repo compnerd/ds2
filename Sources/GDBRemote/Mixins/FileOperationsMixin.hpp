@@ -13,6 +13,12 @@
 #include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
 #include "DebugServer2/Host/Platform.h"
 
+#include <iomanip>
+#include <sstream>
+
+using ds2::Host::File;
+using ds2::Host::Platform;
+
 namespace ds2 {
 namespace GDBRemote {
 
@@ -93,6 +99,36 @@ ErrorCode FileOperationsMixin<T>::onFileSetPermissions(Session &session,
                                                        std::string const &path,
                                                        uint32_t mode) {
   return Host::File::chmod(path, mode);
+}
+
+template <typename T>
+ErrorCode FileOperationsMixin<T>::onQueryModuleInfo(Session &session,
+                                                     std::string &path,
+                                                     std::string &triple,
+                                                     ModuleInfo &info) const {
+  ByteVector buildId;
+  if (!Platform::GetExecutableFileBuildID(path, buildId))
+    return kErrorUnknown;
+
+  // TODO(andrurogerz): Not all executable files contain an embedded build ID.
+  // If GetExecutableFileBuildID fails, calculate an md5 hash of the file
+  // contents and return that as an "md5" field instead of the "uuid" field.
+
+  // send the uuid as a hex-encoded, upper-case string
+  std::ostringstream ss;
+  for(const auto b : buildId)
+    ss << std::uppercase << std::hex << std::setfill('0') << std::setw(2) << int(b);
+
+  auto error = File::fileSize(path, info.file_size);
+  if (error != kSuccess)
+    return error;
+
+  info.uuid = ss.str();
+  info.triple = triple;
+  info.file_path = path;
+  info.file_offset = 0;
+
+  return kSuccess;
 }
 } // namespace GDBRemote
 } // namespace ds2
