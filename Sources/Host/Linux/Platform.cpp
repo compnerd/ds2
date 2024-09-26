@@ -73,20 +73,9 @@ static struct utsname const *GetCachedUTSName() {
 
 char const *Platform::GetOSVersion() { return GetCachedUTSName()->release; }
 
-char const *Platform::GetOSBuild() {
-  static char sBuild[32] = {'\0'};
+char const *Platform::GetOSBuild() { return GetCachedUTSName()->release; }
 
-  if (sBuild[0] == '\0') {
-    char const *version = GetCachedUTSName()->version;
-    // Linux version is returned as #BUILDNO ...
-    ds2::Utils::SNPrintf(sBuild, sizeof(sBuild), "%lu",
-                         std::strtoul(version + 1, nullptr, 10));
-  }
-
-  return sBuild;
-}
-
-char const *Platform::GetOSKernelPath() { return nullptr; }
+char const *Platform::GetOSKernelVersion() { return GetCachedUTSName()->version; }
 
 const char *Platform::GetSelfExecutablePath() {
   static char path[PATH_MAX + 1] = {'\0'};

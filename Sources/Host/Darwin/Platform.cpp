@@ -94,7 +94,7 @@ char const *Platform::GetOSVersion() {
 
 char const *Platform::GetOSBuild() { return GetCachedUTSName()->version; }
 
-char const *Platform::GetOSKernelPath() { return nullptr; }
+char const *Platform::GetOSKernelVersion() { return nullptr; }
 
 const char *Platform::GetSelfExecutablePath() {
   return Host::Darwin::LibProc::GetExecutablePath(getpid());

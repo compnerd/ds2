@@ -109,23 +109,21 @@ char const *Platform::GetOSBuild() {
   return buildStr;
 }
 
-char const *Platform::GetOSKernelPath() {
-  static std::string kernelPath;
+char const *Platform::GetOSKernelVersion() {
+  static char versionStr[32] = {'\0'};
 
-  if (kernelPath.size() == 0) {
-    WCHAR wideKernelPath[MAX_PATH];
-    UINT rc;
+  if (versionStr[0] == '\0') {
+    OSVERSIONINFO version;
 
-    rc = ::GetWindowsDirectoryW(wideKernelPath, sizeof(wideKernelPath));
-    if (rc == 0 || rc >= sizeof(wideKernelPath))
-      goto error;
+    version.dwOSVersionInfoSize = sizeof(version);
+    if (!::GetVersionEx(&version))
+      return versionStr;
 
-    kernelPath = ds2::Utils::WideToNarrowString(wideKernelPath);
-    kernelPath.append("\\System32\\ntoskrnl.exe");
+    ds2::Utils::SNPrintf(versionStr, sizeof(versionStr), "%lu.%lu",
+                         version.dwMajorVersion, version.dwMinorVersion);
   }
 
-error:
-  return kernelPath.c_str();
+  return versionStr;
 }
 
 bool Platform::GetUserName(UserId const &uid, std::string &name) {
