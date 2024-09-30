@@ -472,7 +472,7 @@ filegroup(
             "Sources/Host/Linux/X86_64/PTraceX86_64.cpp",
             "Sources/Target/Linux/X86_64/ProcessX86_64.cpp",
         ],
-        ":dwarin-arm64": [
+        ":darwin-arm64": [
             "Sources/Host/Darwin/ARM64/MachARM64.cpp",
             "Sources/Host/Darwin/ARM64/PTraceARM64.cpp",
             "Sources/Target/Darwin/ARM64/ProcessARM64.cpp",
