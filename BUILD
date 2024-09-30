@@ -38,6 +38,14 @@ config_setting(
 )
 
 config_setting(
+    name = "darwin-arm64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:arm64",
+    ]
+)
+
+config_setting(
     name = "darwin-x86_64",
     constraint_values = [
         "@platforms//os:macos",
@@ -463,6 +471,12 @@ filegroup(
         (":android-x86_64", ":linux-x86_64"): [
             "Sources/Host/Linux/X86_64/PTraceX86_64.cpp",
             "Sources/Target/Linux/X86_64/ProcessX86_64.cpp",
+        ],
+        ":darwin-arm64": [
+            "Sources/Host/Darwin/ARM64/MachARM64.cpp",
+            "Sources/Host/Darwin/ARM64/PTraceARM64.cpp",
+            "Sources/Target/Darwin/ARM64/ProcessARM64.cpp",
+            "Sources/Target/Darwin/ARM64/ThreadARM64.cpp",
         ],
         ":darwin-x86_64": [
             "Sources/Host/Darwin/X86_64/MachX86_64.cpp",
