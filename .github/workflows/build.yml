@@ -155,30 +155,63 @@ jobs:
   linux:
     runs-on: ubuntu-latest
 
+    name: Linux (${{ matrix.processor }})
+
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { processor: x86_64, cflags: "", cxxflags: "" }
-          - { processor: i686, cflags: "-m32", cxxflags: "-m32" }
+          - processor: x86_64
+            compiler_packages:
+            c_compiler: gcc
+            cxx_compiler: g++
+            cflags:
+            cxxflags:
+
+          - processor: i686
+            compiler_packages: gcc-multilib g++-multilib
+            c_compiler: gcc
+            cxx_compiler: g++
+            cflags: "-m32"
+            cxxflags: "-m32"
+
+          - processor: arm
+            compiler_packages: gcc-arm-linux-gnueabi g++-arm-linux-gnueabi
+            c_compiler: arm-linux-gnueabi-gcc
+            cxx_compiler: arm-linux-gnueabi-g++
+            cflags:
+            cxxflags:
+
+          - processor: aarch64
+            compiler_packages: gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+            c_compiler: aarch64-linux-gnu-gcc
+            cxx_compiler: aarch64-linux-gnu-g++
+            cflags:
+            cxxflags:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
       - run: |
           sudo apt-get update
-          sudo apt-get install -qq --no-install-recommends bison flex gcc-multilib g++-multilib ninja-build
+          sudo apt-get install -qq --no-install-recommends bison flex ninja-build ${{ matrix.compiler_packages }}
 
       - name: Configure
         run: |
-          cmake -B ${{ github.workspace }}/BinaryCache/ds2                      \
-                -C ${{ github.workspace }}/cmake/caches/GNUWarnings.cmake       \
-                -D CMAKE_BUILD_TYPE=Release                                     \
-                -D CMAKE_SYSTEM_NAME=Linux                                      \
-                -D CMAKE_SYSTEM_PROCESSOR=${{ matrix.processor }}               \
-                -D CMAKE_C_FLAGS=${{ matrix.cflags }}                           \
-                -D CMAKE_CXX_FLAGS=${{ matrix.cxxflags }}                       \
-                -G Ninja                                                        \
-                -S ${{ github.workspace }}
+          cmake -B ${{ github.workspace }}/BinaryCache/ds2                                \
+                -S ${{ github.workspace }}/SourceCache/ds2                                \
+                -C ${{ github.workspace }}/SourceCache/ds2/cmake/caches/GNUWarnings.cmake \
+                -D CMAKE_BUILD_TYPE=Release                                               \
+                -D CMAKE_SYSTEM_NAME=Linux                                                \
+                -D CMAKE_SYSTEM_PROCESSOR=${{ matrix.processor }}                         \
+                -D CMAKE_C_COMPILER=${{ matrix.c_compiler }}                              \
+                -D CMAKE_CXX_COMPILER=${{ matrix.cxx_compiler }}                          \
+                -D CMAKE_C_FLAGS=${{ matrix.cflags }}                                     \
+                -D CMAKE_CXX_FLAGS=${{ matrix.cxxflags }}                                 \
+                -G Ninja
+
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
 
