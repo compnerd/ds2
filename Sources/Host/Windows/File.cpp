@@ -29,6 +29,10 @@ ErrorCode File::pwrite(ByteVector const &buf, uint64_t &count,
   return kErrorUnsupported;
 }
 
+ErrorCode File::fstat(ByteVector &buffer) const {
+  return kErrorUnsupported;
+}
+
 ErrorCode File::chmod(std::string const &path, uint32_t mode) {
   return kErrorUnsupported;
 }

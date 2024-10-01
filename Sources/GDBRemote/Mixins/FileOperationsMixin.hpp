@@ -102,6 +102,17 @@ ErrorCode FileOperationsMixin<T>::onFileGetMode(Session &session,
 }
 
 template <typename T>
+ErrorCode FileOperationsMixin<T>::onFileFstat(Session &session, int fd,
+                      ByteVector &buffer) const {
+  auto it = _openFiles.find(fd);
+  if (it == _openFiles.end()) {
+    return kErrorInvalidHandle;
+  }
+
+  return it->second.fstat(buffer);
+}
+
+template <typename T>
 ErrorCode FileOperationsMixin<T>::onFileRemove(Session &session,
                                                std::string const &path) {
   return Host::File::unlink(path);

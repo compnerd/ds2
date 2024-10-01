@@ -3114,6 +3114,20 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     } else {
       ss << std::hex << mode;
     }
+  } else if (op == "fstat") {
+    ByteVector buffer;
+    int fd = std::strtol(&args[op_end], nullptr, 16);
+    ErrorCode error = _delegate->onFileFstat(*this, fd, buffer);
+    // Response is F, followed by the the size of the stat data (base 16),
+    // a semicolon, followed by the stat result in the binary-escaped-data
+    // encoding or F-1,errno with the errno if an error occurs, base 16
+    ss << 'F';
+    if (error != kSuccess) {
+      ss << -1 << ',' << std::hex << error;
+    } else {
+      ss << std::hex << buffer.size() << ';' << Escape(buffer);
+      escaped = true;
+    }
   } else {
     sendError(kErrorUnsupported);
     return;
