@@ -3099,6 +3099,17 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     } else {
       ss << 'F' << std::hex << size;
     }
+  } else if (op == "mode") {
+    uint32_t mode;
+    ErrorCode error =
+        _delegate->onFileGetMode(*this, HexToString(&args[op_end]), mode);
+    // Response is F followed by the mode bits in base 16 or
+    // F-1,errno with the errno if an error occurs, base 16
+    if (error != kSuccess) {
+      ss << 'F' << -1 << ',' << std::hex << error;
+    } else {
+      ss << 'F' << std::hex << mode;
+    }
   } else {
     sendError(kErrorUnsupported);
     return;

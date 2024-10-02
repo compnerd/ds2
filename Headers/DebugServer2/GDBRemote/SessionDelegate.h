@@ -272,6 +272,8 @@ protected: // Platform Session
                                      uint8_t digest[16]) = 0;
   virtual ErrorCode onFileGetSize(Session &session, std::string const &path,
                                   uint64_t &size) = 0;
+  virtual ErrorCode onFileGetMode(Session &session, std::string const &path,
+                                  uint32_t &mode) const = 0;
 
   virtual ErrorCode onQueryProcessList(Session &session,
                                        ProcessInfoMatch const &match,

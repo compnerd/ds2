@@ -42,5 +42,10 @@ ErrorCode File::createDirectory(std::string const &path, uint32_t flags) {
 ErrorCode File::fileSize(std::string const &path, uint64_t &size) {
   return kErrorUnsupported;
 }
+
+ErrorCode File::fileMode(std::string const &path, uint32_t &mode) {
+  return kErrorUnsupported;
+}
+
 } // namespace Host
 } // namespace ds2
