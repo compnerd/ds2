@@ -273,6 +273,9 @@ OpenFlags Session::ConvertOpenFlags(uint32_t protocolFlags) {
     return kOpenFlagInvalid; // Invalid mode
   }
 
+  if (protocolFlags & 0x8)
+    flags |= kOpenFlagAppend;
+
   flags = flags
     | (protocolFlags & 0x200 ? kOpenFlagCreate : 0) // eOpenOptionCanCreate (O_CREAT)
     | (protocolFlags & 0x400 ? kOpenFlagTruncate : 0) // eOpenOptionTruncate (O_TRUNC)
