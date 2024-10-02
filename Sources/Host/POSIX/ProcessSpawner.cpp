@@ -415,79 +415,75 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   }
 
   if (_pid == 0) {
-    if (::setgid(::getgid()) == 0) {
-      ::setsid();
+    for (size_t n = 0; n < 3; n++) {
+      switch (_descriptors[n].mode) {
+      case kRedirectConsole:
+        // do nothing
+        break;
 
-      for (size_t n = 0; n < 3; n++) {
-        switch (_descriptors[n].mode) {
-        case kRedirectConsole:
-          // do nothing
-          break;
+      case kRedirectDelegate:
+      case kRedirectTerminal:
+        //
+        // We are using the same virtual terminal for all delegate
+        // redirections, so dup2() only, do not close. We will close when all
+        // FDs have been dup2()'d.
+        //
+        ::dup2(fds[n][WR], n);
+        break;
 
-        case kRedirectDelegate:
-        case kRedirectTerminal:
-          //
-          // We are using the same virtual terminal for all delegate
-          // redirections, so dup2() only, do not close. We will close when all
-          // FDs have been dup2()'d.
-          //
-          ::dup2(fds[n][WR], n);
-          break;
-
-        default:
-          if (n == 0) {
-            if (fds[n][WR] != -1) {
-              ::close(fds[n][WR]);
-            }
-            ::dup2(fds[n][RD], n);
-            ::close(fds[n][RD]);
-          } else {
-            if (fds[n][RD] != -1) {
-              ::close(fds[n][RD]);
-            }
-            ::dup2(fds[n][WR], n);
+      default:
+        if (n == 0) {
+          if (fds[n][WR] != -1) {
             ::close(fds[n][WR]);
           }
-          break;
+          ::dup2(fds[n][RD], n);
+          ::close(fds[n][RD]);
+        } else {
+          if (fds[n][RD] != -1) {
+            ::close(fds[n][RD]);
+          }
+          ::dup2(fds[n][WR], n);
+          ::close(fds[n][WR]);
         }
+        break;
       }
+    }
 
-      close_terminal(term);
+    close_terminal(term);
 
-      if (!_workingDirectory.empty()) {
-        int res = ::chdir(_workingDirectory.c_str());
-        if (res != 0) {
-          return Platform::TranslateError();
-        }
+    if (!_workingDirectory.empty()) {
+      int res = ::chdir(_workingDirectory.c_str());
+      if (res != 0) {
+        return Platform::TranslateError();
       }
+    }
 
-      std::vector<char *> args;
-      args.push_back(const_cast<char *>(_executablePath.c_str()));
-      for (auto const &e : _arguments)
-        args.push_back(const_cast<char *>(e.c_str()));
-      args.push_back(nullptr);
+    std::vector<char *> args;
+    args.push_back(const_cast<char *>(_executablePath.c_str()));
+    for (auto const &e : _arguments)
+      args.push_back(const_cast<char *>(e.c_str()));
+    args.push_back(nullptr);
 
-      std::vector<char *> environment;
-      for (auto const &env : _environment)
-        environment.push_back(const_cast<char *>(
-            (new std::string(env.first + '=' + env.second))->c_str()));
-      environment.push_back(nullptr);
+    std::vector<char *> environment;
+    for (auto const &env : _environment)
+      environment.push_back(const_cast<char *>(
+          (new std::string(env.first + '=' + env.second))->c_str()));
+    environment.push_back(nullptr);
 
-      if (!preExecAction()) {
-        DS2LOG(Error, "pre exec action failed");
-        return kErrorUnknown;
+    if (!preExecAction()) {
+      DS2LOG(Error, "pre exec action failed");
+      return kErrorUnknown;
+    }
+
+    if (_shell) {
+      if (::execvp(_executablePath.c_str(), &args[0]) < 0) {
+        DS2LOG(Error, "cannot run shell command %s, error=%s",
+                _executablePath.c_str(), strerror(errno));
       }
-
-      if (_shell) {
-        if (::execvp(_executablePath.c_str(), &args[0]) < 0) {
-          DS2LOG(Error, "cannot run shell command %s, error=%s",
-                 _executablePath.c_str(), strerror(errno));
-        }
-      } else {
-        if (::execve(_executablePath.c_str(), &args[0], &environment[0]) < 0) {
-          DS2LOG(Error, "cannot spawn executable %s, error=%s",
-                 _executablePath.c_str(), strerror(errno));
-        }
+    } else {
+      if (::execve(_executablePath.c_str(), &args[0], &environment[0]) < 0) {
+        DS2LOG(Error, "cannot spawn executable %s, error=%s",
+                _executablePath.c_str(), strerror(errno));
       }
     }
     ::_exit(127);

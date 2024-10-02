@@ -148,6 +148,14 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   auto process = ds2::make_unique<Target::Process>();
 
   if (spawner.run([&process]() {
+        // move debug targets to their own process group
+        if (::setpgid(0, 0) != 0)
+          return false;
+
+        // drop the setgid ability of debug targets
+        if (::setgid(::getgid()) != 0)
+          return false;
+
         return process->ptrace().traceMe(true) == kSuccess;
       }) != kSuccess) {
     return nullptr;
