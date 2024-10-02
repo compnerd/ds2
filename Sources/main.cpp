@@ -179,6 +179,12 @@ static std::unique_ptr<Socket> CreateSocket(std::string const &arg,
         // to strip the square brackets around the host part.
         if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
           host = addrString.substr(1, splitPos - 2);
+        } else if (splitPos == 1 && addrString[0] == '*') {
+          // Allow caller to specify a host name of * to listen on all available
+          // network interfaces. On some, but not all platforms, getaddrinfo()
+          // resolves * to 0.0.0.0 already. Explicitly making this substitution
+          // ensures the most compatibility.
+          host = "0.0.0.0";
         } else {
           host = addrString.substr(0, splitPos);
         }
