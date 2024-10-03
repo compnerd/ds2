@@ -19,6 +19,7 @@
 #include <grp.h>
 #include <netdb.h>
 #include <pwd.h>
+#include <signal.h>
 #include <string>
 #include <unistd.h>
 
