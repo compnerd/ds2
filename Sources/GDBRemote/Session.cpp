@@ -2019,7 +2019,7 @@ void Session::Handle_qProcessInfoPID(ProtocolInterpreter::Handler const &,
   ProcessId pid = std::strtoul(args.c_str(), nullptr, 10);
 
   ProcessInfo info;
-  CHK_SEND(_delegate->onQueryProcessInfo(*this, pid, info));
+  CHK_SEND(_delegate->onQueryProcessInfoPID(*this, pid, info));
 
   send(info.encode(_compatMode, true));
 }
