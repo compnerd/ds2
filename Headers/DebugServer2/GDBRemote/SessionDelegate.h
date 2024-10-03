@@ -280,8 +280,8 @@ protected: // Platform Session
   virtual ErrorCode onQueryProcessList(Session &session,
                                        ProcessInfoMatch const &match,
                                        bool first, ProcessInfo &info) const = 0;
-  virtual ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
-                                       ProcessInfo &info) const = 0;
+  virtual ErrorCode onQueryProcessInfoPID(Session &session, ProcessId pid,
+                                          ProcessInfo &info) const = 0;
 
   virtual ErrorCode onLaunchDebugServer(Session &session,
                                         std::string const &host, uint16_t &port,

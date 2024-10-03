@@ -29,8 +29,8 @@ public:
 protected:
   ErrorCode onQueryProcessList(Session &session, ProcessInfoMatch const &match,
                                bool first, ProcessInfo &info) const override;
-  ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
-                               ProcessInfo &info) const override;
+  ErrorCode onQueryProcessInfoPID(Session &session, ProcessId pid,
+                                  ProcessInfo &info) const override;
 
   ErrorCode onExecuteProgram(Session &session, std::string const &command,
                              uint32_t timeout,

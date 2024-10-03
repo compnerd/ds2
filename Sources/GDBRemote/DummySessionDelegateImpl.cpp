@@ -300,7 +300,7 @@ DUMMY_IMPL_EMPTY_CONST(onFileFstat, Session &, int, ByteVector &)
 DUMMY_IMPL_EMPTY_CONST(onQueryProcessList, Session &, ProcessInfoMatch const &,
                        bool, ProcessInfo &)
 
-DUMMY_IMPL_EMPTY_CONST(onQueryProcessInfo, Session &, ProcessId, ProcessInfo &)
+DUMMY_IMPL_EMPTY_CONST(onQueryProcessInfoPID, Session &, ProcessId, ProcessInfo &)
 
 DUMMY_IMPL_EMPTY(onLaunchDebugServer, Session &, std::string const &,
                  uint16_t &, ProcessId &)
