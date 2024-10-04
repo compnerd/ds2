@@ -250,7 +250,10 @@ jobs:
                   -G Ninja                                                    \
                   -S ${{ github.workspace }}/SourceCache/ds2
             cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
-            tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/ds2.tar ds2
+
+      # Tar the output to preserve permissions.
+      - name: tar output
+        run: tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/ds2.tar ds2
 
       - uses: actions/upload-artifact@v4
         with:
