@@ -36,9 +36,9 @@ static struct utsname const *GetCachedUTSName() {
 
 char const *Platform::GetOSVersion() { return GetCachedUTSName()->release; }
 
-char const *Platform::GetOSBuild() { return GetCachedUTSName()->version; }
+char const *Platform::GetOSBuild() { return GetCachedUTSName()->release; }
 
-char const *Platform::GetOSKernelPath() { return nullptr; }
+char const *Platform::GetOSKernelVersion() { return GetCachedUTSName()->version; }
 
 const char *Platform::GetSelfExecutablePath() {
   return Host::FreeBSD::ProcStat::GetExecutablePath(getpid()).c_str();
