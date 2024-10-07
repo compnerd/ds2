@@ -141,7 +141,7 @@ ErrorCode File::fstat(ByteVector &buffer) const {
   const auto appendInteger = [&buffer](auto value) -> void {
     buffer.insert(buffer.end(),
                   reinterpret_cast<uint8_t*>(&value),
-                  reinterpret_cast<uint8_t*>(&value + 1));
+                  reinterpret_cast<uint8_t*>(&value) + sizeof(value));
   };
 
   appendInteger(htobe32(static_cast<uint32_t>(s.st_dev)));
