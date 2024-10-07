@@ -105,9 +105,8 @@ template <typename T>
 ErrorCode FileOperationsMixin<T>::onFileFstat(Session &session, int fd,
                       ByteVector &buffer) const {
   auto it = _openFiles.find(fd);
-  if (it == _openFiles.end()) {
+  if (it == _openFiles.end())
     return kErrorInvalidHandle;
-  }
 
   return it->second.fstat(buffer);
 }
