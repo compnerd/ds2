@@ -672,7 +672,12 @@ ErrorCode DebugSessionImplBase::onSaveRegisters(Session &session,
                                                 uint64_t &id) {
   static uint64_t counter = 1;
 
-  Thread *thread = findThread(ptid);
+  Thread *thread = nullptr;
+  if (ptid.valid())
+    thread = findThread(ptid);
+  else if (_process != nullptr)
+    thread = _process->currentThread();
+
   if (thread == nullptr)
     return kErrorProcessNotFound;
 
@@ -687,7 +692,12 @@ ErrorCode DebugSessionImplBase::onSaveRegisters(Session &session,
 ErrorCode DebugSessionImplBase::onRestoreRegisters(Session &session,
                                                    ProcessThreadId const &ptid,
                                                    uint64_t id) {
-  Thread *thread = findThread(ptid);
+  Thread *thread = nullptr;
+  if (ptid.valid())
+    thread = findThread(ptid);
+  else if (_process != nullptr)
+    thread = _process->currentThread();
+
   if (thread == nullptr)
     return kErrorProcessNotFound;
 
