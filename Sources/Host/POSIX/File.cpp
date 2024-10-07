@@ -163,5 +163,14 @@ ErrorCode File::fileSize(std::string const &path, uint64_t &size) {
   size = static_cast<uint64_t>(stbuf.st_size);
   return kSuccess;
 }
+
+ErrorCode File::fileMode(std::string const &path, uint32_t &mode) {
+  struct stat stbuf;
+  if (stat(path.c_str(), &stbuf) < 0)
+    return Platform::TranslateError();
+
+  mode = static_cast<uint32_t>(ALLPERMS & stbuf.st_mode);
+  return kSuccess;
+}
 } // namespace Host
 } // namespace ds2

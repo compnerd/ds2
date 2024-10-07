@@ -293,6 +293,8 @@ DUMMY_IMPL_EMPTY(onFileComputeMD5, Session &, std::string const &, uint8_t[16])
 
 DUMMY_IMPL_EMPTY(onFileGetSize, Session &, std::string const &, uint64_t &)
 
+DUMMY_IMPL_EMPTY_CONST(onFileGetMode, Session &, std::string const &, uint32_t&)
+
 DUMMY_IMPL_EMPTY_CONST(onQueryProcessList, Session &, ProcessInfoMatch const &,
                        bool, ProcessInfo &)
 

@@ -45,6 +45,10 @@ protected:
 
 protected:
   ErrorCode onFileExists(Session &session, std::string const &path) override;
+  ErrorCode onFileGetSize(Session &session, std::string const &path,
+                          uint64_t &size) override;
+  ErrorCode onFileGetMode(Session &session, std::string const &path,
+                          uint32_t &mode) const override;
   ErrorCode onFileRemove(Session &session, std::string const &path) override;
 
 protected:

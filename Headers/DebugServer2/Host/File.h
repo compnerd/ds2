@@ -63,6 +63,7 @@ public:
 
 public:
   static ErrorCode fileSize(std::string const &path, uint64_t &size);
+  static ErrorCode fileMode(std::string const &path, uint32_t &mode);
 
 protected:
   int _fd;
