@@ -274,6 +274,8 @@ protected: // Platform Session
                                   uint64_t &size) = 0;
   virtual ErrorCode onFileGetMode(Session &session, std::string const &path,
                                   uint32_t &mode) const = 0;
+  virtual ErrorCode onFileFstat(Session &session, int fd,
+                               ByteVector &buffer) const = 0;
 
   virtual ErrorCode onQueryProcessList(Session &session,
                                        ProcessInfoMatch const &match,

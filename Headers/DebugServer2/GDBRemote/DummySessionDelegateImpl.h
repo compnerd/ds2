@@ -247,6 +247,8 @@ protected: // Platform Session
                           uint64_t &size) override;
   ErrorCode onFileGetMode(Session &session, std::string const &path,
                           uint32_t &mode) const override;
+  ErrorCode onFileFstat(Session &session, int fd,
+                       ByteVector &buffer) const override;
 
   ErrorCode onQueryProcessList(Session &session, ProcessInfoMatch const &match,
                                bool first, ProcessInfo &info) const override;

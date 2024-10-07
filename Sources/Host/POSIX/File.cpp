@@ -16,6 +16,16 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#if defined(OS_LINUX)
+#include <endian.h>
+#elif defined(OS_FREEBSD)
+#include <sys/_endian.h>
+#elif defined(OS_DARWIN)
+#include <libkern/OSByteOrder.h>
+#define htobe32(x) OSSwapHostToBigInt32(x)
+#define htobe64(x) OSSwapHostToBigInt64(x)
+#endif
+
 namespace ds2 {
 namespace Host {
 
@@ -116,6 +126,40 @@ ErrorCode File::pwrite(ByteVector const &buf, uint64_t &count,
   count = static_cast<uint64_t>(nWritten);
 
   return _lastError = kSuccess;
+}
+
+// lldb expects stat data is returned as a packed buffer with total size of 64
+// bytes. The field order is the same as the POSIX defined stat struct. All
+// fields are encoded as 4-byte, big-endian unsigned integers except for
+// st_size, st_blksize, and st_blocks which are all 8-byte, big-endian unsigned
+// integers.
+ErrorCode File::fstat(ByteVector &buffer) const {
+  struct stat s;
+  if (::fstat(_fd, &s) < 0)
+    return Platform::TranslateError();
+
+  const auto appendInteger = [&buffer](auto value) -> void {
+    buffer.insert(buffer.end(),
+                  reinterpret_cast<uint8_t*>(&value),
+                  reinterpret_cast<uint8_t*>(&value) + sizeof(value));
+  };
+
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_dev)));
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_ino)));
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_mode)));
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_nlink)));
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_uid)));
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_gid)));
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_rdev)));
+  appendInteger(htobe64(static_cast<uint64_t>(s.st_size)));
+  appendInteger(htobe64(static_cast<uint64_t>(s.st_blksize)));
+  appendInteger(htobe64(static_cast<uint64_t>(s.st_blocks)));
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_atime)));
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_mtime)));
+  appendInteger(htobe32(static_cast<uint32_t>(s.st_ctime)));
+  DS2ASSERT(buffer.size() == 64);
+
+  return kSuccess;
 }
 
 ErrorCode File::chmod(std::string const &path, uint32_t mode) {
