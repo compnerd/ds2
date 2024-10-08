@@ -112,6 +112,9 @@ public:
   inline ProcessId pid() const { return _pid; }
   inline int exitStatus() const { return _exitStatus; }
   inline int signalCode() const { return _signalCode; }
+  inline std::string const &executable() const { return _executablePath; }
+  inline StringCollection const &arguments() const { return _arguments; }
+  inline EnvironmentBlock const &environment() const { return _environment; }
 
 public:
   ErrorCode input(ByteVector const &buf);

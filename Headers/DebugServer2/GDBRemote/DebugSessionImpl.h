@@ -145,6 +145,9 @@ protected:
 protected:
   ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
                      StopInfo &stop) override;
+  ErrorCode onRunAttach(Session &session, std::string const &filename,
+                        StringCollection const &arguments,
+                        StopInfo &stop) override;
 
 protected:
   ErrorCode onResume(Session &session,

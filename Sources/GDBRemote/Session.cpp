@@ -3233,7 +3233,7 @@ void Session::Handle_vRun(ProtocolInterpreter::Handler const &,
   size_t index = 0;
 
   ParseList(args, ';', [&](std::string const &arg) {
-    if (index == 0) {
+    if (index++ == 0) {
       filename = HexToString(arg);
     } else {
       arguments.push_back(HexToString(arg));
