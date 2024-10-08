@@ -68,6 +68,7 @@ if((CMAKE_C_COMPILER_ID MATCHES "GNU" AND
     _POSIX_C_SOURCE=200809L)
   target_compile_options(jsobjects PRIVATE -Wall -Wextra -Werror)
   target_compile_options(jsobjects PRIVATE
+    -Wno-macro-redefined
     -Wno-unused-parameter
     -Wno-unused-function
     -Wno-sign-compare)
