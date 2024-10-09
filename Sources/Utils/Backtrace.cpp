@@ -11,7 +11,7 @@
 #include "DebugServer2/Utils/Backtrace.h"
 #include "DebugServer2/Utils/Log.h"
 
-#if defined(ANDROID) || defined(OS_DARWIN) || defined(__GLIBC__)
+#if defined(PLATFORM_ANDROID) || defined(OS_DARWIN) || defined(__GLIBC__)
 #include <cxxabi.h>
 #include <dlfcn.h>
 #include <execinfo.h>
@@ -22,7 +22,7 @@
 #include <sstream>
 #endif
 
-#if defined(ANDROID)
+#if defined(PLATFORM_ANDROID)
 // Android provides libunwind in the NDK instead of glibc backtrace
 #include <unwind.h>
 #endif
@@ -30,7 +30,7 @@
 namespace ds2 {
 namespace Utils {
 
-#if defined(ANDROID)
+#if defined(PLATFORM_ANDROID)
 struct unwind_state {
     void **buffer_cursor;
     void **buffer_end;
@@ -66,7 +66,7 @@ static int UnwindBacktrace(void *stack_buffer[], int stack_size) {
 }
 #endif
 
-#if defined(ANDROID) || defined(OS_DARWIN) || (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
+#if defined(PLATFORM_ANDROID) || defined(OS_DARWIN) || (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
 static void PrintBacktraceEntrySimple(void *address) {
   DS2LOG(Error, "%" PRI_PTR, PRI_PTR_CAST(address));
 }
