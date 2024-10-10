@@ -207,16 +207,19 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>  <span class="keyword">inline</span> ProcessId pid()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _pid; }</div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>  <span class="keyword">inline</span> <span class="keywordtype">int</span> exitStatus()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _exitStatus; }</div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>  <span class="keyword">inline</span> <span class="keywordtype">int</span> signalCode()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _signalCode; }</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>  ErrorCode input(ByteVector <span class="keyword">const</span> &amp;buf);</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>  <span class="keyword">inline</span> std::string <span class="keyword">const</span> &amp;output()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _outputBuffer; }</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>  <span class="keywordtype">void</span> redirectionThread();</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>};</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>} <span class="comment">// namespace Host</span></div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>} <span class="comment">// namespace ds2</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>  <span class="keyword">inline</span> std::string <span class="keyword">const</span> &amp;executable()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _executablePath; }</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>  <span class="keyword">inline</span> StringCollection <span class="keyword">const</span> &amp;arguments()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _arguments; }</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>  <span class="keyword">inline</span> EnvironmentBlock <span class="keyword">const</span> &amp;environment()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _environment; }</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>  ErrorCode input(ByteVector <span class="keyword">const</span> &amp;buf);</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>  <span class="keyword">inline</span> std::string <span class="keyword">const</span> &amp;output()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _outputBuffer; }</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>  <span class="keywordtype">void</span> redirectionThread();</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>};</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>} <span class="comment">// namespace Host</span></div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>} <span class="comment">// namespace ds2</span></div>
 <div class="ttc" id="aclassds2_1_1_host_1_1_process_spawner_html"><div class="ttname"><a href="classds2_1_1_host_1_1_process_spawner.html">ds2::Host::ProcessSpawner</a></div><div class="ttdef"><b>Definition</b> ProcessSpawner.h:20</div></div>
 <div class="ttc" id="astructds2_1_1_host_1_1_process_spawner_1_1_redirect_descriptor_html"><div class="ttname"><a href="structds2_1_1_host_1_1_process_spawner_1_1_redirect_descriptor.html">ds2::Host::ProcessSpawner::RedirectDescriptor</a></div><div class="ttdef"><b>Definition</b> ProcessSpawner.h:36</div></div>
 </div><!-- fragment --></div><!-- contents -->

@@ -214,6 +214,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:afbed3e0b53360f33f9c6e918c037687d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0e9bb235e4591e3ab1c027c8de30861" id="r_af0e9bb235e4591e3ab1c027c8de30861"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af0e9bb235e4591e3ab1c027c8de30861">onAttach</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid, AttachMode mode, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_stop_info.html">StopInfo</a> &amp;stop) override</td></tr>
 <tr class="separator:af0e9bb235e4591e3ab1c027c8de30861"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfbf04d37b42acb85f6ea6da1b206727" id="r_adfbf04d37b42acb85f6ea6da1b206727"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfbf04d37b42acb85f6ea6da1b206727">onRunAttach</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;filename, StringCollection const &amp;arguments, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_stop_info.html">StopInfo</a> &amp;stop) override</td></tr>
+<tr class="separator:adfbf04d37b42acb85f6ea6da1b206727"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f79aa088a335fa51204342f2c4f6b48" id="r_a1f79aa088a335fa51204342f2c4f6b48"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f79aa088a335fa51204342f2c4f6b48">onResume</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ThreadResumeAction::Collection const &amp;actions, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_stop_info.html">StopInfo</a> &amp;stop) override</td></tr>
 <tr class="separator:a1f79aa088a335fa51204342f2c4f6b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a922f3d7a0f5b1f71d6bfb02e0f577d68" id="r_a922f3d7a0f5b1f71d6bfb02e0f577d68"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a922f3d7a0f5b1f71d6bfb02e0f577d68">onTerminate</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_process_thread_id.html">ProcessThreadId</a> const &amp;ptid, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_stop_info.html">StopInfo</a> &amp;stop) override</td></tr>
@@ -1540,6 +1542,47 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>_consoleBuffer
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">ThreadResumeAction::Collection const &amp;</td>          <td class="paramname"><span class="paramname"><em>actions</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structds2_1_1_g_d_b_remote_1_1_stop_info.html">StopInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>stop</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classds2_1_1_g_d_b_remote_1_1_session_delegate.html">ds2::GDBRemote::SessionDelegate</a>.</p>
+
+</div>
+</div>
+<a id="adfbf04d37b42acb85f6ea6da1b206727" name="adfbf04d37b42acb85f6ea6da1b206727"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfbf04d37b42acb85f6ea6da1b206727">&#9670;&#160;</a></span>onRunAttach()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ErrorCode ds2::GDBRemote::DebugSessionImplBase::onRunAttach </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>session</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string const &amp;</td>          <td class="paramname"><span class="paramname"><em>filename</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">StringCollection const &amp;</td>          <td class="paramname"><span class="paramname"><em>arguments</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
