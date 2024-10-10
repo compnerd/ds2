@@ -845,6 +845,23 @@ ErrorCode DebugSessionImplBase::onAttach(Session &session, ProcessId pid,
   return queryStopInfo(session, pid, stop);
 }
 
+ErrorCode DebugSessionImplBase::onRunAttach(Session &session,
+                                            std::string const &filename,
+                                            StringCollection const &arguments,
+                                            StopInfo &stop) {
+  if (_process != nullptr)
+    return kErrorAlreadyExist;
+
+  if (!filename.empty())
+    _spawner.setExecutable(filename);
+
+  if (!arguments.empty())
+    _spawner.setArguments(arguments);
+
+  CHK(spawnProcess({}, {}));
+  return queryStopInfo(session, _spawner.pid(), stop);
+}
+
 ErrorCode
 DebugSessionImplBase::onResume(Session &session,
                                ThreadResumeAction::Collection const &actions,
@@ -1134,25 +1151,14 @@ ErrorCode DebugSessionImplBase::onRemoveBreakpoint(Session &session,
 
 ErrorCode DebugSessionImplBase::spawnProcess(StringCollection const &args,
                                              EnvironmentBlock const &env) {
-  bool displayArgs = args.size() > 1;
-  auto it = args.begin();
-  DS2LOG(Debug, "spawning process '%s'%s", (it++)->c_str(),
-         displayArgs ? " with args:" : "");
-  while (it != args.end()) {
-    DS2LOG(Debug, "  %s", (it++)->c_str());
-  }
+  if (!args.empty())
+    _spawner.setExecutable(args[0]);
 
-  _spawner.setExecutable(args[0]);
-  _spawner.setArguments(StringCollection(args.begin() + 1, args.end()));
+  if (args.size() > 1)
+    _spawner.setArguments(StringCollection(args.begin() + 1, args.end()));
 
-  if (!env.empty()) {
-    DS2LOG(Debug, "%swith environment:", displayArgs ? "and " : "");
-    for (auto const &val : env) {
-      DS2LOG(Debug, "  %s=%s", val.first.c_str(), val.second.c_str());
-    }
-
+  if (!env.empty())
     _spawner.setEnvironment(env);
-  }
 
   auto outputDelegate = [this](void *buf, size_t size) {
     appendOutput(static_cast<char *>(buf), size);
@@ -1161,6 +1167,18 @@ ErrorCode DebugSessionImplBase::spawnProcess(StringCollection const &args,
   _spawner.redirectInputToTerminal();
   _spawner.redirectOutputToDelegate(outputDelegate);
   _spawner.redirectErrorToDelegate(outputDelegate);
+
+  const bool displayArgs = !_spawner.arguments().empty();
+  DS2LOG(Debug, "spawning process '%s'%s", _spawner.executable().c_str(),
+         displayArgs ? " with args:" : "");
+  for (auto const &val : _spawner.arguments())
+    DS2LOG(Debug, "  %s", val.c_str());
+
+  if (!_spawner.environment().empty()) {
+    DS2LOG(Debug, "%swith environment:", displayArgs ? "and " : "");
+    for (auto const &val : _spawner.environment())
+      DS2LOG(Debug, "  %s=%s", val.first.c_str(), val.second.c_str());
+  }
 
   _process = ds2::Target::Process::Create(_spawner);
   if (_process == nullptr) {

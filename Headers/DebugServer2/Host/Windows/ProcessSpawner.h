@@ -91,6 +91,9 @@ public:
   inline HANDLE threadHandle() const { return _threadHandle; }
   inline int exitStatus() const { return 0; }
   inline int signalCode() const { return 0; }
+  inline std::string const &executable() const { return _executablePath; }
+  inline StringCollection const &arguments() const { return _arguments; }
+  inline EnvironmentBlock const &environment() const { return _environment; }
 
 public:
   ErrorCode input(ByteVector const &buf) { return kErrorUnsupported; }
