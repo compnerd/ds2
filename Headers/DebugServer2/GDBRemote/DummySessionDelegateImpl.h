@@ -252,8 +252,8 @@ protected: // Platform Session
 
   ErrorCode onQueryProcessList(Session &session, ProcessInfoMatch const &match,
                                bool first, ProcessInfo &info) const override;
-  ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
-                               ProcessInfo &info) const override;
+  ErrorCode onQueryProcessInfoPID(Session &session, ProcessId pid,
+                                  ProcessInfo &info) const override;
 
   ErrorCode onLaunchDebugServer(Session &session, std::string const &host,
                                 uint16_t &port, ProcessId &pid) override;

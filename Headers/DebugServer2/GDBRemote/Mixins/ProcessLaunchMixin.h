@@ -34,12 +34,15 @@ protected:
   EnvironmentMap _environment;
   std::string _stdFile[3];
   StringCollection _arguments;
+  std::vector<ProcessId> _processList;
+  ErrorCode _lastLaunchResult;
 
 public:
   template <typename... Args>
   explicit ProcessLaunchMixin(Args &&... args)
       : T(std::forward<Args>(args)...), _disableASLR(false),
-        _workingDirectory(Platform::GetWorkingDirectory()) {}
+        _workingDirectory(Platform::GetWorkingDirectory()),
+        _lastLaunchResult(kSuccess) {}
 
 public:
   ErrorCode onDisableASLR(Session &session, bool disable) override;
@@ -57,6 +60,14 @@ public:
                                   StringCollection const &args) override;
   ErrorCode onQueryLaunchSuccess(Session &session,
                                  ProcessId pid) const override;
+  ErrorCode onQueryProcessInfo(Session &session,
+                               ProcessInfo &info) const override;
+  ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
+                        StopInfo &stop) override;
+
+private:
+  ErrorCode spawnProcess();
+  static bool isDebugServer(StringCollection const &args);
 };
 } // namespace GDBRemote
 } // namespace ds2
