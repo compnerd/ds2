@@ -126,8 +126,8 @@ Collaboration diagram for ds2::GDBRemote::PlatformSessionImplBase:</div>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a0c00c7ec18d4588d1bc56b2b52633f8e" id="r_a0c00c7ec18d4588d1bc56b2b52633f8e"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c00c7ec18d4588d1bc56b2b52633f8e">onQueryProcessList</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_process_info_match.html">ProcessInfoMatch</a> const &amp;match, bool first, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) const override</td></tr>
 <tr class="separator:a0c00c7ec18d4588d1bc56b2b52633f8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a171cdde16015ccbd856fa4bfed6df77e" id="r_a171cdde16015ccbd856fa4bfed6df77e"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a171cdde16015ccbd856fa4bfed6df77e">onQueryProcessInfo</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) const override</td></tr>
-<tr class="separator:a171cdde16015ccbd856fa4bfed6df77e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7892edfa10585b2ef5092aa2786934f" id="r_ac7892edfa10585b2ef5092aa2786934f"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7892edfa10585b2ef5092aa2786934f">onQueryProcessInfoPID</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) const override</td></tr>
+<tr class="separator:ac7892edfa10585b2ef5092aa2786934f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae59d349a87403e2c064d13c197f8cdc1" id="r_ae59d349a87403e2c064d13c197f8cdc1"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae59d349a87403e2c064d13c197f8cdc1">onExecuteProgram</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;command, uint32_t timeout, std::string const &amp;workingDirectory, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_program_result.html">ProgramResult</a> &amp;result) override</td></tr>
 <tr class="separator:ae59d349a87403e2c064d13c197f8cdc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12103d4edc68f69f0b358b0336844534" id="r_a12103d4edc68f69f0b358b0336844534"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12103d4edc68f69f0b358b0336844534">onQueryUserName</a> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, UserId const &amp;uid, std::string &amp;name) const override</td></tr>
@@ -453,8 +453,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a171cdde16015ccbd856fa4bfed6df77e" name="a171cdde16015ccbd856fa4bfed6df77e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a171cdde16015ccbd856fa4bfed6df77e">&#9670;&#160;</a></span>onQueryProcessInfo()</h2>
+<a id="ac7892edfa10585b2ef5092aa2786934f" name="ac7892edfa10585b2ef5092aa2786934f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7892edfa10585b2ef5092aa2786934f">&#9670;&#160;</a></span>onQueryProcessInfoPID()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -463,7 +463,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">ErrorCode ds2::GDBRemote::PlatformSessionImplBase::onQueryProcessInfo </td>
+          <td class="memname">ErrorCode ds2::GDBRemote::PlatformSessionImplBase::onQueryProcessInfoPID </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>session</em></span>, </td>
         </tr>

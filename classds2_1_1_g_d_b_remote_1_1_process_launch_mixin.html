@@ -147,6 +147,12 @@ ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetProgramArgu
 <tr class="memitem:a91950c989890085901849e9e69a73be6" id="r_a91950c989890085901849e9e69a73be6"><td class="memItemLeft" align="right" valign="top"><a id="a91950c989890085901849e9e69a73be6" name="a91950c989890085901849e9e69a73be6"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onQueryLaunchSuccess</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid) const override</td></tr>
 <tr class="separator:a91950c989890085901849e9e69a73be6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab33312753f51cae9fb9b09928583fba4" id="r_ab33312753f51cae9fb9b09928583fba4"><td class="memItemLeft" align="right" valign="top"><a id="ab33312753f51cae9fb9b09928583fba4" name="ab33312753f51cae9fb9b09928583fba4"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onQueryProcessInfo</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) const override</td></tr>
+<tr class="separator:ab33312753f51cae9fb9b09928583fba4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f90146ecfd537dd0d56704d43260cc6" id="r_a0f90146ecfd537dd0d56704d43260cc6"><td class="memItemLeft" align="right" valign="top"><a id="a0f90146ecfd537dd0d56704d43260cc6" name="a0f90146ecfd537dd0d56704d43260cc6"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onTerminate</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_process_thread_id.html">ProcessThreadId</a> const &amp;ptid, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_stop_info.html">StopInfo</a> &amp;stop) override</td></tr>
+<tr class="separator:a0f90146ecfd537dd0d56704d43260cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
 Protected Types</h2></td></tr>
@@ -171,6 +177,12 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>_stdFile</b> [
 <tr class="memitem:a2e73c9df4ba715b98e0279f6f9b38148" id="r_a2e73c9df4ba715b98e0279f6f9b38148"><td class="memItemLeft" align="right" valign="top"><a id="a2e73c9df4ba715b98e0279f6f9b38148" name="a2e73c9df4ba715b98e0279f6f9b38148"></a>
 StringCollection&#160;</td><td class="memItemRight" valign="bottom"><b>_arguments</b></td></tr>
 <tr class="separator:a2e73c9df4ba715b98e0279f6f9b38148"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac675cfe01fe2b04abbfa03893a141fcd" id="r_ac675cfe01fe2b04abbfa03893a141fcd"><td class="memItemLeft" align="right" valign="top"><a id="ac675cfe01fe2b04abbfa03893a141fcd" name="ac675cfe01fe2b04abbfa03893a141fcd"></a>
+std::vector&lt; ProcessId &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_processList</b></td></tr>
+<tr class="separator:ac675cfe01fe2b04abbfa03893a141fcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad92a75d521bf47a6ecc951b24e04e79a" id="r_ad92a75d521bf47a6ecc951b24e04e79a"><td class="memItemLeft" align="right" valign="top"><a id="ad92a75d521bf47a6ecc951b24e04e79a" name="ad92a75d521bf47a6ecc951b24e04e79a"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>_lastLaunchResult</b></td></tr>
+<tr class="separator:ad92a75d521bf47a6ecc951b24e04e79a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Headers/DebugServer2/GDBRemote/Mixins/<a class="el" href="_process_launch_mixin_8h_source.html">ProcessLaunchMixin.h</a></li>
