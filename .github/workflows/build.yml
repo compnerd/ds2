@@ -511,16 +511,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/SourceCache/ds2
 
-      - uses: nttld/setup-ndk@v1
-        id: setup-ndk
-        with:
-          # NOTE: because of structural changes and the remvoal of gcc, Android
-          # NDK r21e is the last NDK version that the lldb API tests can build
-          # test binaries against. The lldb test framework will need to be
-          # modified to run with a more recent NDK.
-          ndk-version: r21e
-          local-cache: true
-
       # Cache the contents of $HOME/.android which contains emulators,
       # snapshots, and adb state.
       - name: Setup AVD cache
@@ -576,7 +566,7 @@ jobs:
             --platform-name remote-android
             --platform-url connect://localhost:5432
             --platform-working-dir /data/local/tmp
-            --compiler=${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/clang
+            --compiler=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.processor }}-linux-android${{ matrix.api-level }}-clang
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-${{ matrix.processor }}.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-${{ matrix.processor }}.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
