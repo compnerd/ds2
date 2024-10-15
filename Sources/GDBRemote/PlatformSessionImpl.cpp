@@ -38,8 +38,9 @@ ErrorCode PlatformSessionImplBase::onQueryProcessList(
   return kSuccess;
 }
 
-ErrorCode PlatformSessionImplBase::onQueryProcessInfo(Session &, ProcessId pid,
-                                                      ProcessInfo &info) const {
+ErrorCode
+PlatformSessionImplBase::onQueryProcessInfoPID(Session &, ProcessId pid,
+                                               ProcessInfo &info) const {
   if (!Platform::GetProcessInfo(pid, info))
     return kErrorProcessNotFound;
   else
