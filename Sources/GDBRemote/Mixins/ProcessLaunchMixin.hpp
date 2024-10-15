@@ -125,8 +125,8 @@ ProcessLaunchMixin<T>::onQueryProcessInfo(Session &,
 
 template <typename T>
 ErrorCode ProcessLaunchMixin<T>::onTerminate(Session &session,
-                                            ProcessThreadId const &ptid,
-                                            StopInfo &stop) {
+                                             ProcessThreadId const &ptid,
+                                             StopInfo &stop) {
   auto it = std::find(_processList.begin(), _processList.end(), ptid.pid);
   if (it == _processList.end())
     return kErrorNotFound;
@@ -157,7 +157,8 @@ bool ProcessLaunchMixin<T>::isDebugServer(StringCollection const &args) {
 
 template <typename T>
 ErrorCode ProcessLaunchMixin<T>::spawnProcess() {
-  bool displayArgs = _arguments.size() > 1;
+  const bool displayArgs = _arguments.size() > 1;
+  const bool displayEnv = !_environment.empty();
   auto it = _arguments.begin();
   DS2LOG(Debug, "spawning process '%s'%s", (it++)->c_str(),
          displayArgs ? " with args:" : "");
@@ -165,11 +166,17 @@ ErrorCode ProcessLaunchMixin<T>::spawnProcess() {
     DS2LOG(Debug, "  %s", (it++)->c_str());
   }
 
-  if (!_environment.empty()) {
+  if (displayEnv) {
     DS2LOG(Debug, "%swith environment:", displayArgs ? "and " : "");
     for (auto const &val : _environment) {
       DS2LOG(Debug, "  %s=%s", val.first.c_str(), val.second.c_str());
     }
+  }
+
+  if (!_workingDirectory.empty()) {
+    DS2LOG(Debug, "%swith working directory: %s",
+           displayArgs || displayEnv ? "and " : "",
+           _workingDirectory.c_str());
   }
 
   Host::ProcessSpawner ps;

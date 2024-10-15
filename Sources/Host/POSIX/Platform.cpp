@@ -127,9 +127,9 @@ bool Platform::SetWorkingDirectory(std::string const &directory) {
 
 ds2::ProcessId Platform::GetCurrentProcessId() { return ::getpid(); }
 
-// Termiantes the process and waits for it to exit before returning.
+// Terminates the process and waits for it to exit before returning.
 bool Platform::TerminateProcess(ProcessId pid) {
-  if (::kill(pid, SIGKILL) < 0)
+  if (::kill(pid, SIGKILL) < 0 && errno != ESRCH)
     return false;
 
   int status;
