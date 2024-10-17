@@ -13,7 +13,7 @@
 #include "DebugServer2/GDBRemote/DebugSessionImpl.h"
 #include "DebugServer2/GDBRemote/PlatformSessionImpl.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
-#include "DebugServer2/GDBRemote/SlaveSessionImpl.h"
+#include "DebugServer2/GDBRemote/WorkerSessionImpl.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/QueueChannel.h"
 #include "DebugServer2/Host/Socket.h"
@@ -47,7 +47,7 @@ using ds2::GDBRemote::DebugSessionImpl;
 using ds2::GDBRemote::PlatformSessionImpl;
 using ds2::GDBRemote::Session;
 using ds2::GDBRemote::SessionDelegate;
-using ds2::GDBRemote::SlaveSessionImpl;
+using ds2::GDBRemote::WorkerSessionImpl;
 using ds2::Host::Platform;
 using ds2::Host::QueueChannel;
 using ds2::Host::Socket;
@@ -564,7 +564,7 @@ static int PlatformMain(int argc, char **argv) {
   } while (true);
 }
 
-static int SlaveMain(int argc, char **argv) {
+static int WorkerMain(int argc, char **argv) {
   DS2ASSERT(argv[1][0] == 's');
 
   ds2::OptParse opts;
@@ -581,7 +581,7 @@ static int SlaveMain(int argc, char **argv) {
   }
 
   if (pid == 0) {
-    // When in slave mode, output is suppressed but for standard error.
+    // When in worker mode, output is suppressed but for standard error.
     close(0);
     close(1);
 
@@ -590,7 +590,7 @@ static int SlaveMain(int argc, char **argv) {
 
     std::unique_ptr<Socket> client = server->accept();
 
-    SlaveSessionImpl impl;
+    WorkerSessionImpl impl;
     return RunDebugServer(client.get(), &impl);
   } else {
     // Write to the standard output to let our parent know
@@ -666,8 +666,8 @@ int main(int argc, char **argv) {
 #if !defined(OS_WIN32)
   case 'p':
     return PlatformMain(argc, argv);
-  case 's':
-    return SlaveMain(argc, argv);
+  case 'w':
+    return WorkerMain(argc, argv);
 #endif
   case 'v':
     return VersionMain(argc, argv);

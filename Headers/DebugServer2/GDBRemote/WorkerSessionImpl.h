@@ -8,11 +8,16 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/GDBRemote/SlaveSessionImpl.h"
+#pragma once
+
+#include "DebugServer2/GDBRemote/DebugSessionImpl.h"
 
 namespace ds2 {
 namespace GDBRemote {
 
-SlaveSessionImpl::SlaveSessionImpl() = default;
+class WorkerSessionImpl : public DebugSessionImpl {
+public:
+  WorkerSessionImpl();
+};
 } // namespace GDBRemote
 } // namespace ds2
