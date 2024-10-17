@@ -408,12 +408,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # We don't currently have a good way to run arm64 Android emulator on
-        # the available GitHub test runners.
         include:
           - test-category: misc
-            processor: x86_64
-            api-level: 28
+            arch: x86_64
+            llvm-arch: x86_64
+            android-api-level: 28
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/android
               SourceCache/llvm/lldb/test/API/api
@@ -424,24 +423,45 @@ jobs:
               SourceCache/llvm/lldb/test/API/types
 
           - test-category: commands
-            processor: x86_64
-            api-level: 28
+            arch: x86_64
+            llvm-arch: x86_64
+            android-api-level: 28
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/commands
 
           - test-category: Python API
-            processor: x86_64
-            api-level: 28
+            arch: x86_64
+            llvm-arch: x86_64
+            android-api-level: 28
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/python_api
 
           - test-category: functionalities
-            processor: x86_64
-            api-level: 28
+            arch: x86_64
+            llvm-arch: x86_64
+            android-api-level: 28
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/functionalities
 
-    name: Android ${{ matrix.processor }} test ${{ matrix.test-category}}
+          # Run a small sub-set of tests on arm64. The emulator is very slow
+          # so it is not practical to run more tests until we can run on an
+          # arm64 runner with virtualization.
+          - test-category: sanity
+            arch: arm64-v8a
+            llvm-arch: aarch64
+            # Android emulator supports ARM on x86 only on API < 28
+            android-api-level: 27
+            # This is the most recent build of the emulator that supports
+            # booting arm64 images.
+            emulator-build: 12234392
+            emulator-options: -qemu -machine virt -cpu max
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/android
+              SourceCache/llvm/lldb/test/API/api
+              SourceCache/llvm/lldb/test/API/linux
+              SourceCache/llvm/lldb/test/API/sanity
+
+    name: Test Android ${{ matrix.arch}} ${{ matrix.test-category }}
 
     steps:
       - uses: actions/download-artifact@v4
@@ -454,7 +474,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: android-${{ matrix.processor }}-ds2
+          name: android-${{ matrix.arch }}-ds2
           path: ${{ github.workspace }}/BinaryCache
       - name: untar ds2 artifacts
         run: |
@@ -479,7 +499,7 @@ jobs:
         id: avd-cache
         with:
           path: ~/.android/**
-          key: avd-${{ runner.os }}-${{ matrix.processor }}-${{ matrix.api-level }}
+          key: avd-${{ runner.os }}-${{ matrix.arch }}-${{ matrix.android-api-level }}
 
       - name: Enable KVM
         run: |
@@ -491,18 +511,20 @@ jobs:
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          arch: ${{ matrix.processor }}
+          emulator-build: ${{ matrix.emulator-build }}
+          api-level: ${{ matrix.android-api-level }}
+          arch: ${{ matrix.arch }}
           force-avd-creation: false
-          emulator-options: -no-window -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -noaudio -no-boot-anim -camera-back none -gpu swiftshader_indirect ${{ matrix.emulator-options }}
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
       - name: Run lldb tests against ds2 on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          arch: ${{ matrix.processor }}
+          emulator-build: ${{ matrix.emulator-build }}
+          api-level: ${{ matrix.android-api-level }}
+          arch: ${{ matrix.arch }}
           force-avd-creation: false
           # NOTE: -no-snapshot will not load or save state and the emulator will
           # cold boot. Ideally, we would specify -no-snapshot-save instead so it
@@ -510,7 +532,7 @@ jobs:
           # new one). However, doing that causes the emulator to hang during
           # shutdown. We're still saving time by reusing the device created in
           # the caching step and not wiping userdata on boot.
-          emulator-options: -no-snapshot -no-window -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot -no-window -noaudio -no-boot-anim -camera-back none -gpu swiftshader_indirect ${{ matrix.emulator-options }}
           disable-animations: true
           script: >
             $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432
@@ -523,12 +545,12 @@ jobs:
 
             ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
             --out-of-tree-debugserver
-            --arch ${{ matrix.processor}}
+            --arch ${{ matrix.llvm-arch }}
             --platform-name remote-android
             --platform-url connect://localhost:5432
             --platform-working-dir /data/local/tmp
-            --compiler=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.processor }}-linux-android${{ matrix.api-level }}-clang
-            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-${{ matrix.processor }}.excluded
-            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-${{ matrix.processor }}.excluded
+            --compiler=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/${{ matrix.llvm-arch }}-linux-android${{ matrix.android-api-level }}-clang
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-${{ matrix.llvm-arch }}.excluded
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-${{ matrix.llvm-arch }}.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
             ${{ matrix.test-subdirs }}
