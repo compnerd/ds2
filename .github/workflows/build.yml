@@ -354,10 +354,61 @@ jobs:
     needs: [linux, linux-lldb]
     runs-on: ubuntu-latest
 
+    name: Test Linux ${{ matrix.arch }} ${{ matrix.test-category }}
+
     strategy:
       fail-fast: false
       matrix:
-        processor: [x86_64, i686]
+        include:
+          - test-category: misc
+            arch: i686
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/api
+              SourceCache/llvm/lldb/test/API/lang
+              SourceCache/llvm/lldb/test/API/linux
+              SourceCache/llvm/lldb/test/API/tools
+              SourceCache/llvm/lldb/test/API/sanity
+              SourceCache/llvm/lldb/test/API/types
+
+          - test-category: misc
+            arch: x86_64
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/api
+              SourceCache/llvm/lldb/test/API/lang
+              SourceCache/llvm/lldb/test/API/linux
+              SourceCache/llvm/lldb/test/API/tools
+              SourceCache/llvm/lldb/test/API/sanity
+              SourceCache/llvm/lldb/test/API/types
+
+          - test-category: commands
+            arch: x86_64
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/commands
+
+          - test-category: commands
+            arch: i686
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/commands
+
+          - test-category: Python API
+            arch: x86_64
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/python_api
+
+          - test-category: Python API
+            arch: i686
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/python_api
+
+          - test-category: functionalities
+            arch: x86_64
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/functionalities
+
+          - test-category: functionalities
+            arch: i686
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/functionalities
 
     steps:
       - run: |
@@ -374,7 +425,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: linux-${{ matrix.processor }}-ds2
+          name: linux-${{ matrix.arch }}-ds2
           path: ${{ github.workspace }}/BinaryCache
       - name: untar ds2 artifacts
         run: |
@@ -393,13 +444,18 @@ jobs:
           path: ${{ github.workspace }}/SourceCache/ds2
 
       - run: |
+          mkdir -p ${{ github.workspace }}/temp
           ${{ github.workspace }}/BinaryCache/ds2/ds2 platform --server --daemonize --listen localhost:5432
-          ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest              \
-              --out-of-tree-debugserver                                         \
-              --arch ${{ matrix.processor }}                                    \
-              --platform-name remote-linux                                      \
-              --platform-url connect://localhost:5432                           \
-              ${{ github.workspace }}/SourceCache/llvm/lldb/test/API/api
+          ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest  \
+              --out-of-tree-debugserver                             \
+              --arch ${{ matrix.arch }}                             \
+              --platform-name remote-linux                          \
+              --platform-url connect://localhost:5432               \
+              --platform-working-dir ${{ github.workspace }}/temp   \
+              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/linux-${{ matrix.arch }}.excluded \
+              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/linux-${{ matrix.arch }}.excluded \
+              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded \
+              ${{ matrix.test-subdirs }}
 
   test-android:
     needs: [android-windows-ndk, linux-lldb]
