@@ -354,12 +354,14 @@ jobs:
     needs: [linux, linux-lldb]
     runs-on: ubuntu-latest
 
+    name: Test Linux ${{ matrix.arch }} ${{ matrix.test-category }}
+
     strategy:
       fail-fast: false
       matrix:
         include:
           - test-category: misc
-            processor: i686
+            arch: i686
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/api
               SourceCache/llvm/lldb/test/API/lang
@@ -369,7 +371,7 @@ jobs:
               SourceCache/llvm/lldb/test/API/types
 
           - test-category: misc
-            processor: x86_64
+            arch: x86_64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/api
               SourceCache/llvm/lldb/test/API/lang
@@ -379,32 +381,32 @@ jobs:
               SourceCache/llvm/lldb/test/API/types
 
           - test-category: commands
-            processor: x86_64
+            arch: x86_64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/commands
 
           - test-category: commands
-            processor: i686
+            arch: i686
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/commands
 
           - test-category: Python API
-            processor: x86_64
+            arch: x86_64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/python_api
 
           - test-category: Python API
-            processor: i686
+            arch: i686
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/python_api
 
           - test-category: functionalities
-            processor: x86_64
+            arch: x86_64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/functionalities
 
           - test-category: functionalities
-            processor: i686
+            arch: i686
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/functionalities
 
@@ -423,7 +425,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: linux-${{ matrix.processor }}-ds2
+          name: linux-${{ matrix.arch }}-ds2
           path: ${{ github.workspace }}/BinaryCache
       - name: untar ds2 artifacts
         run: |
@@ -446,12 +448,12 @@ jobs:
           ${{ github.workspace }}/BinaryCache/ds2/ds2 platform --server --daemonize --listen localhost:5432
           ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest  \
               --out-of-tree-debugserver                             \
-              --arch ${{ matrix.processor }}                        \
+              --arch ${{ matrix.arch }}                             \
               --platform-name remote-linux                          \
               --platform-url connect://localhost:5432               \
               --platform-working-dir ${{ github.workspace }}/temp   \
-              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/linux-${{ matrix.processor }}.excluded \
-              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/linux-${{ matrix.processor }}.excluded \
+              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/linux-${{ matrix.arch }}.excluded \
+              --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/linux-${{ matrix.arch }}.excluded \
               --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded \
               ${{ matrix.test-subdirs }}
 
