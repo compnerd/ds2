@@ -101,7 +101,7 @@ ErrorCode PlatformSessionImplBase::onLaunchDebugServer(Session &session,
   StringCollection args;
 
   ps.setExecutable(Platform::GetSelfExecutablePath());
-  args.push_back("slave");
+  args.push_back("server");
   if (GetLogLevel() == kLogLevelDebug) {
     args.push_back("--debug");
   } else if (GetLogLevel() == kLogLevelPacket) {
