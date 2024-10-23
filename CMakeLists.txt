@@ -189,7 +189,6 @@ add_executable(ds2
   Sources/GDBRemote/ProtocolInterpreter.cpp
   Sources/GDBRemote/Session.cpp
   Sources/GDBRemote/SessionBase.cpp
-  Sources/GDBRemote/SlaveSessionImpl.cpp
   Sources/GDBRemote/Structures.cpp
 
   Sources/Host/Common/Channel.cpp
