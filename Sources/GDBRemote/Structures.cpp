@@ -847,7 +847,8 @@ std::string ProgramResult::encode() const {
 
 std::string ModuleInfo::encode() const {
   std::ostringstream ss;
-  ss << "uuid:" << ToHex(uuid) << ";";
+  if (!uuid.empty())
+    ss << "uuid:" << ToHex(uuid) << ";";
   ss << "triple:" << ToHex(triple) << ";";
   ss << "file_path:" << ToHex(file_path) << ";";
   ss << "file_offset:" << HEX(16) << file_offset << ";";
