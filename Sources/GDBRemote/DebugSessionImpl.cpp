@@ -1093,30 +1093,48 @@ ErrorCode DebugSessionImplBase::onInsertBreakpoint(
     StringCollection const &commands, bool persistentCommands) {
   DS2ASSERT(conditions.empty() && commands.empty() && !persistentCommands);
 
+  MemoryRegionInfo info;
+  CHK(_process->getMemoryRegionInfo(address, info));
+
   BreakpointManager *bpm = nullptr;
   BreakpointManager::Mode mode;
   switch (type) {
   case kSoftwareBreakpoint:
+    if (!(info.protection & kProtectionExecute))
+      return kErrorInvalidAddress;
+
     bpm = _process->softwareBreakpointManager();
     mode = BreakpointManager::kModeExec;
     break;
 
   case kHardwareBreakpoint:
+    if (!(info.protection & kProtectionExecute))
+      return kErrorInvalidAddress;
+
     bpm = _process->hardwareBreakpointManager();
     mode = BreakpointManager::kModeExec;
     break;
 
   case kReadWatchpoint:
+    if (!(info.protection & kProtectionRead))
+      return kErrorInvalidAddress;
+
     bpm = _process->hardwareBreakpointManager();
     mode = BreakpointManager::kModeRead;
     break;
 
   case kWriteWatchpoint:
+    if (!(info.protection & kProtectionWrite))
+      return kErrorInvalidAddress;
+
     bpm = _process->hardwareBreakpointManager();
     mode = BreakpointManager::kModeWrite;
     break;
 
   case kAccessWatchpoint:
+    if (!(info.protection & (kProtectionRead | kProtectionWrite)))
+      return kErrorInvalidAddress;
+
     bpm = _process->hardwareBreakpointManager();
     mode = static_cast<BreakpointManager::Mode>(BreakpointManager::kModeRead |
                                                 BreakpointManager::kModeWrite);
