@@ -2495,15 +2495,15 @@ void Session::Handle_qfProcessInfo(ProtocolInterpreter::Handler const &,
 
   ParseList(args, ';', [&](std::string const &arg) {
     std::string key, value;
-    size_t colon = args.find(':');
+    size_t colon = arg.find(':');
     if (colon == std::string::npos)
       return;
 
-    key = args.substr(0, colon);
-    value = args.substr(colon + 1);
+    key = arg.substr(0, colon);
+    value = arg.substr(colon + 1);
 
     if (key == "name") {
-      match.name = value;
+      match.name = HexToString(value);
     } else if (key == "name_match") {
       match.nameMatch = value;
     } else if (key == "pid") {
