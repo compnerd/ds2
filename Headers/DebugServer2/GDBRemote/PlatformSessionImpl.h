@@ -49,6 +49,10 @@ protected:
 
 private:
   void updateProcesses(ProcessInfoMatch const &match) const;
+  static bool processMatch(ProcessInfoMatch const &match,
+                           ds2::ProcessInfo const &info);
+  static bool nameMatch(ProcessInfoMatch const &match,
+                        std::string const &name);
 };
 
 using PlatformSessionImpl =
