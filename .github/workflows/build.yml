@@ -446,12 +446,12 @@ jobs:
       - run: |
           mkdir -p ${{ github.workspace }}/temp
           ${{ github.workspace }}/BinaryCache/ds2/ds2 platform --server --daemonize --listen localhost:5432
-          ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest  \
-              --out-of-tree-debugserver                             \
-              --arch ${{ matrix.arch }}                             \
-              --platform-name remote-linux                          \
-              --platform-url connect://localhost:5432               \
-              --platform-working-dir ${{ github.workspace }}/temp   \
+          ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest 1>/dev/null  \
+              --out-of-tree-debugserver                                         \
+              --arch ${{ matrix.arch }}                                         \
+              --platform-name remote-linux                                      \
+              --platform-url connect://localhost:5432                           \
+              --platform-working-dir ${{ github.workspace }}/temp               \
               --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/linux-${{ matrix.arch }}.excluded \
               --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/linux-${{ matrix.arch }}.excluded \
               --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded \
@@ -599,7 +599,7 @@ jobs:
 
             $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432"
 
-            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
+            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest 1>/dev/null
             --out-of-tree-debugserver
             --arch ${{ matrix.llvm-arch }}
             --platform-name remote-android
