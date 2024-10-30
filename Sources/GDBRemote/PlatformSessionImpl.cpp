@@ -139,13 +139,72 @@ ErrorCode PlatformSessionImplBase::onLaunchDebugServer(Session &session,
 
 void PlatformSessionImplBase::updateProcesses(
     ProcessInfoMatch const &match) const {
-  // TODO(fjricci) we should only add processes that match "match"
+  _processIterationState.vals.clear();
   Platform::EnumerateProcesses(
       true, UserId(), [&](ds2::ProcessInfo const &info) {
-        _processIterationState.vals.push_back(info.pid);
+        if (processMatch(match, info))
+          _processIterationState.vals.push_back(info.pid);
       });
 
   _processIterationState.it = _processIterationState.vals.begin();
+}
+
+bool PlatformSessionImplBase::processMatch(ProcessInfoMatch const &match,
+                                           ds2::ProcessInfo const &info) {
+  // Allow matching against the process info name, which is the full executable
+  // file path on Linux, or the name of the primary thread.
+  if (!match.name.empty() &&
+      !nameMatch(match, info.name) &&
+      !nameMatch(match, Platform::GetThreadName(info.pid, info.pid)))
+    return false;
+
+  if (match.pid != 0 && info.pid != match.pid)
+      return false;
+
+#if !defined(OS_WIN32)
+  if (match.parentPid != 0 && info.parentPid != match.parentPid)
+      return false;
+
+  if (match.effectiveUid != 0 && info.effectiveUid != match.effectiveUid)
+    return false;
+
+  if (match.effectiveGid != 0 && info.effectiveGid != match.effectiveGid)
+    return false;
+#endif
+
+  if (match.realGid != 0 && info.realGid != match.realGid)
+      return false;
+
+  if (match.realUid != 0 && info.realUid != match.realUid)
+      return false;
+
+  // TODO(andrurogerz): account for match.triple
+  return true;
+}
+
+bool PlatformSessionImplBase::nameMatch(ProcessInfoMatch const &match,
+                                        std::string const &name) {
+  if (match.nameMatch == "equals")
+    return name.compare(match.name) == 0;
+
+  if (match.nameMatch == "starts_with")
+    return name.size() >= match.name.size() &&
+           name.compare(0, match.name.size(), match.name) == 0;
+
+  if (match.nameMatch == "ends_with")
+    return name.size() >= match.name.size() &&
+           name.compare(name.size() - match.name.size(),
+                        match.name.size(),
+                        match.name) == 0;
+
+  if (match.nameMatch == "contains")
+    return name.rfind(match.name) != std::string::npos;
+
+  if (match.nameMatch == "regex")
+    // TODO(andrurogerz): match against "regex"
+    DS2LOG(Error, "name_match:regex is not currently supported");
+
+  return true;
 }
 } // namespace GDBRemote
 } // namespace ds2
