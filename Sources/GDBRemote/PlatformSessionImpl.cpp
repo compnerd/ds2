@@ -140,6 +140,7 @@ ErrorCode PlatformSessionImplBase::onLaunchDebugServer(Session &session,
 void PlatformSessionImplBase::updateProcesses(
     ProcessInfoMatch const &match) const {
   // TODO(fjricci) we should only add processes that match "match"
+  _processIterationState.vals.clear();
   Platform::EnumerateProcesses(
       true, UserId(), [&](ds2::ProcessInfo const &info) {
         _processIterationState.vals.push_back(info.pid);
