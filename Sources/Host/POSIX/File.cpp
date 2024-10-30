@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Host/File.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Utils/crc32.h"
 
 #include <fcntl.h>
 #include <limits>
@@ -216,5 +217,23 @@ ErrorCode File::fileMode(std::string const &path, uint32_t &mode) {
   mode = static_cast<uint32_t>(ALLPERMS & stbuf.st_mode);
   return kSuccess;
 }
+
+ErrorCode File::crc32(std::string const &path, uint32_t &crc) {
+  int fd = ::open(path.c_str(), O_RDONLY);
+  if (fd < 0)
+    return Platform::TranslateError();
+
+  ByteVector buffer(getpagesize());
+  ssize_t bytesRead;
+
+  crc = ::crc32(0L, nullptr, 0);
+  while ((bytesRead = ::read(fd, buffer.data(), buffer.size())) > 0)
+      crc = ::crc32(crc, buffer.data(), bytesRead);
+
+  ::close(fd);
+
+  return kSuccess;
+}
+
 } // namespace Host
 } // namespace ds2

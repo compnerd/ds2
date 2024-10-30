@@ -65,6 +65,7 @@ public:
 public:
   static ErrorCode fileSize(std::string const &path, uint64_t &size);
   static ErrorCode fileMode(std::string const &path, uint32_t &mode);
+  static ErrorCode crc32(std::string const &path, uint32_t &crc);
 
 protected:
   int _fd;

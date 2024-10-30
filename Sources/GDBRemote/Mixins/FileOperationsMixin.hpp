@@ -130,18 +130,26 @@ ErrorCode FileOperationsMixin<T>::onQueryModuleInfo(Session &session,
                                                      std::string &triple,
                                                      ModuleInfo &info) const {
   ByteVector buildId;
-  if (Platform::GetExecutableFileBuildID(path, buildId)) {
-    // format the uuid as an upper-case string with two hex chars per byte
-    std::ostringstream ss;
-    for(const auto b : buildId)
-      ss << std::uppercase << std::hex << std::setfill('0') << std::setw(2) << int(b);
-
-    info.uuid = ss.str();
+  if (!Platform::GetExecutableFileBuildID(path, buildId)) {
+    // Not all executable files contain an embedded build ID. In this case,
+    // return a crc32 of the contents of the file. The documentation for
+    // `qModuleInfo` suggests an md5 hash can be returned as "md5" in the
+    // response instead of "uuid." However, returning a crc32 is consistent
+    // with behavior of lldb-server.
+    uint32_t crc;
+    CHK(File::crc32(path, crc));
+    std::copy(reinterpret_cast<uint8_t*>(&crc),
+              reinterpret_cast<uint8_t*>(&crc) + sizeof(crc),
+              std::back_inserter(buildId));
   }
 
-  // TODO(andrurogerz): Not all executable files contain an embedded build ID.
-  // If GetExecutableFileBuildID fails, calculate an md5 hash of the file
-  // contents and return that as an "md5" field instead of the "uuid" field.
+  // format the uuid as an upper-case string with two hex chars per byte
+  std::ostringstream ss;
+  for(const auto b : buildId)
+    ss << std::uppercase << std::hex << std::setfill('0') << std::setw(2) << int(b);
+
+  info.uuid = ss.str();
+
 
   auto error = File::fileSize(path, info.file_size);
   if (error != kSuccess)

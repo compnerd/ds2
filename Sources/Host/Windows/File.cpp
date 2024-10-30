@@ -51,5 +51,9 @@ ErrorCode File::fileMode(std::string const &path, uint32_t &mode) {
   return kErrorUnsupported;
 }
 
+ErrorCode File::crc32(std::string const &path, uint32_t &crc) {
+  return kErrorUnsupported;
+}
+
 } // namespace Host
 } // namespace ds2
