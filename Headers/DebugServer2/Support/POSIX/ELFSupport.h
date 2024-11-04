@@ -32,8 +32,16 @@ private:
                           NotesHeader &nhdr, ByteVector &id);
 
   template <typename ELFHeader, typename SectionHeader>
-  static bool ReadSectionHeader(int fd, const ELFHeader &ehdr, SectionHeader &shdr,
-                                size_t idx);
+  static bool ReadSectionHeader(int fd, const ELFHeader &ehdr,
+                                SectionHeader &shdr, size_t idx);
+
+  template <typename ELFHeader, typename SectionHeader>
+  static bool ReadStringTable(int fd, const ELFHeader &ehdr,
+                              SectionHeader &shdr, std::vector<char> &table);
+
+  template <typename ELFHeader, typename SectionHeader>
+  static bool ReadDebugLinkCRC(int fd, const ELFHeader &ehdr,
+                               SectionHeader &shdr, ByteVector &crc);
 };
 } // namespace Support
 } // namespace ds2

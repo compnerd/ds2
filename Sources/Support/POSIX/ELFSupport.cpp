@@ -91,7 +91,8 @@ bool ELFSupport::GetELFFileBuildID(std::string const &path, ByteVector &buildId)
     case ELFCLASS32: {
       Elf32_Shdr shdr;
       Elf32_Nhdr nhdr;
-      result = ReadBuildID(fd, ehdr, shdr, nhdr, buildId);
+      if (!(result = ReadBuildID(fd, ehdr, shdr, nhdr, buildId)))
+        result = ReadDebugLinkCRC(fd, ehdr, shdr, buildId);
       break;
     }
 
@@ -102,7 +103,8 @@ bool ELFSupport::GetELFFileBuildID(std::string const &path, ByteVector &buildId)
 
       Elf64_Shdr shdr;
       Elf64_Nhdr nhdr;
-      result = ReadBuildID(fd, ehdr, shdr, nhdr, buildId);
+      if (!(result = ReadBuildID(fd, ehdr, shdr, nhdr, buildId)))
+        result = ReadDebugLinkCRC(fd, ehdr, shdr, buildId);
       break;
     }
 
@@ -123,30 +125,30 @@ bool ELFSupport::GetELFFileBuildID(std::string const &path, ByteVector &buildId)
 template <typename ELFHeader, typename SectionHeader, typename NotesHeader>
 bool ELFSupport::ReadBuildID(int fd, const ELFHeader &ehdr, SectionHeader &shdr,
                              NotesHeader &nhdr, ByteVector &id) {
-    // Build ID is found in a note section with note type NT_GNU_BUILD_ID.
-    // The section is typically named .note.gnu.build-id.
-    for (size_t i = 0; i < ehdr.e_shnum; i++) {
-      if (!ReadSectionHeader(fd, ehdr, shdr, i))
-        return false;
+  // Build ID is found in a note section with note type NT_GNU_BUILD_ID.
+  // The section is typically named .note.gnu.build-id.
+  for (size_t i = 0; i < ehdr.e_shnum; i++) {
+    if (!ReadSectionHeader(fd, ehdr, shdr, i))
+      return false;
 
-      if (shdr.sh_type != SHT_NOTE)
-        continue;
+    if (shdr.sh_type != SHT_NOTE)
+      continue;
 
-      if (::pread(fd, &nhdr, sizeof(nhdr), shdr.sh_offset) != sizeof(nhdr))
-        return false;
+    if (::pread(fd, &nhdr, sizeof(nhdr), shdr.sh_offset) != sizeof(nhdr))
+      return false;
 
-      if (nhdr.n_type != NT_GNU_BUILD_ID)
-        continue;
+    if (nhdr.n_type != NT_GNU_BUILD_ID)
+      continue;
 
-      id.resize(nhdr.n_descsz);
-      const off_t pos = shdr.sh_offset + sizeof(nhdr) + nhdr.n_namesz;
-      if (::pread(fd, id.data(), nhdr.n_descsz, pos) != nhdr.n_descsz)
-        return false;
+    id.resize(nhdr.n_descsz);
+    const off_t pos = shdr.sh_offset + sizeof(nhdr) + nhdr.n_namesz;
+    if (::pread(fd, id.data(), nhdr.n_descsz, pos) != nhdr.n_descsz)
+      return false;
 
-      return true;
-    }
+    return true;
+  }
 
-    return false;
+  return false;
 }
 
 template <typename ELFHeader, typename SectionHeader>
@@ -160,6 +162,71 @@ bool ELFSupport::ReadSectionHeader(int fd, const ELFHeader &ehdr, SectionHeader 
     return false;
 
   return true;
+}
+
+template <typename ELFHeader, typename SectionHeader>
+bool ELFSupport::ReadStringTable(int fd, const ELFHeader &ehdr,
+                                 SectionHeader &shdr,
+                                 std::vector<char> &table) {
+  // e_shstrndx is the index of the string table containing section names
+  if (!ReadSectionHeader(fd, ehdr, shdr, ehdr.e_shstrndx))
+    return false;
+
+  if (shdr.sh_type != SHT_STRTAB)
+    return false;
+
+  table.resize(shdr.sh_size);
+  if (::pread(fd, &table[0], shdr.sh_size, shdr.sh_offset) != shdr.sh_size)
+    return false;
+
+  return true;
+}
+
+template <typename ELFHeader, typename SectionHeader>
+bool ELFSupport::ReadDebugLinkCRC(int fd, const ELFHeader &ehdr,
+                                  SectionHeader &shdr, ByteVector &crc) {
+
+  std::vector<char> table;
+  if (!ReadStringTable(fd, ehdr, shdr, table))
+    return false;
+
+  for (size_t i = 0; i < ehdr.e_shnum; i++) {
+    if (!ReadSectionHeader(fd, ehdr, shdr, i))
+      return false;
+
+    if (shdr.sh_type != SHT_PROGBITS)
+      continue;
+
+    const std::string sectionName(&table[shdr.sh_name]);
+    if (sectionName != ".gnu_debuglink")
+      continue;
+
+    // The .gnu_debuglink section contains the following:
+    // 1) A filename with any leading directory components removed (base name)
+    // 2) A string-terminating zero byte
+    // 3) Zero to three bytes of padding to ensure the next value is four-byte
+    //    aligned
+    // 4) A four byte crc32 checksum of the debug information file's contents
+    //    (same endianness as used for the containing executable file)
+    ByteVector section(shdr.sh_size);
+    if (::pread(fd, &section[0], shdr.sh_size, shdr.sh_offset) != shdr.sh_size)
+      return false;
+
+    const std::string name = reinterpret_cast<char*>(section.data());
+    const size_t offset = (name.length() + 4) & ~static_cast<size_t>(3);
+
+    if (offset + sizeof(uint32_t) > section.size())
+      return false; // malformated
+
+    crc.clear();
+    auto start = section.begin() + offset;
+    std::copy(start, start + sizeof(uint32_t), std::back_inserter(crc));
+
+    DS2LOG(Info, "using .gnu_debuglink (%s) as build id", name.c_str());
+    return true;
+  }
+
+  return false;
 }
 } // namespace Support
 } // namespace ds2
