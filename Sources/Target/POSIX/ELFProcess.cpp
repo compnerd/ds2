@@ -191,7 +191,7 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
 // Android and FreeBSD don't have a definition for LAV_CURRENT so we skip this
 // check.
 #if defined(LAV_CURRENT)
-  if (debug.version != LAV_CURRENT) {
+  if (debug.version > LAV_CURRENT) {
     return kErrorUnsupported;
   }
 #endif
