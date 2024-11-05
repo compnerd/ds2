@@ -179,18 +179,18 @@ Once connected in platform mode, you can select the program to be run using the
 If ds2 was launched in `gdbserver` mode, lldb can connect to it with the
 `gdb-remote` command:
 ```
-$ lldb /path/to/TestSimpleOutput
-Current executable set to '/path/to/TestSimpleOutput' (x86_64).
+$ lldb /path/to/executable
+Current executable set to '/path/to/executable' (x86_64).
 (lldb) gdb-remote localhost:4242
 Process 8336 stopped
-* thread #1: tid = 8336, 0x00007ffff7ddb2d0, name = 'TestSimpleOutput', stop reason = signal SIGTRAP
+* thread #1: tid = 8336, 0x00007ffff7ddb2d0, name = 'executable', stop reason = signal SIGTRAP
     frame #0: 0x00007ffff7ddb2d0
 -> 0x7ffff7ddb2d0:  movq   %rsp, %rdi
    0x7ffff7ddb2d3:  callq  0x7ffff7ddea70
    0x7ffff7ddb2d8:  movq   %rax, %r12
    0x7ffff7ddb2db:  movl   0x221b17(%rip), %eax
 (lldb) b main
-Breakpoint 1: where = TestSimpleOutput`main + 29 at TestSimpleOutput.cpp:6, address = 0x000000000040096d
+Breakpoint 1: where = executable`main + 29 at test.cpp:6, address = 0x000000000040096d
 [... debug debug ...]
 (lldb) c
 Process 8336 resuming
