@@ -54,9 +54,8 @@ variable, e.g. `-DCMAKE_ANDROID_NDK=/home/user/Android/Sdk/ndk/26.1.10909125`.
 To build for Android:
 ```sh
 cd ds2
-mkdir build
-cmake -B build -S . -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a -DCMAKE_BUILD_TYPE=Release -G Ninja
-cmake --build build --config Release
+cmake -B out -S . -D CMAKE_SYSTEM_NAME=Android -D CMAKE_ANDROID_ARCH_ABI=arm64-v8a -D CMAKE_BUILD_TYPE=Release -G Ninja
+cmake --build out
 ```
 
 By default, CMake will build ds2 targeting the highest level API level that the
