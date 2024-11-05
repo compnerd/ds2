@@ -170,7 +170,7 @@ $ lldb
 Once connected in platform mode, you can select the program to be run using the
 `file` command, run, and debug.
 ```
-(lldb) file /path/to/TestSimpleOutput
+(lldb) file /path/to/executable
 (lldb) b main
 (lldb) run
 ```
