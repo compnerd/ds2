@@ -24,6 +24,9 @@ The build instructions include instructions assuming that the [ninja-build](http
   - flex
   - bison
 
+**Android**
+  - Android NDK r18b or newer (https://developer.android.com/ndk/downloads)
+
 ### Building with CMake + Ninja
 
 > **Windows Only**
@@ -41,13 +44,22 @@ ninja -C out
 ### Compiling for Android
 
 For Android native debugging, it is possible to build ds2 with the Android NDK.
+An NDK version of at least r18b is required for C++17 support.
 
+CMake will automatically find the installed Android NDK if either the
+`ANDROID_NDK_ROOT` or `ANDROID_NDK` environment variable is set. Alternatively,
+the NDK location can be provided to CMake directly with the `CMAKE_ANDROID_NDK`
+variable, e.g. `-DCMAKE_ANDROID_NDK=/home/user/Android/Sdk/ndk/26.1.10909125`.
+
+To build for Android:
 ```sh
-cmake -B out -D CMAKE_SYSTEM_NAME=Android -D CMAKE_ANDROID_ARCH_ABI=armeabi-v7a -G Ninja -S ds2
-ninja -C out
+cd ds2
+mkdir build
+cmake -B build -S . -DCMAKE_SYSTEM_NAME=Android -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a -DCMAKE_BUILD_TYPE=Release -G Ninja
+cmake --build build --config Release
 ```
 
-Note that this will build ds2 targeting the highest level API level that the
+By default, CMake will build ds2 targeting the highest level API level that the
 NDK supports. If you want to target another api level, e.g. 21, add the flag
 `-DCMAKE_SYSTEM_VERSION=21` to your CMake invocation.
 
@@ -67,19 +79,23 @@ make
 This will generate a binary that you can copy to your device to start
 debugging.
 
-
-
 ## Running ds2
 
 ### Example
 
 #### On the remote host
 
-Launch ds2 with something like:
+Launch ds2 in platform mode (not supported on Windows):
+```sh
+$ ./ds2 platform --server --listen localhost:4242
+```
 
-    $ ./ds2 gdbserver localhost:4242 /path/to/TestSimpleOutput
+Launch ds2 as a single-instance gdb server debugging a program:
+```sh
+$ ./ds2 gdbserver localhost:4242 /path/to/TestSimpleOutput
+```
 
-ds2 is now ready to accept connections on port 4242 from lldb.
+In both cases, ds2 is ready to accept connections on port 4242 from lldb.
 
 #### On your local host
 
