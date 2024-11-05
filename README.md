@@ -81,9 +81,7 @@ debugging.
 
 ## Running ds2
 
-### Example
-
-#### On the remote host
+### Running on a remote host
 
 Launch ds2 in platform mode (not supported on Windows):
 ```sh
@@ -97,25 +95,109 @@ $ ./ds2 gdbserver localhost:4242 /path/to/TestSimpleOutput
 
 In both cases, ds2 is ready to accept connections on port 4242 from lldb.
 
-#### On your local host
+### Running on an Android device
 
-    $ lldb /path/to/TestSimpleOutput
-    Current executable set to '/path/to/TestSimpleOutput' (x86_64).
-    (lldb) gdb-remote localhost:4242
-    Process 8336 stopped
-    * thread #1: tid = 8336, 0x00007ffff7ddb2d0, name = 'TestSimpleOutput', stop reason = signal SIGTRAP
-        frame #0: 0x00007ffff7ddb2d0
-    -> 0x7ffff7ddb2d0:  movq   %rsp, %rdi
-       0x7ffff7ddb2d3:  callq  0x7ffff7ddea70
-       0x7ffff7ddb2d8:  movq   %rax, %r12
-       0x7ffff7ddb2db:  movl   0x221b17(%rip), %eax
-    (lldb) b main
-    Breakpoint 1: where = TestSimpleOutput`main + 29 at TestSimpleOutput.cpp:6, address = 0x000000000040096d
-    [... debug debug ...]
-    (lldb) c
-    Process 8336 resuming
-    Process 8336 exited with status = 0 (0x00000000)
-    (lldb)
+When debugging Android NDK programs or applications, an Android device or
+emulator must be must be connected to the host machine and accessible via `adb`:
+```sh
+$ adb devices
+List of devices attached
+emulator-5554   device
+```
+
+To use ds2 on the Android target, copy the locally build ds2 binary to the
+`/data/local/tmp` directory on the Android target using `adb push` and launch it
+from there:
+```sh
+$ adb push build/ds2 /data/local/tmp
+$ adb shell /data/local/tmp/ds2 platform --server --listen *:4242
+```
+
+> [!NOTE]
+> If built on a Windows host, the ds2 executable file must also be marked
+> executable before launching it:
+> ```sh
+> $ adb shell chmod +x /data/local/tmp/ds2
+> ```
+
+The port that ds2 is listening on must be forwarded to the connected host
+using `adb forward`:
+```sh
+$ adb forward tcp:4242 tcp:4242
+```
+
+When debugging an Android application, the ds2 binary must be copied from
+`/data/local/tmp` into the target application's sandbox directory. This can be
+done using Android's `run-as` command:
+```sh
+$ adb shell run-as com.example.app cp /data/local/tmp/ds2 ./ds2
+$ adb shell run-as com.example.app ./ds2 platform --server --listen *:4242
+```
+
+> [!NOTE]
+> When running in an Android application's sandbox, the target application must
+> have internet permissions or ds2 will fail to open a port on launch:
+> ```xml
+> <uses-permission android:name="android.permission.INTERNET" />
+> <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+> ```
+
+### Run lldb client on the local host
+
+#### Platform Mode
+If ds2 was launched in `platform` mode (not supported on Windows), lldb can
+connect to it using `platform` commands.
+
+For a remote Linux host:
+```
+$ lldb
+(lldb) platform select remote-linux
+(lldb) platform connect connect://localhost:4242
+```
+
+For a remote Android host:
+```
+$ lldb
+(lldb) platform select remote-android
+(lldb) platform connect connect://localhost:4242
+(lldb) platform settings -w /data/local/tmp
+```
+
+> [!NOTE]
+> When running in an Android application's sandbox, the `platform settings -w`
+> command, which sets the working directory, is not necessary because the
+> it is already set to the root of the application's writable sandbox directory.
+
+Once connected in platform mode, you can select the program to be run using the
+`file` command, run, and debug.
+```
+(lldb) file /path/to/TestSimpleOutput
+(lldb) b main
+(lldb) run
+```
+
+#### Gdb Server Mode
+If ds2 was launched in `gdbserver` mode, lldb can connect to it with the
+`gdb-remote` command:
+```
+$ lldb /path/to/TestSimpleOutput
+Current executable set to '/path/to/TestSimpleOutput' (x86_64).
+(lldb) gdb-remote localhost:4242
+Process 8336 stopped
+* thread #1: tid = 8336, 0x00007ffff7ddb2d0, name = 'TestSimpleOutput', stop reason = signal SIGTRAP
+    frame #0: 0x00007ffff7ddb2d0
+-> 0x7ffff7ddb2d0:  movq   %rsp, %rdi
+   0x7ffff7ddb2d3:  callq  0x7ffff7ddea70
+   0x7ffff7ddb2d8:  movq   %rax, %r12
+   0x7ffff7ddb2db:  movl   0x221b17(%rip), %eax
+(lldb) b main
+Breakpoint 1: where = TestSimpleOutput`main + 29 at TestSimpleOutput.cpp:6, address = 0x000000000040096d
+[... debug debug ...]
+(lldb) c
+Process 8336 resuming
+Process 8336 exited with status = 0 (0x00000000)
+(lldb)
+```
 
 ### Command-Line Options
 
