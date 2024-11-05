@@ -89,7 +89,7 @@ $ ./ds2 platform --server --listen localhost:4242
 
 Launch ds2 as a single-instance gdb server debugging a program:
 ```sh
-$ ./ds2 gdbserver localhost:4242 /path/to/TestSimpleOutput
+$ ./ds2 gdbserver localhost:4242 /path/to/executable
 ```
 
 In both cases, ds2 is ready to accept connections on port 4242 from lldb.
