@@ -24,6 +24,9 @@ The build instructions include instructions assuming that the [ninja-build](http
   - flex
   - bison
 
+**Android**
+  - Android NDK r18b or newer (https://developer.android.com/ndk/downloads)
+
 ### Building with CMake + Ninja
 
 > **Windows Only**
@@ -41,13 +44,21 @@ ninja -C out
 ### Compiling for Android
 
 For Android native debugging, it is possible to build ds2 with the Android NDK.
+An NDK version of at least r18b is required for C++17 support.
 
+CMake will automatically find the installed Android NDK if either the
+`ANDROID_NDK_ROOT` or `ANDROID_NDK` environment variable is set. Alternatively,
+the NDK location can be provided to CMake directly with the `CMAKE_ANDROID_NDK`
+variable, e.g. `-DCMAKE_ANDROID_NDK=/home/user/Android/Sdk/ndk/26.1.10909125`.
+
+To build for Android:
 ```sh
-cmake -B out -D CMAKE_SYSTEM_NAME=Android -D CMAKE_ANDROID_ARCH_ABI=armeabi-v7a -G Ninja -S ds2
-ninja -C out
+cd ds2
+cmake -B out -S . -D CMAKE_SYSTEM_NAME=Android -D CMAKE_ANDROID_ARCH_ABI=arm64-v8a -D CMAKE_BUILD_TYPE=Release -G Ninja
+cmake --build out
 ```
 
-Note that this will build ds2 targeting the highest level API level that the
+By default, CMake will build ds2 targeting the highest level API level that the
 NDK supports. If you want to target another api level, e.g. 21, add the flag
 `-DCMAKE_SYSTEM_VERSION=21` to your CMake invocation.
 
@@ -67,39 +78,125 @@ make
 This will generate a binary that you can copy to your device to start
 debugging.
 
-
-
 ## Running ds2
 
-### Example
+### Running on a remote host
 
-#### On the remote host
+Launch ds2 in platform mode (not supported on Windows):
+```sh
+$ ./ds2 platform --server --listen localhost:4242
+```
 
-Launch ds2 with something like:
+Launch ds2 as a single-instance gdb server debugging a program:
+```sh
+$ ./ds2 gdbserver localhost:4242 /path/to/executable
+```
 
-    $ ./ds2 gdbserver localhost:4242 /path/to/TestSimpleOutput
+In both cases, ds2 is ready to accept connections on port 4242 from lldb.
 
-ds2 is now ready to accept connections on port 4242 from lldb.
+### Running on an Android device
 
-#### On your local host
+When debugging Android NDK programs or applications, an Android device or
+emulator must be must be connected to the host machine and accessible via `adb`:
+```sh
+$ adb devices
+List of devices attached
+emulator-5554   device
+```
 
-    $ lldb /path/to/TestSimpleOutput
-    Current executable set to '/path/to/TestSimpleOutput' (x86_64).
-    (lldb) gdb-remote localhost:4242
-    Process 8336 stopped
-    * thread #1: tid = 8336, 0x00007ffff7ddb2d0, name = 'TestSimpleOutput', stop reason = signal SIGTRAP
-        frame #0: 0x00007ffff7ddb2d0
-    -> 0x7ffff7ddb2d0:  movq   %rsp, %rdi
-       0x7ffff7ddb2d3:  callq  0x7ffff7ddea70
-       0x7ffff7ddb2d8:  movq   %rax, %r12
-       0x7ffff7ddb2db:  movl   0x221b17(%rip), %eax
-    (lldb) b main
-    Breakpoint 1: where = TestSimpleOutput`main + 29 at TestSimpleOutput.cpp:6, address = 0x000000000040096d
-    [... debug debug ...]
-    (lldb) c
-    Process 8336 resuming
-    Process 8336 exited with status = 0 (0x00000000)
-    (lldb)
+To use ds2 on the Android target, copy the locally build ds2 binary to the
+`/data/local/tmp` directory on the Android target using `adb push` and launch it
+from there:
+```sh
+$ adb push build/ds2 /data/local/tmp
+$ adb shell /data/local/tmp/ds2 platform --server --listen *:4242
+```
+
+> [!NOTE]
+> If built on a Windows host, the ds2 executable file must also be marked
+> executable before launching it:
+> ```sh
+> $ adb shell chmod +x /data/local/tmp/ds2
+> ```
+
+The port that ds2 is listening on must be forwarded to the connected host
+using `adb forward`:
+```sh
+$ adb forward tcp:4242 tcp:4242
+```
+
+When debugging an Android application, the ds2 binary must be copied from
+`/data/local/tmp` into the target application's sandbox directory. This can be
+done using Android's `run-as` command:
+```sh
+$ adb shell run-as com.example.app cp /data/local/tmp/ds2 ./ds2
+$ adb shell run-as com.example.app ./ds2 platform --server --listen *:4242
+```
+
+> [!NOTE]
+> When running in an Android application's sandbox, the target application must
+> have internet permissions or ds2 will fail to open a port on launch:
+> ```xml
+> <uses-permission android:name="android.permission.INTERNET" />
+> <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+> ```
+
+### Run lldb client on the local host
+
+#### Platform Mode
+If ds2 was launched in `platform` mode (not supported on Windows), lldb can
+connect to it using `platform` commands.
+
+For a remote Linux host:
+```
+$ lldb
+(lldb) platform select remote-linux
+(lldb) platform connect connect://localhost:4242
+```
+
+For a remote Android host:
+```
+$ lldb
+(lldb) platform select remote-android
+(lldb) platform connect connect://localhost:4242
+(lldb) platform settings -w /data/local/tmp
+```
+
+> [!NOTE]
+> When running in an Android application's sandbox, the `platform settings -w`
+> command, which sets the working directory, is not necessary because the
+> it is already set to the root of the application's writable sandbox directory.
+
+Once connected in platform mode, you can select the program to be run using the
+`file` command, run, and debug.
+```
+(lldb) file /path/to/executable
+(lldb) b main
+(lldb) run
+```
+
+#### Gdb Server Mode
+If ds2 was launched in `gdbserver` mode, lldb can connect to it with the
+`gdb-remote` command:
+```
+$ lldb /path/to/executable
+Current executable set to '/path/to/executable' (x86_64).
+(lldb) gdb-remote localhost:4242
+Process 8336 stopped
+* thread #1: tid = 8336, 0x00007ffff7ddb2d0, name = 'executable', stop reason = signal SIGTRAP
+    frame #0: 0x00007ffff7ddb2d0
+-> 0x7ffff7ddb2d0:  movq   %rsp, %rdi
+   0x7ffff7ddb2d3:  callq  0x7ffff7ddea70
+   0x7ffff7ddb2d8:  movq   %rax, %r12
+   0x7ffff7ddb2db:  movl   0x221b17(%rip), %eax
+(lldb) b main
+Breakpoint 1: where = executable`main + 29 at test.cpp:6, address = 0x000000000040096d
+[... debug debug ...]
+(lldb) c
+Process 8336 resuming
+Process 8336 exited with status = 0 (0x00000000)
+(lldb)
+```
 
 ### Command-Line Options
 
