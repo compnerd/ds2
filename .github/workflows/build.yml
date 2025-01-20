@@ -303,14 +303,37 @@ jobs:
           name: android-${{ matrix.abi }}-ds2
           path: ${{ github.workspace }}/BinaryCache/ds2.tar
 
-  linux-lldb:
-    runs-on: ubuntu-latest
+  build-lldb-linux:
+    name: Build LLDB
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+
+          - runner: ubuntu-24.04-arm
+            ninja-platform: linux-aarch64 # gha-setup-ninja doesn't detect linux arm propertly
 
     steps:
       - uses: seanmiddleditch/gha-setup-ninja@v5
+        with:
+          # TODO(andrurogerz): seanmiddleditch/gha-setup-ninja does not properly
+          # detect Linux on arm64 and always installs the x86_64 ninja package.
+          # For now, we can fix this by overriding the platform string to force
+          # the downloading the proper package. We also require a newer ninja
+          # version since aarch64 packages were not released until v1.12.0 and
+          # the default gha-setup-ninja installs is v1.11.1.
+          platform: ${{ matrix.ninja-platform }}
+          version: 1.12.1 # latest sccache version
 
+      # TODO(andrurogerz): hendrikmuhs/ccache-action does not properly detect
+      # Linux on arm64 and always installs the x86_64 sccache package. For now,
+      # use a fork of ccache-action that fixes the issue. Switch back once the
+      # fix is merged upstream.
       - name: Setup sccache
-        uses: hendrikmuhs/ccache-action@2e0e89e8d74340a03f75d58d02aae4c5ee1b15c6
+        uses: andrurogerz/ccache-action@main
         with:
           key: llvm-${{ runner.os }}-${{ runner.arch }}
           variant: sccache
@@ -328,7 +351,7 @@ jobs:
           cmake -B ${{ github.workspace }}/BinaryCache/llvm                     \
                 -S ${{ github.workspace }}/SourceCache/llvm/llvm                \
                 -D LLVM_ENABLE_PROJECTS='clang;lldb'                            \
-                -D LLVM_TARGETS_TO_BUILD="X86"                                  \
+                -D LLVM_TARGETS_TO_BUILD="host"                                 \
                 -D LLDB_ENABLE_PYTHON=On                                        \
                 -D CMAKE_C_COMPILER_LAUNCHER=sccache                            \
                 -D CMAKE_CXX_COMPILER_LAUNCHER=sccache                          \
@@ -351,8 +374,8 @@ jobs:
           path: ${{ github.workspace }}/BinaryCache/llvm.tar
 
   test-linux:
-    needs: [linux, linux-lldb]
-    runs-on: ubuntu-latest
+    needs: [linux, build-lldb-linux]
+    runs-on: ${{ matrix.runner }}
 
     name: Test Linux ${{ matrix.arch }} ${{ matrix.test-category }}
 
@@ -361,6 +384,7 @@ jobs:
       matrix:
         include:
           - test-category: misc
+            runner: ubuntu-latest
             arch: i686
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/api
@@ -369,9 +393,19 @@ jobs:
               SourceCache/llvm/lldb/test/API/tools
               SourceCache/llvm/lldb/test/API/sanity
               SourceCache/llvm/lldb/test/API/types
-
           - test-category: misc
+            runner: ubuntu-latest
             arch: x86_64
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/api
+              SourceCache/llvm/lldb/test/API/lang
+              SourceCache/llvm/lldb/test/API/linux
+              SourceCache/llvm/lldb/test/API/tools
+              SourceCache/llvm/lldb/test/API/sanity
+              SourceCache/llvm/lldb/test/API/types
+          - test-category: misc
+            runner: ubuntu-24.04-arm
+            arch: aarch64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/api
               SourceCache/llvm/lldb/test/API/lang
@@ -381,37 +415,56 @@ jobs:
               SourceCache/llvm/lldb/test/API/types
 
           - test-category: commands
+            runner: ubuntu-latest
             arch: x86_64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/commands
-
           - test-category: commands
+            runner: ubuntu-latest
             arch: i686
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/commands
+          - test-category: commands
+            runner: ubuntu-24.04-arm
+            arch: aarch64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/commands
 
           - test-category: Python API
+            runner: ubuntu-latest
             arch: x86_64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/python_api
-
           - test-category: Python API
+            runner: ubuntu-latest
             arch: i686
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/python_api
+          - test-category: Python API
+            runner: ubuntu-24.04-arm
+            arch: aarch64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/python_api
 
           - test-category: functionalities
+            runner: ubuntu-latest
             arch: x86_64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/functionalities
-
           - test-category: functionalities
+            runner: ubuntu-latest
             arch: i686
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/functionalities
+          - test-category: functionalities
+            runner: ubuntu-24.04-arm
+            arch: aarch64
             test-subdirs: >-
               SourceCache/llvm/lldb/test/API/functionalities
 
     steps:
-      - run: |
+      - if: matrix.arch == 'i686'
+        run: |
           sudo apt-get update
           sudo apt-get install -qq --no-install-recommends gcc-multilib g++-multilib
 
@@ -457,8 +510,8 @@ jobs:
               --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded \
               ${{ matrix.test-subdirs }}
 
-  test-android:
-    needs: [android-windows-ndk, linux-lldb]
+  test-android-x86:
+    needs: [android-windows-ndk, build-lldb-linux]
     runs-on: ubuntu-latest
 
     strategy:
