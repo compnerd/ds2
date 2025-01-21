@@ -1,0 +1,9 @@
+<map id="Session" name="Session">
+<area shape="rect" id="Node000001" title=" " alt="" coords="171,184,239,210"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_g_d_b_remote_1_1_session_base.html" title=" " alt="" coords="103,109,307,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="208,150,208,184,202,184,202,150"/>
+<area shape="rect" id="Node000003" href="$structds2_1_1_g_d_b_remote_1_1_protocol_handler.html" title=" " alt="" coords="5,5,181,46"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="129,54,193,107,189,111,126,58"/>
+<area shape="rect" id="Node000004" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title=" " alt="" coords="204,13,430,38"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="293,50,221,111,218,106,290,46"/>
+</map>

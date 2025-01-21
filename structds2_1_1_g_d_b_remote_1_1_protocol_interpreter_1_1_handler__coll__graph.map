@@ -1,5 +1,6 @@
 <map id="ds2::GDBRemote::ProtocolInterpreter::Handler" name="ds2::GDBRemote::ProtocolInterpreter::Handler">
 <area shape="rect" id="Node000001" title=" " alt="" coords="5,109,181,150"/>
+<area shape="poly" id="edge2_Node000001_Node000001" title=" " alt="" coords="198,121,207,129,199,137,181,141,181,136,197,133,202,129,194,125"/>
 <area shape="rect" id="Node000002" href="$structds2_1_1_g_d_b_remote_1_1_protocol_handler.html" title=" " alt="" coords="5,5,181,46"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="96,62,96,109,90,109,90,62"/>
 </map>

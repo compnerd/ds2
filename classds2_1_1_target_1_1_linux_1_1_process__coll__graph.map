@@ -1,20 +1,18 @@
 <map id="ds2::Target::Linux::Process" name="ds2::Target::Linux::Process">
-<area shape="rect" id="Node000001" title=" " alt="" coords="182,391,304,432"/>
-<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title=" " alt="" coords="90,288,222,328"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="185,338,228,389,224,393,181,342"/>
-<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title=" " alt="" coords="90,198,222,238"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="159,254,159,287,154,287,154,254"/>
-<area shape="rect" id="Node000004" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="104,109,273,135"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="185,150,177,175,168,198,163,196,172,173,179,149"/>
-<area shape="rect" id="Node000005" href="$structds2_1_1_process_info.html" title=" " alt="" coords="246,5,365,31"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="301,47,292,68,278,87,259,101,238,111,236,106,256,96,274,83,288,65,296,45"/>
-<area shape="rect" id="Node000006" href="$classds2_1_1_address.html" title=" " alt="" coords="13,5,110,31"/>
-<area shape="poly" id="edge7_Node000002_Node000006" title=" " alt="" coords="45,45,29,72,15,104,8,139,9,156,14,173,35,208,63,239,94,265,123,285,120,289,91,269,59,243,31,211,9,175,4,157,3,139,10,103,24,69,41,42"/>
-<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="79,43,94,64,114,83,155,106,152,111,111,87,90,67,74,46"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="154,5,215,31"/>
-<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="188,47,189,85,190,109,185,109,184,85,182,47"/>
-<area shape="rect" id="Node000008" href="$classds2_1_1_host_1_1_linux_1_1_p_trace.html" title=" " alt="" coords="249,295,410,321"/>
-<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="311,335,262,392,258,389,307,331"/>
-<area shape="rect" id="Node000009" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title=" " alt="" coords="247,205,418,231"/>
-<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="334,247,333,295,327,295,329,246"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="213,391,335,432"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title=" " alt="" coords="124,288,256,328"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="217,338,260,389,256,393,213,342"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title=" " alt="" coords="38,198,171,238"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="136,248,173,285,169,289,132,251"/>
+<area shape="rect" id="Node000004" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="6,109,176,135"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="98,150,104,197,99,197,92,150"/>
+<area shape="rect" id="Node000005" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="64,47,64,65,68,84,82,107,77,110,63,86,59,66,59,47"/>
+<area shape="rect" id="Node000006" href="$classds2_1_1_address.html" title=" " alt="" coords="156,5,253,31"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="206,47,193,287,188,287,200,47"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="154,40,129,57,109,83,98,109,93,107,105,81,125,53,151,36"/>
+<area shape="rect" id="Node000007" href="$classds2_1_1_host_1_1_linux_1_1_p_trace.html" title=" " alt="" coords="280,295,441,321"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="342,335,293,392,289,389,338,331"/>
+<area shape="rect" id="Node000008" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title=" " alt="" coords="275,205,446,231"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="363,247,363,295,358,295,358,247"/>
 </map>

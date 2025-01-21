@@ -1,14 +1,12 @@
 <map id="ds2::Target::POSIX::ELFProcess" name="ds2::Target::POSIX::ELFProcess">
-<area shape="rect" id="Node000001" title=" " alt="" coords="269,288,401,328"/>
-<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title=" " alt="" coords="213,198,345,238"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="302,250,325,286,321,289,298,253"/>
-<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="137,109,306,135"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="239,146,269,196,265,199,235,149"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="93,288,225,328"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title=" " alt="" coords="40,198,172,238"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="128,250,150,286,145,289,123,253"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="6,109,176,135"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="98,150,105,197,100,198,93,151"/>
 <area shape="rect" id="Node000004" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="88,40,112,62,139,83,187,106,185,111,136,87,108,66,84,44"/>
-<area shape="rect" id="Node000005" href="$classds2_1_1_address.html" title=" " alt="" coords="295,5,391,31"/>
-<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="366,43,371,54,373,70,371,85,370,162,360,239,346,288,340,287,355,238,365,162,366,85,368,70,366,56,361,45"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="319,43,302,57,272,87,241,111,238,106,268,83,299,53,315,39"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="147,5,208,31"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="176,46,177,65,182,84,191,96,203,107,200,111,187,100,177,86,172,66,171,46"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="64,47,64,65,68,84,82,107,77,110,63,86,59,66,59,47"/>
+<area shape="rect" id="Node000005" href="$classds2_1_1_address.html" title=" " alt="" coords="156,5,253,31"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="207,47,203,133,197,186,187,239,170,288,165,286,182,238,191,185,197,133,202,47"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="154,40,129,57,109,83,98,109,93,107,105,81,125,53,151,36"/>
 </map>
