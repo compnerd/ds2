@@ -328,12 +328,8 @@ jobs:
           platform: ${{ matrix.ninja-platform }}
           version: 1.12.1 # latest sccache version
 
-      # TODO(andrurogerz): hendrikmuhs/ccache-action does not properly detect
-      # Linux on arm64 and always installs the x86_64 sccache package. For now,
-      # use a fork of ccache-action that fixes the issue. Switch back once the
-      # fix is merged upstream.
       - name: Setup sccache
-        uses: andrurogerz/ccache-action@main
+        uses: hendrikmuhs/ccache-action@433beb5b585c67c13415f39d5ba7e485b1920710
         with:
           key: llvm-${{ runner.os }}-${{ runner.arch }}
           variant: sccache
