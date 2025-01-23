@@ -310,14 +310,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - runner: ubuntu-latest
-
-          - runner: ubuntu-24.04-arm
-            ninja-platform: linux-aarch64 # gha-setup-ninja doesn't detect linux arm propertly
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
 
     steps:
-      - uses: seanmiddleditch/gha-setup-ninja@v5
+      - if: ${{ !contains(matrix.runner, 'arm') }}
+        uses: seanmiddleditch/gha-setup-ninja@v5
+
+      - if: contains(matrix.runner, 'arm')
+        uses: seanmiddleditch/gha-setup-ninja@v5
         with:
           # TODO(andrurogerz): seanmiddleditch/gha-setup-ninja does not properly
           # detect Linux on arm64 and always installs the x86_64 ninja package.
@@ -325,7 +325,7 @@ jobs:
           # the downloading the proper package. We also require a newer ninja
           # version since aarch64 packages were not released until v1.12.0 and
           # the default gha-setup-ninja installs is v1.11.1.
-          platform: ${{ matrix.ninja-platform }}
+          platform: linux-aarch64
           version: 1.12.1 # latest sccache version
 
       - name: Setup sccache
