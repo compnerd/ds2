@@ -313,6 +313,10 @@ jobs:
         runner: [ubuntu-latest, ubuntu-24.04-arm]
 
     steps:
+      - name: Install LZMA libraries
+        run:
+          sudo apt install lzma-dev liblzma-dev
+
       - if: ${{ !contains(matrix.runner, 'arm') }}
         uses: seanmiddleditch/gha-setup-ninja@v5
 
@@ -349,6 +353,7 @@ jobs:
                 -D LLVM_ENABLE_PROJECTS='clang;lldb'                            \
                 -D LLVM_TARGETS_TO_BUILD="host"                                 \
                 -D LLDB_ENABLE_PYTHON=On                                        \
+                -D LLDB_ENABLE_LZMA=On                                          \
                 -D CMAKE_C_COMPILER_LAUNCHER=sccache                            \
                 -D CMAKE_CXX_COMPILER_LAUNCHER=sccache                          \
                 -D CMAKE_BUILD_TYPE=Release                                     \
