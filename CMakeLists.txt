@@ -14,6 +14,8 @@ cmake_policy(SET CMP0054 NEW)
 project(DebugServer2
   LANGUAGES C CXX)
 
+set(DS2_PROGRAM_PREFIX "" CACHE STRING "Prefix to apply to the ds2 binary")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS NO)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -350,6 +352,9 @@ endif()
 target_include_directories(ds2 PUBLIC
   Headers
   ${CMAKE_CURRENT_BINARY_DIR}/Headers)
+
+set_target_properties(ds2 PROPERTIES
+  OUTPUT_NAME "${DS2_PROGRAM_PREFIX}ds2")
 
 execute_process(COMMAND git rev-parse --short HEAD
                 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
