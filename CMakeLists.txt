@@ -91,38 +91,37 @@ endif()
 if(DS2_REGSGEN2)
   add_executable(RegsGen2::RegsGen2 IMPORTED)
   set_target_properties(RegsGen2::RegsGen2 PROPERTIES
-	IMPORTED_LOCATION ${DS2_REGSGEN2})
+    IMPORTED_LOCATION ${DS2_REGSGEN2})
 else()
   if(CMAKE_HOST_SYSTEM STREQUAL Windows)
-	set(CMAKE_HOST_EXECUTABLE_SUFFIX .exe)
+    set(CMAKE_HOST_EXECUTABLE_SUFFIX .exe)
   else()
-	set(CMAKE_HOST_EXECUTABLE_SUFFIX)
+    set(CMAKE_HOST_EXECUTABLE_SUFFIX)
   endif()
 
   get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
   if(GENERATOR_IS_MULTI_CONFIG)
-	set(RegsGen2_RELATIVE_PATH Release/regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
+    set(RegsGen2_RELATIVE_PATH Release/regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
   else()
-	set(RegsGen2_RELATIVE_PATH regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
+    set(RegsGen2_RELATIVE_PATH regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
   endif()
 
   include(ExternalProject)
   ExternalProject_Add(RegsGen2
-	SOURCE_DIR ${PROJECT_SOURCE_DIR}/Tools/RegsGen2
-	BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/RegsGen2
-	CMAKE_ARGS
-	  -DCMAKE_BUILD_TYPE:STRING=Release
-	  -DCMAKE_SYSTEM_NAME:STRING=${CMAKE_HOST_SYSTEM_NAME}
-	  -DCMAKE_SYSTEM_PROCESSOR:STRING=${CMAKE_HOST_SYSTEM_PROCESSOR}
-	BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
-	INSTALL_COMMAND ""
-	BUILD_BYPRODUCTS
-	  <BINARY_DIR>/${RegsGen2_RELATIVE_PATH})
+    SOURCE_DIR ${PROJECT_SOURCE_DIR}/Tools/RegsGen2
+    BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/RegsGen2
+    CMAKE_ARGS
+      -DCMAKE_BUILD_TYPE:STRING=Release
+      -DCMAKE_SYSTEM_NAME:STRING=${CMAKE_HOST_SYSTEM_NAME}
+      -DCMAKE_SYSTEM_PROCESSOR:STRING=${CMAKE_HOST_SYSTEM_PROCESSOR}
+    BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
+    INSTALL_COMMAND ""
+    BUILD_BYPRODUCTS <BINARY_DIR>/${RegsGen2_RELATIVE_PATH})
   ExternalProject_Get_Property(RegsGen2 BINARY_DIR)
 
   add_executable(RegsGen2::RegsGen2 IMPORTED)
   set_target_properties(RegsGen2::RegsGen2 PROPERTIES
-	IMPORTED_LOCATION ${BINARY_DIR}/${RegsGen2_RELATIVE_PATH})
+    IMPORTED_LOCATION ${BINARY_DIR}/${RegsGen2_RELATIVE_PATH})
   add_dependencies(RegsGen2::RegsGen2 RegsGen2)
 endif()
 
@@ -148,7 +147,7 @@ foreach(ARCH ARM ARM64 RISCV32 RISCV64 RISCV128 X86 X86_64)
       $<TARGET_FILE:RegsGen2::RegsGen2>
         -a ${RegsGenOS}
         -I DebugServer2/Architecture/RegisterLayout.h
-	-h -o ${ArchHeadersDir}/RegistersDescriptors.h
+        -h -o ${ArchHeadersDir}/RegistersDescriptors.h
         -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
     DEPENDS
       Definitions/${ARCH}.json
@@ -162,7 +161,7 @@ foreach(ARCH ARM ARM64 RISCV32 RISCV64 RISCV128 X86 X86_64)
       $<TARGET_FILE:RegsGen2::RegsGen2>
         -a ${RegsGenOS}
         -I DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
-	-c -o ${ArchSourcesDir}/RegistersDescriptors.cpp
+        -c -o ${ArchSourcesDir}/RegistersDescriptors.cpp
         -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
     DEPENDS
       Definitions/${ARCH}.json
