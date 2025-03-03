@@ -509,6 +509,7 @@ jobs:
               --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/linux-${{ matrix.arch }}.excluded \
               --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/linux-${{ matrix.arch }}.excluded \
               --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded \
+              -v \
               ${{ matrix.test-subdirs }}
 
   test-android-x86:
@@ -663,4 +664,5 @@ jobs:
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-${{ matrix.llvm-arch }}.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-${{ matrix.llvm-arch }}.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
+            -v
             ${{ matrix.test-subdirs }}
