@@ -75,6 +75,19 @@ jobs:
           path: |
             ${{ github.workspace }}/BinaryCache/ds2/Release/ds2.exe
 
+  bazel:
+    runs-on: ubuntu-latest
+    name: Bazel Build Check
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -qq --no-install-recommends bison flex ninja-build 
+      - run: |
+          bazel build //...
+        working-directory: ${{ github.workspace }}/SourceCache/ds2
 
   mingw:
     needs: [windows_tools]

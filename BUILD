@@ -139,7 +139,7 @@ config_setting(
             "@platforms//os:macos": "darwin",
             "@platforms//os:windows": "windows",
         }) + " -I DebugServer2/Architecture/RegisterLayout.h -h -o $@ -f $<",
-        exec_tools = ["//Tools/RegsGen2:regsgen2"],
+        tools = ["//Tools/RegsGen2:regsgen2"],
     )
     for arch in ("ARM", "ARM64", "RISCV32", "RISCV64", "RISCV128", "X86", "X86_64")
 ]
@@ -156,7 +156,7 @@ config_setting(
             "@platforms//os:macos": "darwin",
             "@platforms//os:windows": "windows",
         }) + " -I DebugServer2/Architecture/{}/RegistersDescriptors.h -c -o $@ -f $<".format(arch),
-        exec_tools = ["//Tools/RegsGen2:regsgen2"],
+        tools = ["//Tools/RegsGen2:regsgen2"],
     )
     for arch in ("ARM", "ARM64", "RISCV32", "RISCV64", "RISCV128", "X86", "X86_64")
 ]

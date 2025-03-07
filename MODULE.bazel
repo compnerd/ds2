@@ -1,0 +1,5 @@
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "rules_m4", version = "0.2.4")
+bazel_dep(name = "rules_bison", version = "0.3.1")
+bazel_dep(name = "rules_flex", version = "0.3.1")
+bazel_dep(name = "platforms", version = "0.0.11")
