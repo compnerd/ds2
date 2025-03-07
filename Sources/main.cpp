@@ -83,7 +83,7 @@ static std::unique_ptr<Socket> CreateFDSocket(int fd) {
     DS2LOG(Error, "cannot use fd %d: refers to a terminal", fd);
   }
 
-  auto socket = ds2::make_unique<Socket>(fd);
+  auto socket = std::make_unique<Socket>(fd);
 
   return socket;
 }
@@ -95,7 +95,7 @@ static std::unique_ptr<Socket> CreateFDSocket(int fd) {
 static std::unique_ptr<Socket> CreateTCPSocket(std::string const &host,
                                                std::string const &port,
                                                bool reverse) {
-  auto socket = ds2::make_unique<Socket>();
+  auto socket = std::make_unique<Socket>();
 
   if (reverse) {
     if (!socket->connect(host, port)) {
@@ -136,7 +136,7 @@ static std::unique_ptr<Socket> CreateUNIXSocket(std::string const &path,
     DS2LOG(Fatal, "reverse connections not supported with UNIX sockets");
   }
 
-  auto socket = ds2::make_unique<Socket>();
+  auto socket = std::make_unique<Socket>();
 
   if (!socket->listen(path, abstract)) {
     DS2LOG(Fatal, "cannot listen on %s: %s", path.c_str(),
@@ -499,11 +499,11 @@ static int GdbserverMain(int argc, char **argv) {
   std::unique_ptr<DebugSessionImpl> impl;
 
   if (attachPid > 0)
-    impl = ds2::make_unique<DebugSessionImpl>(attachPid);
+    impl = std::make_unique<DebugSessionImpl>(attachPid);
   else if (args.size() > 0)
-    impl = ds2::make_unique<DebugSessionImpl>(args, env);
+    impl = std::make_unique<DebugSessionImpl>(args, env);
   else
-    impl = ds2::make_unique<DebugSessionImpl>();
+    impl = std::make_unique<DebugSessionImpl>();
 
   return RunDebugServer(channel.get(), impl.get());
 }
@@ -550,7 +550,7 @@ static int PlatformMain(int argc, char **argv) {
   do {
     std::unique_ptr<Socket> clientSocket = serverSocket->accept();
     auto platformClient =
-        ds2::make_unique<PlatformClient>(std::move(clientSocket));
+        std::make_unique<PlatformClient>(std::move(clientSocket));
 
     std::thread thread(
         [](std::unique_ptr<PlatformClient> client) {

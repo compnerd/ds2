@@ -533,7 +533,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   DS2LOG(Debug, "created process %" PRIu64, (uint64_t)spawner.pid());
 
   struct MakeUniqueEnabler : public Process {};
-  auto process = ds2::make_unique<MakeUniqueEnabler>();
+  auto process = std::make_unique<MakeUniqueEnabler>();
 
   if (process->initialize(spawner.pid(), kFlagNewProcess) != kSuccess) {
     return nullptr;

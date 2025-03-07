@@ -324,7 +324,7 @@ ErrorCode ProcessBase::afterResume() {
 
 SoftwareBreakpointManager *ProcessBase::softwareBreakpointManager() const {
   if (!_softwareBreakpointManager) {
-    _softwareBreakpointManager = ds2::make_unique<SoftwareBreakpointManager>(
+    _softwareBreakpointManager = std::make_unique<SoftwareBreakpointManager>(
         const_cast<ProcessBase *>(this));
   }
 
@@ -333,7 +333,7 @@ SoftwareBreakpointManager *ProcessBase::softwareBreakpointManager() const {
 
 HardwareBreakpointManager *ProcessBase::hardwareBreakpointManager() const {
   if (!_hardwareBreakpointManager) {
-    _hardwareBreakpointManager = ds2::make_unique<HardwareBreakpointManager>(
+    _hardwareBreakpointManager = std::make_unique<HardwareBreakpointManager>(
         const_cast<ProcessBase *>(this));
   }
 

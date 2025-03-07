@@ -18,6 +18,7 @@
 #include <cerrno>
 #include <csignal>
 #include <cstring>
+#include <memory>
 
 #include <sys/mman.h>
 #include <sys/wait.h>
@@ -129,7 +130,7 @@ ds2::Target::Process *Process::Attach(ProcessId pid) {
   if (pid <= 0)
     return nullptr;
 
-  auto process = ds2::make_unique<Target::Process>();
+  auto process = std::make_unique<Target::Process>();
 
   if (process->ptrace().attach(pid) != kSuccess) {
     DS2LOG(Error, "ptrace attach failed: %s", strerror(errno));
@@ -145,7 +146,7 @@ ds2::Target::Process *Process::Attach(ProcessId pid) {
 }
 
 ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
-  auto process = ds2::make_unique<Target::Process>();
+  auto process = std::make_unique<Target::Process>();
 
   if (spawner.run([&process]() {
         // move debug targets to their own process group
