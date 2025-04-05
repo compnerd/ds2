@@ -327,8 +327,9 @@ jobs:
 
     steps:
       - name: Install LZMA libraries
-        run:
-          sudo apt install lzma-dev liblzma-dev
+        run: |
+          sudo apt-get update
+          sudo apt-get install -qq --no-install-recommends lzma-dev liblzma-dev
 
       - if: ${{ !contains(matrix.runner, 'arm') }}
         uses: seanmiddleditch/gha-setup-ninja@v5
