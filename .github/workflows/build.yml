@@ -75,6 +75,38 @@ jobs:
           path: |
             ${{ github.workspace }}/BinaryCache/ds2/Release/ds2.exe
 
+  windows_arm64:
+    needs: [windows_tools]
+    runs-on: windows-11-arm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Build Tools
+        run: choco install winflexbison3
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-regsgen2
+          path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
+
+      - name: Configure
+        run: |
+          cmake -B ${{ github.workspace }}/BinaryCache/ds2 `
+                -C ${{ github.workspace }}/cmake/caches/MSVCWarnings.cmake `
+                -G "Visual Studio 17 2022" `
+                -A ARM64 `
+                -D DS2_REGSGEN2=${{ github.workspace }}/BinaryCache/RegsGen2/Release/regsgen2.exe `
+                -S ${{ github.workspace }}
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-arm64-ds2
+          path: |
+            ${{ github.workspace }}/BinaryCache/ds2/Release/ds2.exe
+
   bazel:
     runs-on: ubuntu-latest
     name: Bazel Build Check
