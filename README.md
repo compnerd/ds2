@@ -3,49 +3,47 @@
 ds2 is a debug server designed to be used with [LLDB](http://lldb.llvm.org/) to
 perform remote debugging of Linux, Android, FreeBSD, Windows targets.
 
-### Platform Support
+### Platform Support Status
 
 There is varying support for different platforms. While not all the possible
 platforms are under CI coverage, DS2 has been known to run on the following
 platforms at various times.
 
-- [x] Anrdoid
-  - [x] ARM64
-  - [x] ARMv7
-  - [x] X64
-  - [x] X86
+- [x] ARMv7
+  - [x] Android
+  - [x] Linux
+  - [x] MinGW
+  - [x] Tizen [^1]
+  - [x] Windows
 
-- [x] Darwin
-  - [ ] ARM64
-  - [x] X64
-  - [x] X86
+- [x] ARM64
+  - [x] Android
+  - [ ] Darwin
+  - [x] Linux
+  - [x] MinGW
+  - [ ] Windows
 
-- [x] FreeBSD
-  - [x] X64
-  - [x] X86
+- [x] RISCV64
+  - [x] Linux
 
-- [x] Linux
-  - [x] ARM64
-  - [x] ARMv7
-  - [x] RISCV64
-  - [x] X64
-  - [x] X86
+- [x] X64
+  - [x] Android
+  - [x] Darwin
+  - [x] FreeBSD
+  - [x] Linux
+  - [x] MinGW
+  - [x] Windows
 
-- [x] MinGW
-  - [ ] ARM64
-  - [x] ARMv7
-  - [x] X64
-  - [x] X86
+- [x] X86
+  - [x] Android
+  - [x] Darwin
+  - [x] FreeBSD
+  - [x] Linux
+  - [x] MinGW
+  - [x] Tizen [^1]
+  - [x] Windows
 
-- [-] Tizen
-  - [x] ARMv7
-  - [x] X86
-
-- [x] Windows
-  - [ ] ARM64
-  - [x] ARMv7
-  - [x] X64
-  - [x] X86
+[^1]: This is currently not covered by GHA CI
 
 ### Contributing
 
