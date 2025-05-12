@@ -220,7 +220,7 @@ if(DS2_ARCHITECTURE MATCHES "ARM|ARM64")
   set_source_files_properties(
     Sources/Architecture/ARM/ThumbBranchInfo.cpp
     PROPERTIES
-      COMPILE_OPTIONS $<$<CXX_COMPILER_ID:Clang>:-Wno-error=comma>)
+      COMPILE_OPTIONS $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:-Wno-error=comma>)
 
   target_sources(ds2 PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/ARM/RegistersDescriptors.h

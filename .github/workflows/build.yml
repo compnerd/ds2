@@ -143,10 +143,12 @@ jobs:
             ${{ github.workspace }}/BinaryCache/ds2/ds2.exe
 
   macos:
-    # The macos-latest runner image runs on an M1 ARM CPU which is not currently
-    # supported by ds2. Build on macos-13, which is x86_64-based, until Darwin
-    # on ARM support is implemented.
-    runs-on: macos-13
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        processor: [ arm64, x86_64 ]
 
     steps:
       - uses: actions/checkout@v4
@@ -157,6 +159,7 @@ jobs:
           cmake -B ${{ github.workspace }}/BinaryCache/ds2                      \
                 -C ${{ github.workspace }}/cmake/caches/ClangWarnings.cmake     \
                 -D CMAKE_BUILD_TYPE=Release                                     \
+                -D CMAKE_SYSTEM_PROCESSOR="${{ matrix.processor }}"             \
                 -G Ninja                                                        \
                 -S ${{ github.workspace }}
       - name: Build
@@ -164,7 +167,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: macOS-x86_64-ds2
+          name: macOS-${{ matrix.processor }}-ds2
           path: |
             ${{ github.workspace }}/BinaryCache/ds2/ds2
 
