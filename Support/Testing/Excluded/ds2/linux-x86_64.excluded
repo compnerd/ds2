@@ -127,3 +127,5 @@ TestVectorTypesFormatting.VectorTypesFormattingTestCase.test_with_run_command_dw
 TestVectorTypesFormatting.VectorTypesFormattingTestCase.test_with_run_command_dwo
 lldbsuite.test.lldbtest.TestPrintf.test_dwarf
 lldbsuite.test.lldbtest.TestPrintf.test_dwo
+lldbsuite.test.lldbtest.TestTypedefArray.test_dwarf
+lldbsuite.test.lldbtest.TestTypedefArray.test_dwo
