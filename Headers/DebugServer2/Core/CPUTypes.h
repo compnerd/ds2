@@ -258,8 +258,8 @@ enum CPUSubType {
 };
 
 static inline bool CPUTypeIs64Bit(CPUType type) {
-  return type & kCPUArchABI64 || type == kCPUTypeALPHA ||
-         type == kCPUTypeRISCV64;
+  return static_cast<int>(type) & static_cast<int>(kCPUArchABI64) ||
+         type == kCPUTypeALPHA || type == kCPUTypeRISCV64;
 }
 
 char const *GetCPUTypeName(CPUType type);
