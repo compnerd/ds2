@@ -19,6 +19,7 @@
 typedef SSIZE_T ssize_t;
 #endif
 #else
+#include <cstdint>
 #include <cstdlib>
 #endif
 #include <iostream>
@@ -117,7 +118,7 @@ typedef SSIZE_T ssize_t;
 // structure, and not held as a reference or a pointer.
 template <typename T>
 typename std::enable_if<
-    !std::is_pointer<T>::value && std::is_pod<T>::value,
+    !std::is_pointer_v<T> && std::is_standard_layout_v<T>,
     size_t>::type static inline constexpr array_sizeof(T const &array) {
   return sizeof(array) / (reinterpret_cast<uintptr_t>(&array[1]) -
                           reinterpret_cast<uintptr_t>(&array[0]));
