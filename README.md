@@ -18,7 +18,7 @@ platforms at various times.
 
 - [x] ARM64
   - [x] Android
-  - [ ] Darwin
+  - [x] Darwin
   - [x] Linux
   - [x] MinGW
   - [ ] Windows
