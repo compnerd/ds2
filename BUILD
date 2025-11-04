@@ -229,7 +229,7 @@ filegroup(
             "Headers/DebugServer2/Architecture/ARM/SoftwareSingleStep.h",
             "Headers/DebugServer2/Architecture/ARM64/CPUState.h",
             ":generated_ARM64_register_definitions_header",
-            ":generated_ARM_reigster_definitions_header",
+            ":generated_ARM_register_definitions_header",
         ],
         "@platforms//cpu:i386": [
             "Headers/DebugServer2/Architecture/X86/CPUState.h",
@@ -527,6 +527,8 @@ cc_binary(
             "HAVE_PROCESS_VM_WRITEV",
             "HAVE_SYS_PERSONALITY_H",
             "HAVE_TGKILL",
+        ],
+        "//conditions:default": [
         ],
     }),
     includes = [
