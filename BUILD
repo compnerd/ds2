@@ -42,7 +42,7 @@ config_setting(
     constraint_values = [
         "@platforms//os:macos",
         "@platforms//cpu:arm64",
-    ]
+    ],
 )
 
 config_setting(
@@ -164,13 +164,12 @@ config_setting(
 filegroup(
     name = "headers",
     srcs = [
-        "Headers/DebugServer2/Base.h",
-        "Headers/DebugServer2/Constants.h",
-        "Headers/DebugServer2/Types.h",
         "Headers/DebugServer2/Architecture/CPUState.h",
+        "Headers/DebugServer2/Architecture/RegisterLayout.h",
         "Headers/DebugServer2/Architecture/Registers.h",
         "Headers/DebugServer2/Architecture/RegistersDescriptors.h",
-        "Headers/DebugServer2/Architecture/RegisterLayout.h",
+        "Headers/DebugServer2/Base.h",
+        "Headers/DebugServer2/Constants.h",
         "Headers/DebugServer2/Core/BreakpointManager.h",
         "Headers/DebugServer2/Core/CPUTypes.h",
         "Headers/DebugServer2/Core/ErrorCodes.h",
@@ -178,11 +177,11 @@ filegroup(
         "Headers/DebugServer2/Core/MessageQueue.h",
         "Headers/DebugServer2/Core/SessionThread.h",
         "Headers/DebugServer2/Core/SoftwareBreakpointManager.h",
-        "Headers/DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h",
-        "Headers/DebugServer2/GDBRemote/Mixins/ProcessLaunchMixin.h",
         "Headers/DebugServer2/GDBRemote/Base.h",
         "Headers/DebugServer2/GDBRemote/DebugSessionImpl.h",
         "Headers/DebugServer2/GDBRemote/DummySessionDelegateImpl.h",
+        "Headers/DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h",
+        "Headers/DebugServer2/GDBRemote/Mixins/ProcessLaunchMixin.h",
         "Headers/DebugServer2/GDBRemote/PacketProcessor.h",
         "Headers/DebugServer2/GDBRemote/PlatformSessionImpl.h",
         "Headers/DebugServer2/GDBRemote/ProtocolHelpers.h",
@@ -203,6 +202,7 @@ filegroup(
         "Headers/DebugServer2/Target/ProcessDecl.h",
         "Headers/DebugServer2/Target/Thread.h",
         "Headers/DebugServer2/Target/ThreadBase.h",
+        "Headers/DebugServer2/Types.h",
         "Headers/DebugServer2/Utils/Backtrace.h",
         "Headers/DebugServer2/Utils/Bits.h",
         "Headers/DebugServer2/Utils/CompilerSupport.h",
@@ -228,8 +228,8 @@ filegroup(
             "Headers/DebugServer2/Architecture/ARM/CPUState.h",
             "Headers/DebugServer2/Architecture/ARM/SoftwareSingleStep.h",
             "Headers/DebugServer2/Architecture/ARM64/CPUState.h",
-            ":generated_ARM_reigster_definitions_header",
             ":generated_ARM64_register_definitions_header",
+            ":generated_ARM_reigster_definitions_header",
         ],
         "@platforms//cpu:i386": [
             "Headers/DebugServer2/Architecture/X86/CPUState.h",
@@ -240,8 +240,8 @@ filegroup(
             "Headers/DebugServer2/Architecture/X86/CPUState.h",
             "Headers/DebugServer2/Architecture/X86/RegisterCopy.h",
             "Headers/DebugServer2/Architecture/X86_64/CPUState.h",
-            ":generated_X86_register_definitions_header",
             ":generated_X86_64_register_definitions_header",
+            ":generated_X86_register_definitions_header",
         ],
         "@platforms//cpu:riscv32": [
             "Headers/DebugServer2/Architecture/RISCV/CPUState.h",
@@ -321,19 +321,18 @@ filegroup(
 filegroup(
     name = "sources",
     srcs = [
-        "Sources/main.cpp",
         "Sources/Architecture/RegisterLayout.cpp",
         "Sources/Core/BreakpointManager.cpp",
-        "Sources/Core/HardwareBreakpointManager.cpp",
-        "Sources/Core/SoftwareBreakpointManager.cpp",
         "Sources/Core/CPUTypes.cpp",
         "Sources/Core/ErrorCodes.cpp",
+        "Sources/Core/HardwareBreakpointManager.cpp",
         "Sources/Core/MessageQueue.cpp",
         "Sources/Core/SessionThread.cpp",
-        "Sources/GDBRemote/Mixins/FileOperationsMixin.hpp",
-        "Sources/GDBRemote/Mixins/ProcessLaunchMixin.hpp",
+        "Sources/Core/SoftwareBreakpointManager.cpp",
         "Sources/GDBRemote/DebugSessionImpl.cpp",
         "Sources/GDBRemote/DummySessionDelegateImpl.cpp",
+        "Sources/GDBRemote/Mixins/FileOperationsMixin.hpp",
+        "Sources/GDBRemote/Mixins/ProcessLaunchMixin.hpp",
         "Sources/GDBRemote/PacketProcessor.cpp",
         "Sources/GDBRemote/PlatformSessionImpl.cpp",
         "Sources/GDBRemote/ProtocolInterpreter.cpp",
@@ -351,52 +350,53 @@ filegroup(
         "Sources/Utils/Log.cpp",
         "Sources/Utils/OptParse.cpp",
         "Sources/Utils/Stringify.cpp",
+        "Sources/main.cpp",
     ] + select({
         "@platforms//cpu:arm64": [
-            ":generated_ARM_register_definitions_source",
-            ":generated_ARM64_register_definitions_source",
             "Sources/Architecture/ARM/ARMBranchInfo.cpp",
             "Sources/Architecture/ARM/SoftwareSingleStep.cpp",
             "Sources/Architecture/ARM/ThumbBranchInfo.cpp",
             "Sources/Core/ARM/HardwareBreakpointManager.cpp",
             "Sources/Core/ARM/SoftwareBreakpointManager.cpp",
             "Sources/Target/Common/ARM64/ProcessBaseARM64.cpp",
+            ":generated_ARM64_register_definitions_source",
+            ":generated_ARM_register_definitions_source",
         ],
         "@platforms//cpu:armv7": [
-            ":generated_ARM_register_definitions_source",
             "Sources/Architecture/ARM/ARMBranchInfo.cpp",
             "Sources/Architecture/ARM/SoftwareSingleStep.cpp",
             "Sources/Architecture/ARM/ThumbBranchInfo.cpp",
             "Sources/Core/ARM/HardwareBreakpointManager.cpp",
             "Sources/Core/ARM/SoftwareBreakpointManager.cpp",
             "Sources/Target/Common/ARM/ProcessBaseARM.cpp",
+            ":generated_ARM_register_definitions_source",
         ],
         "@platforms//cpu:i386": [
-            ":generated_X86_register_definitions_source",
             "Sources/Core/X86/HardwareBreakpointManager.cpp",
             "Sources/Core/X86/SoftwareBreakpointManager.cpp",
             "Sources/Target/Common/X86/ProcessBaseX86.cpp",
+            ":generated_X86_register_definitions_source",
         ],
         "@platforms//cpu:riscv32": [
-            ":generated_RISCV32_register_definitions_source",
             "Sources/Architecture/RISCV/SoftwareSingleStep.cpp",
             "Sources/Core/RISCV/HardwareBreakpointManager.cpp",
             "Sources/Core/RISCV/SoftwareBreakpointManager.cpp",
             "Sources/Target/Common/RISCV/ProcessBaseRISCV.cpp",
+            ":generated_RISCV32_register_definitions_source",
         ],
         "@platforms//cpu:riscv64": [
-            ":generated_RISCV64_register_definitions_source",
             "Sources/Architecture/RISCV/SoftwareSingleStep.cpp",
             "Sources/Core/RISCV/HardwareBreakpointManager.cpp",
             "Sources/Core/RISCV/SoftwareBreakpointManager.cpp",
             "Sources/Target/Common/RISCV/ProcessBaseRISCV.cpp",
+            ":generated_RISCV64_register_definitions_source",
         ],
         "@platforms//cpu:x86_64": [
-            ":generated_X86_register_definitions_source",
-            ":generated_X86_64_register_definitions_source",
             "Sources/Core/X86/HardwareBreakpointManager.cpp",
             "Sources/Core/X86/SoftwareBreakpointManager.cpp",
             "Sources/Target/Common/X86_64/ProcessBaseX86_64.cpp",
+            ":generated_X86_64_register_definitions_source",
+            ":generated_X86_register_definitions_source",
         ],
     }) + selects.with_or({
         "@platforms//os:windows": [
@@ -508,7 +508,7 @@ cc_binary(
     ],
     copts = selects.with_or({
         ("@bazel_tools//tools/cpp:clang-cl", "@bazel_tools//tools/cpp:msvc"): [
-            "/std:c++17"
+            "/std:c++17",
         ],
         "//conditions:default": ["-std=c++17"],
     }),
