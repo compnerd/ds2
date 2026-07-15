@@ -1,12 +1,12 @@
 <map id="ds2::Target::POSIX::ELFProcess" name="ds2::Target::POSIX::ELFProcess">
-<area shape="rect" id="Node000001" title=" " alt="" coords="93,288,225,328"/>
-<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title=" " alt="" coords="40,198,172,238"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="128,250,150,286,145,289,123,253"/>
-<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="6,109,176,135"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="98,150,105,197,100,198,93,151"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="104,309,236,350"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title=" " alt="" coords="50,219,183,260"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="138,271,160,307,156,310,134,274"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="17,122,186,148"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="108,163,116,218,111,219,103,164"/>
 <area shape="rect" id="Node000004" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="64,47,64,65,68,84,82,107,77,110,63,86,59,66,59,47"/>
-<area shape="rect" id="Node000005" href="$classds2_1_1_address.html" title=" " alt="" coords="156,5,253,31"/>
-<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="207,47,203,133,197,186,187,239,170,288,165,286,182,238,191,185,197,133,202,47"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="154,40,129,57,109,83,98,109,93,107,105,81,125,53,151,36"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="63,46,62,72,68,97,76,109,86,120,83,124,72,113,63,99,57,72,57,46"/>
+<area shape="rect" id="Node000005" href="$classds2_1_1_address.html" title=" " alt="" coords="162,5,258,31"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="213,46,212,141,207,201,198,260,181,310,176,308,193,259,202,200,207,141,208,46"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="157,40,135,57,123,73,115,90,106,123,101,121,110,89,119,70,131,53,154,36"/>
 </map>

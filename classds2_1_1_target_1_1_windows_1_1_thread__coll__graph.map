@@ -1,9 +1,9 @@
 <map id="ds2::Target::Windows::Thread" name="ds2::Target::Windows::Thread">
-<area shape="rect" id="Node000001" title=" " alt="" coords="14,258,158,298"/>
-<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_thread_base.html" title=" " alt="" coords="5,183,167,208"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,224,89,258,83,258,83,224"/>
-<area shape="rect" id="Node000003" href="$structds2_1_1_stop_info.html" title=" " alt="" coords="37,94,135,120"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="89,135,89,182,83,182,83,135"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="14,274,158,314"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_target_1_1_thread_base.html" title=" " alt="" coords="5,199,167,224"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,240,89,274,83,274,83,240"/>
+<area shape="rect" id="Node000003" href="$structds2_1_1_stop_info.html" title=" " alt="" coords="37,102,135,128"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="89,143,89,198,83,198,83,143"/>
 <area shape="rect" id="Node000004" href="$classds2_1_1_address.html" title=" " alt="" coords="38,5,134,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="89,47,89,94,83,94,83,47"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="89,46,89,101,83,101,83,46"/>
 </map>
