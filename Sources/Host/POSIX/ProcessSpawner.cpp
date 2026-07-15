@@ -34,9 +34,9 @@ namespace Host {
 
 static bool open_terminal(int fds[2]) {
 #if defined(OS_FREEBSD) || defined(OS_DARWIN)
-  char *slave;
+  char *device_name;
 #else
-  char slave[PATH_MAX];
+  char device_name[PATH_MAX];
 #endif
 
   fds[0] = ::posix_openpt(O_RDWR | O_NOCTTY);
@@ -50,13 +50,13 @@ static bool open_terminal(int fds[2]) {
     goto error_fd0;
 
 #if defined(OS_FREEBSD) || defined(OS_DARWIN)
-  slave = ptsname(fds[0]);
+  device_name = ptsname(fds[0]);
 #else
-  if (::ptsname_r(fds[0], slave, sizeof(slave)) != 0)
+  if (::ptsname_r(fds[0], device_name, sizeof(device_name)) != 0)
     goto error_fd0;
 #endif
 
-  fds[1] = ::open(slave, O_RDWR);
+  fds[1] = ::open(device_name, O_RDWR);
   if (fds[1] == -1)
     goto error_fd0;
 
