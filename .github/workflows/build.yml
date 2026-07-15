@@ -181,7 +181,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-      - uses: seanmiddleditch/gha-setup-ninja@v6
 
       - name: Configure
         run: |
@@ -318,7 +317,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-      - uses: seanmiddleditch/gha-setup-ninja@v6
       - uses: actions/download-artifact@v8
         with:
           name: windows-regsgen2
@@ -364,21 +362,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -qq --no-install-recommends lzma-dev liblzma-dev
-
-      - if: ${{ !contains(matrix.runner, 'arm') }}
-        uses: seanmiddleditch/gha-setup-ninja@v6
-
-      - if: contains(matrix.runner, 'arm')
-        uses: seanmiddleditch/gha-setup-ninja@v6
-        with:
-          # TODO(andrurogerz): seanmiddleditch/gha-setup-ninja does not properly
-          # detect Linux on arm64 and always installs the x86_64 ninja package.
-          # For now, we can fix this by overriding the platform string to force
-          # the downloading the proper package. We also require a newer ninja
-          # version since aarch64 packages were not released until v1.12.0 and
-          # the default gha-setup-ninja installs is v1.11.1.
-          platform: linux-aarch64
-          version: 1.12.1 # latest sccache version
 
       - name: Setup sccache
         uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
