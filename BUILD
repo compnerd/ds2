@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 
 package(default_visibility = ["//visibility:private"])
 
