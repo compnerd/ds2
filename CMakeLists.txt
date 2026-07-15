@@ -9,16 +9,12 @@
 ##
 
 cmake_minimum_required(VERSION 3.25)
-cmake_policy(SET CMP0054 NEW)
 
 project(DebugServer2
   LANGUAGES C CXX)
 
 set(DS2_PROGRAM_PREFIX "" CACHE STRING "Prefix to apply to the ds2 binary")
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_EXTENSIONS NO)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(WIN32)
@@ -96,43 +92,42 @@ if(DS2_REGSGEN2)
     IMPORTED_LOCATION ${DS2_REGSGEN2})
 else()
   if(CMAKE_HOST_SYSTEM_NAME STREQUAL Windows)
-    set(CMAKE_HOST_EXECUTABLE_SUFFIX .exe)
+    set(DS2_REGSGEN2_HOST_EXECUTABLE_SUFFIX .exe)
   else()
-    set(CMAKE_HOST_EXECUTABLE_SUFFIX)
+    set(DS2_REGSGEN2_HOST_EXECUTABLE_SUFFIX)
   endif()
 
   get_property(GENERATOR_IS_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
   if(GENERATOR_IS_MULTI_CONFIG)
-    set(RegsGen2_RELATIVE_PATH Release/regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
+    set(DS2_REGSGEN2_RELATIVE_PATH Release/regsgen2${DS2_REGSGEN2_HOST_EXECUTABLE_SUFFIX})
   else()
-    set(RegsGen2_RELATIVE_PATH regsgen2${CMAKE_HOST_EXECUTABLE_SUFFIX})
+    set(DS2_REGSGEN2_RELATIVE_PATH regsgen2${DS2_REGSGEN2_HOST_EXECUTABLE_SUFFIX})
   endif()
 
   include(ExternalProject)
+  set(DS2_REGSGEN2_CMAKE_ARGS
+    -DCMAKE_BUILD_TYPE:STRING=Release
+    -DCMAKE_MAKE_PROGRAM:STRING=${CMAKE_MAKE_PROGRAM}
+    -DCMAKE_SYSTEM_NAME:STRING=${CMAKE_HOST_SYSTEM_NAME}
+    -DCMAKE_SYSTEM_PROCESSOR:STRING=${CMAKE_HOST_SYSTEM_PROCESSOR})
   if(FLEX_EXECUTABLE)
-    set(_FLEX_EXECUTABLE_ARG "-DFLEX_EXECUTABLE=${FLEX_EXECUTABLE}")
+    list(APPEND DS2_REGSGEN2_CMAKE_ARGS -DFLEX_EXECUTABLE=${FLEX_EXECUTABLE})
   endif()
   if(BISON_EXECUTABLE)
-    set(_BISON_EXECUTABLE_ARG "-DBISON_EXECUTABLE=${BISON_EXECUTABLE}")
+    list(APPEND DS2_REGSGEN2_CMAKE_ARGS -DBISON_EXECUTABLE=${BISON_EXECUTABLE})
   endif()
   ExternalProject_Add(RegsGen2
     SOURCE_DIR ${PROJECT_SOURCE_DIR}/Tools/RegsGen2
     BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/RegsGen2
-    CMAKE_ARGS
-      -DCMAKE_BUILD_TYPE:STRING=Release
-      -DCMAKE_MAKE_PROGRAM:STRING=${CMAKE_MAKE_PROGRAM}
-      -DCMAKE_SYSTEM_NAME:STRING=${CMAKE_HOST_SYSTEM_NAME}
-      -DCMAKE_SYSTEM_PROCESSOR:STRING=${CMAKE_HOST_SYSTEM_PROCESSOR}
-      ${_FLEX_EXECUTABLE_ARG}
-      ${_BISON_EXECUTABLE_ARG}
+    CMAKE_ARGS ${DS2_REGSGEN2_CMAKE_ARGS}
     BUILD_COMMAND ${CMAKE_COMMAND} --build <BINARY_DIR> --config Release
     INSTALL_COMMAND ""
-    BUILD_BYPRODUCTS <BINARY_DIR>/${RegsGen2_RELATIVE_PATH})
+    BUILD_BYPRODUCTS <BINARY_DIR>/${DS2_REGSGEN2_RELATIVE_PATH})
   ExternalProject_Get_Property(RegsGen2 BINARY_DIR)
 
   add_executable(RegsGen2::RegsGen2 IMPORTED)
   set_target_properties(RegsGen2::RegsGen2 PROPERTIES
-    IMPORTED_LOCATION ${BINARY_DIR}/${RegsGen2_RELATIVE_PATH})
+    IMPORTED_LOCATION ${BINARY_DIR}/${DS2_REGSGEN2_RELATIVE_PATH})
   add_dependencies(RegsGen2::RegsGen2 RegsGen2)
 endif()
 
@@ -149,34 +144,32 @@ else()
   set(RegsGenOS $<LOWER_CASE:${CMAKE_SYSTEM_NAME}>)
 endif()
 
+function(ds2_regsgen2_generate ARCH MODE OUTPUT INCLUDE)
+  add_custom_command(OUTPUT
+      ${OUTPUT}
+    COMMAND
+      $<TARGET_FILE:RegsGen2::RegsGen2>
+        -a ${RegsGenOS}
+        -I ${INCLUDE}
+        ${MODE} -o ${OUTPUT}
+        -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
+    DEPENDS
+      Definitions/${ARCH}.json
+      RegsGen2::RegsGen2)
+endfunction()
+
 foreach(ARCH ARM ARM64 RISCV32 RISCV64 RISCV128 X86 X86_64)
   set(ArchHeadersDir ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/${ARCH})
   file(MAKE_DIRECTORY ${ArchHeadersDir})
-  add_custom_command(OUTPUT
-      ${ArchHeadersDir}/RegistersDescriptors.h
-    COMMAND
-      $<TARGET_FILE:RegsGen2::RegsGen2>
-        -a ${RegsGenOS}
-        -I DebugServer2/Architecture/RegisterLayout.h
-        -h -o ${ArchHeadersDir}/RegistersDescriptors.h
-        -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
-    DEPENDS
-      Definitions/${ARCH}.json
-      RegsGen2::RegsGen2)
+  ds2_regsgen2_generate(${ARCH} -h
+    ${ArchHeadersDir}/RegistersDescriptors.h
+    DebugServer2/Architecture/RegisterLayout.h)
 
   set(ArchSourcesDir ${CMAKE_CURRENT_BINARY_DIR}/Sources/Architecture/${ARCH})
   file(MAKE_DIRECTORY ${ArchSourcesDir})
-  add_custom_command(OUTPUT
-      ${ArchSourcesDir}/RegistersDescriptors.cpp
-    COMMAND
-      $<TARGET_FILE:RegsGen2::RegsGen2>
-        -a ${RegsGenOS}
-        -I DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h
-        -c -o ${ArchSourcesDir}/RegistersDescriptors.cpp
-        -f "${PROJECT_SOURCE_DIR}/Definitions/${ARCH}.json"
-    DEPENDS
-      Definitions/${ARCH}.json
-      RegsGen2::RegsGen2)
+  ds2_regsgen2_generate(${ARCH} -c
+    ${ArchSourcesDir}/RegistersDescriptors.cpp
+    DebugServer2/Architecture/${ARCH}/RegistersDescriptors.h)
 endforeach()
 
 add_executable(ds2
@@ -215,6 +208,10 @@ add_executable(ds2
   Sources/Utils/Log.cpp
   Sources/Utils/OptParse.cpp
   Sources/Utils/Stringify.cpp)
+set_target_properties(ds2 PROPERTIES
+  CXX_STANDARD 17
+  CXX_EXTENSIONS NO
+  CXX_STANDARD_REQUIRED YES)
 
 # Architecture Sources
 if(DS2_ARCHITECTURE MATCHES "ARM|ARM64")
@@ -401,7 +398,7 @@ elseif(WIN32)
       SetThreadContext TerminateThread VirtualAllocEx VirtualFreeEx
       VirtualQueryEx WaitForDebugEventEx WriteProcessMemory)
     CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${FUNC})
-    if (HAVE_${CHECK})
+    if (HAVE_${FUNC})
       target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
     endif ()
   endforeach()

@@ -8,14 +8,10 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.25)
 
 project(RegsGen2
   LANGUAGES C CXX)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_EXTENSIONS NO)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 add_subdirectory(../JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
 
@@ -31,5 +27,9 @@ add_executable(regsgen2
   RegisterSet.cpp
   RegisterTemplate.cpp
   main.cpp)
+set_target_properties(regsgen2 PROPERTIES
+  CXX_STANDARD 17
+  CXX_EXTENSIONS NO
+  CXX_STANDARD_REQUIRED YES)
 target_link_libraries(regsgen2 PRIVATE
   getopt jsobjects)

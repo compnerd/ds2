@@ -8,23 +8,15 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.25)
 
 project(JSObjects
   LANGUAGES C CXX)
 
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_EXTENSIONS NO)
-set(CMAKE_C_STANDARD_REQUIRED YES)
-
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_EXTENSIONS NO)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
-
 set(CMAKE_POSITION_INDEPENDENT_CODE YES)
 
-find_package(BISON)
-find_package(FLEX)
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
 
 FLEX_TARGET(JSON_SCANNER
             ${JSObjects_SOURCE_DIR}/Sources/libjson/tokenizer.l
@@ -48,6 +40,13 @@ target_include_directories(jsobjects PUBLIC
 target_include_directories(jsobjects PRIVATE
     ${JSObjects_SOURCE_DIR}/Sources/libjson
     ${JSObjects_BINARY_DIR})
+set_target_properties(jsobjects PROPERTIES
+    C_STANDARD 99
+    C_EXTENSIONS NO
+    C_STANDARD_REQUIRED YES
+    CXX_STANDARD 11
+    CXX_EXTENSIONS NO
+    CXX_STANDARD_REQUIRED YES)
 
 if("${BSD}" STREQUAL "FreeBSD")
   target_compile_definitions(jsobjects PRIVATE
