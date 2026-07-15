@@ -393,31 +393,45 @@ if(ANDROID OR LINUX)
     endif ()
   endforeach ()
 elseif(WIN32)
-  set(CMAKE_EXTRA_INCLUDE_FILES windows.h)
+  include(CheckSymbolExists)
+  block()
+    set(CMAKE_EXTRA_INCLUDE_FILES windows.h)
+    set(CMAKE_REQUIRED_DEFINITIONS
+      -DNOMINMAX
+      -DWIN32_LEAN_AND_MEAN
+      -DWINVER=_WIN32_WINNT_WIN6
+      -D_WIN32_WINNT=_WIN32_WINNT_WIN6)
 
-  include(CheckFunctionExists)
-  foreach (FUNC ContinueDebugEvent DebugActiveProcess DebugActiveProcessStop
-      GetModuleHandleA GetModuleHandleW GetWindowsDirectoryW ReadProcessMemory
-      SetThreadContext TerminateThread VirtualAllocEx VirtualFreeEx
-      VirtualQueryEx WaitForDebugEventEx WriteProcessMemory)
-    CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${FUNC})
-    if (HAVE_${CHECK})
-      target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
-    endif ()
-  endforeach()
+    # Do not probe for WaitForDebugEventEx: Microsoft documents its minimum
+    # supported client as Windows 10 (desktop apps only), but the real SDK's
+    # debugapi.h declares it unconditionally for desktop builds (it is gated
+    # by WINAPI_FAMILY_PARTITION, not by _WIN32_WINNT/WINVER), so a
+    # symbol/link check reports it "found" on any modern MSVC toolchain
+    # regardless of the _WIN32_WINNT_WIN6 baseline targeted above. Leave
+    # HAVE_WaitForDebugEventEx undefined so ExtraWrappers.h's
+    # WaitForDebugEvent fallback always applies, matching this project's
+    # actual (Vista) minimum supported client.
+    foreach (FUNC ContinueDebugEvent DebugActiveProcess DebugActiveProcessStop
+        GetModuleHandleA GetModuleHandleW GetWindowsDirectoryW ReadProcessMemory
+        SetThreadContext TerminateThread VirtualAllocEx VirtualFreeEx
+        VirtualQueryEx WriteProcessMemory)
+      CHECK_SYMBOL_EXISTS(${FUNC} windows.h HAVE_${FUNC})
+      if (HAVE_${FUNC})
+        target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
+      endif ()
+    endforeach()
 
-  include(CheckTypeSize)
-  foreach (TYPE
-      "struct _STARTUPINFOW" "struct _PROCESS_INFORMATION"
-      PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER)
-    string(REPLACE " " "_" SANITIZED_TYPE ${TYPE})
-    CHECK_TYPE_SIZE(${TYPE} ${SANITIZED_TYPE})
-    if (HAVE_${SANITIZED_TYPE})
-      target_compile_definitions(ds2 PRIVATE HAVE_${SANITIZED_TYPE})
-    endif ()
-  endforeach ()
-
-  set(CMAKE_EXTRA_INCLUDE_FILES)
+    include(CheckTypeSize)
+    foreach (TYPE
+        "struct _STARTUPINFOW" "struct _PROCESS_INFORMATION"
+        PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER)
+      string(REPLACE " " "_" SANITIZED_TYPE ${TYPE})
+      CHECK_TYPE_SIZE(${TYPE} ${SANITIZED_TYPE})
+      if (HAVE_${SANITIZED_TYPE})
+        target_compile_definitions(ds2 PRIVATE HAVE_${SANITIZED_TYPE})
+      endif ()
+    endforeach ()
+  endblock()
 endif()
 
 if(TIZEN)
