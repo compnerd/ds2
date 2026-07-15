@@ -172,7 +172,7 @@ private:
   std::string _value;
 
 public:
-  JSString(std::string const &value = nullptr) : _value(value) {}
+  JSString(std::string const &value = std::string()) : _value(value) {}
 
   inline std::string const &value() const { return _value; }
 
