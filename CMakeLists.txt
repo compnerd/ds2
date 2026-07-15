@@ -393,7 +393,6 @@ if(ANDROID OR LINUX)
 elseif(WIN32)
   include(CheckSymbolExists)
   block()
-    set(CMAKE_EXTRA_INCLUDE_FILES windows.h)
     set(CMAKE_REQUIRED_DEFINITIONS
       -DNOMINMAX
       -DWIN32_LEAN_AND_MEAN
@@ -409,26 +408,37 @@ elseif(WIN32)
     # HAVE_WaitForDebugEventEx undefined so ExtraWrappers.h's
     # WaitForDebugEvent fallback always applies, matching this project's
     # actual (Vista) minimum supported client.
-    foreach (FUNC ContinueDebugEvent DebugActiveProcess DebugActiveProcessStop
-        GetModuleHandleA GetModuleHandleW GetWindowsDirectoryW ReadProcessMemory
-        SetThreadContext TerminateThread VirtualAllocEx VirtualFreeEx
-        VirtualQueryEx WriteProcessMemory)
-      CHECK_SYMBOL_EXISTS(${FUNC} windows.h HAVE_${FUNC})
-      if (HAVE_${FUNC})
-        target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
-      endif ()
-    endforeach()
 
-    include(CheckTypeSize)
-    foreach (TYPE
-        "struct _STARTUPINFOW" "struct _PROCESS_INFORMATION"
-        PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER)
-      string(REPLACE " " "_" SANITIZED_TYPE ${TYPE})
-      CHECK_TYPE_SIZE(${TYPE} ${SANITIZED_TYPE})
-      if (HAVE_${SANITIZED_TYPE})
-        target_compile_definitions(ds2 PRIVATE HAVE_${SANITIZED_TYPE})
-      endif ()
-    endforeach ()
+    if(WINDOWS_STORE)
+      # The following APIs and types are not exposed when building for UAP
+      # (WINAPI_PARTITION_DESKTOP is unavailable); ExtraWrappers.h provides
+      # fallback declarations gated on the HAVE_* definitions computed here.
+      # They are irrelevant (and skipped) for desktop Windows builds.
+      foreach (FUNC ContinueDebugEvent DebugActiveProcess DebugActiveProcessStop
+          GetModuleHandleA GetModuleHandleW GetWindowsDirectoryW ReadProcessMemory
+          SetThreadContext TerminateThread VirtualAllocEx VirtualFreeEx
+          VirtualQueryEx WriteProcessMemory)
+        CHECK_SYMBOL_EXISTS(${FUNC} windows.h HAVE_${FUNC})
+        if (HAVE_${FUNC})
+          target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
+        endif ()
+      endforeach()
+
+      set(CMAKE_EXTRA_INCLUDE_FILES windows.h)
+
+      include(CheckTypeSize)
+      foreach (TYPE
+          "struct _STARTUPINFOW" "struct _PROCESS_INFORMATION"
+          PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER)
+        string(REPLACE " " "_" SANITIZED_TYPE ${TYPE})
+        CHECK_TYPE_SIZE(${TYPE} ${SANITIZED_TYPE})
+        if (HAVE_${SANITIZED_TYPE})
+          target_compile_definitions(ds2 PRIVATE HAVE_${SANITIZED_TYPE})
+        endif ()
+      endforeach ()
+
+      set(CMAKE_EXTRA_INCLUDE_FILES)
+    endif()
   endblock()
 endif()
 
