@@ -453,13 +453,17 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif()
 endif()
 
-include(FindThreads)
+find_package(Threads REQUIRED)
 if (STATIC AND DEFINED CMAKE_THREAD_LIBS_INIT AND
     (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+  # $<LINK_LIBRARY:WHOLE_ARCHIVE,...> ignores the feature for INTERFACE
+  # libraries, which is what Threads::Threads is on platforms where
+  # CMAKE_THREAD_LIBS_INIT resolves to a real pthread archive (e.g. Tizen).
+  # Apply the whole-archive wrapping to the raw libraries directly instead.
   target_link_options(ds2 PRIVATE
     -Wl,--whole-archive ${CMAKE_THREAD_LIBS_INIT} -Wl,--no-whole-archive)
 else ()
-  target_link_libraries(ds2 PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+  target_link_libraries(ds2 PRIVATE Threads::Threads)
 endif ()
 
 install(TARGETS ds2 DESTINATION bin)
