@@ -79,7 +79,7 @@ elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "ARM" OR
 elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "X86" OR
       CMAKE_SYSTEM_PROCESSOR MATCHES "i[3-6]86")
   set(DS2_ARCHITECTURE X86)
-elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "X64" OR
+elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "X64|x64" OR
       CMAKE_SYSTEM_PROCESSOR MATCHES "amd64|AMD64|x86_64")
   set(DS2_ARCHITECTURE X86_64)
 elseif(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "RISCV32|RISCV64|RISCV128" OR
@@ -143,6 +143,11 @@ endforeach()
 
 if(ANDROID)
   set(RegsGenOS linux)
+elseif(WINDOWS_STORE)
+  # regsgen2 only knows the "windows" OS/ABI (it generates the same register
+  # layout regardless of Desktop vs UWP); CMAKE_SYSTEM_NAME is "WindowsStore"
+  # here, which regsgen2 would otherwise reject outright.
+  set(RegsGenOS windows)
 else()
   set(RegsGenOS $<LOWER_CASE:${CMAKE_SYSTEM_NAME}>)
 endif()
