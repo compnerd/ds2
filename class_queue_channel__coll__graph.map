@@ -1,8 +1,0 @@
-<map id="QueueChannel" name="QueueChannel">
-<area shape="rect" id="Node000001" title=" " alt="" coords="61,102,167,128"/>
-<area shape="rect" id="Node000002" href="$classds2_1_1_host_1_1_channel.html" title=" " alt="" coords="5,5,135,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,45,91,77,106,100,102,103,86,79,74,47"/>
-<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="84,44,111,100,106,103,80,46"/>
-<area shape="rect" id="Node000003" href="$classds2_1_1_message_queue.html" title=" " alt="" coords="159,5,298,31"/>
-<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="204,43,160,80,131,103,127,99,156,76,201,39"/>
-</map>

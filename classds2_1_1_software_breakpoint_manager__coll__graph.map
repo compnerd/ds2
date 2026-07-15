@@ -1,11 +1,13 @@
 <map id="ds2::SoftwareBreakpointManager" name="ds2::SoftwareBreakpointManager">
-<area shape="rect" id="Node000001" title=" " alt="" coords="24,294,236,320"/>
-<area shape="rect" id="Node000002" href="$classds2_1_1_breakpoint_manager.html" title=" " alt="" coords="50,219,210,245"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="132,260,132,294,127,294,127,260"/>
-<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="45,122,214,148"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="132,163,132,218,127,218,127,163"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="90,273,303,298"/>
+<area shape="rect" id="Node000002" href="$classds2_1_1_breakpoint_manager.html" title=" " alt="" coords="116,198,277,223"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="199,239,199,272,194,272,194,239"/>
+<area shape="rect" id="Node000003" href="$classds2_1_1_target_1_1_process_base.html" title=" " alt="" coords="112,109,281,135"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="199,150,199,197,194,197,194,150"/>
 <area shape="rect" id="Node000004" href="$structds2_1_1_process_info.html" title=" " alt="" coords="5,5,124,31"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="81,43,125,121,121,123,76,46"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="94,39,182,106,179,111,91,43"/>
 <area shape="rect" id="Node000005" href="$classds2_1_1_address.html" title=" " alt="" coords="148,5,245,31"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="184,46,139,123,134,121,180,43"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="199,47,199,109,194,109,194,47"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="268,5,330,31"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="294,47,285,68,272,87,254,101,235,111,232,106,251,96,268,83,281,65,290,45"/>
 </map>

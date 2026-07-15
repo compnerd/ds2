@@ -1,18 +1,18 @@
 <map id="ds2::Architecture::X86_64::CPUState" name="ds2::Architecture::X86_64::CPUState">
-<area shape="rect" id="Node000001" title=" " alt="" coords="483,150,613,191"/>
-<area shape="rect" id="Node000002" href="$structds2_1_1_architecture_1_1_x86_1_1_c_p_u_state.html" title=" " alt="" coords="250,117,374,157"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="390,145,483,159,482,164,389,151"/>
-<area shape="rect" id="Node000003" href="$structds2_1_1_architecture_1_1_x86_1_1_x87_register.html" title=" " alt="" coords="15,15,140,56"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="156,24,187,27,217,36,243,52,267,73,300,115,296,118,263,76,240,56,215,41,186,32,155,30"/>
-<area shape="rect" id="Node000006" href="$structds2_1_1_architecture_1_1_x86__64_1_1_c_p_u_state64.html" title=" " alt="" coords="240,182,384,223"/>
-<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="155,56,189,74,218,98,228,117,230,134,232,151,242,167,256,180,253,184,238,171,227,152,225,135,223,118,214,101,186,78,153,61"/>
-<area shape="rect" id="Node000004" href="$structds2_1_1_architecture_1_1_x86_1_1_a_v_x_vector.html" title=" " alt="" coords="15,143,140,184"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="155,152,249,142,249,147,156,158"/>
-<area shape="poly" id="edge8_Node000006_Node000004" title=" " alt="" coords="155,176,174,179,239,189,239,195,173,184,154,181"/>
-<area shape="rect" id="Node000005" href="$structds2_1_1_architecture_1_1_x86_1_1_s_s_e_vector.html" title=" " alt="" coords="15,250,140,291"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="153,249,185,234,214,214,222,204,225,193,229,181,238,169,255,156,258,160,242,172,234,183,230,194,227,206,218,218,188,239,155,254"/>
-<area shape="poly" id="edge9_Node000006_Node000005" title=" " alt="" coords="139,293,177,300,196,299,215,294,240,280,262,261,295,222,299,225,266,265,243,284,217,299,197,304,177,305,138,299"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="399,197,459,191,482,186,483,191,459,196,399,203"/>
-<area shape="rect" id="Node000007" href="$structds2_1_1_architecture_1_1_x86__64_1_1_e_a_v_x_vector.html" title=" " alt="" coords="5,351,150,392"/>
-<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="164,368,190,361,214,349,246,321,271,287,289,252,301,222,306,224,294,254,275,289,250,325,217,353,192,365,166,373"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="473,123,603,163"/>
+<area shape="rect" id="Node000002" href="$structds2_1_1_architecture_1_1_x86_1_1_c_p_u_state.html" title=" " alt="" coords="245,89,369,130"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="385,118,473,131,472,136,384,123"/>
+<area shape="rect" id="Node000003" href="$structds2_1_1_architecture_1_1_x86_1_1_x87_register.html" title=" " alt="" coords="15,5,140,46"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="156,19,184,22,212,30,235,41,256,56,289,87,286,91,252,60,232,46,210,35,183,27,155,24"/>
+<area shape="rect" id="Node000006" href="$structds2_1_1_architecture_1_1_x86__64_1_1_c_p_u_state64.html" title=" " alt="" coords="235,155,379,195"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="155,48,186,65,213,87,222,101,225,114,228,127,237,140,252,152,249,156,233,143,223,129,220,116,217,103,209,90,183,69,153,53"/>
+<area shape="rect" id="Node000004" href="$structds2_1_1_architecture_1_1_x86_1_1_a_v_x_vector.html" title=" " alt="" coords="15,120,140,161"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="155,127,244,115,244,121,156,133"/>
+<area shape="poly" id="edge8_Node000006_Node000004" title=" " alt="" coords="156,149,234,161,234,167,155,155"/>
+<area shape="rect" id="Node000005" href="$structds2_1_1_architecture_1_1_x86_1_1_s_s_e_vector.html" title=" " alt="" coords="15,196,140,237"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="154,203,183,193,209,179,217,170,221,161,225,151,233,141,251,128,254,133,236,145,229,154,226,163,221,173,212,183,185,198,156,208"/>
+<area shape="poly" id="edge9_Node000006_Node000005" title=" " alt="" coords="137,239,174,246,210,242,251,221,284,194,287,198,254,225,211,247,173,251,136,245"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="394,164,449,157,472,153,473,158,449,162,395,169"/>
+<area shape="rect" id="Node000007" href="$structds2_1_1_architecture_1_1_x86__64_1_1_e_a_v_x_vector.html" title=" " alt="" coords="5,287,150,327"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="164,299,209,283,236,264,259,240,292,194,296,197,263,244,239,268,212,287,166,304"/>
 </map>

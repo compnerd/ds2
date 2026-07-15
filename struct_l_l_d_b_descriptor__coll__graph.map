@@ -1,8 +1,0 @@
-<map id="LLDBDescriptor" name="LLDBDescriptor">
-<area shape="rect" id="Node000001" title=" " alt="" coords="10,231,125,257"/>
-<area shape="rect" id="Node000002" href="$structds2_1_1_architecture_1_1_l_l_d_b_register_set.html" title=" " alt="" coords="5,120,130,160"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="70,176,70,231,65,231,65,176"/>
-<area shape="rect" id="Node000003" href="$structds2_1_1_architecture_1_1_register_def.html" title=" " alt="" coords="5,7,130,47"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="70,63,70,119,65,119,65,63"/>
-<area shape="poly" id="edge3_Node000003_Node000003" title=" " alt="" coords="147,17,156,27,148,36,131,40,130,35,146,32,151,27,143,21"/>
-</map>
