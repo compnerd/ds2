@@ -395,16 +395,22 @@ if(ANDROID OR LINUX)
 elseif(WIN32)
   set(CMAKE_EXTRA_INCLUDE_FILES windows.h)
 
-  include(CheckFunctionExists)
+  include(CheckSymbolExists)
+  set(CMAKE_REQUIRED_DEFINITIONS
+    -DNOMINMAX
+    -DWIN32_LEAN_AND_MEAN
+    -DWINVER=_WIN32_WINNT_WIN6
+    -D_WIN32_WINNT=_WIN32_WINNT_WIN6)
   foreach (FUNC ContinueDebugEvent DebugActiveProcess DebugActiveProcessStop
       GetModuleHandleA GetModuleHandleW GetWindowsDirectoryW ReadProcessMemory
       SetThreadContext TerminateThread VirtualAllocEx VirtualFreeEx
       VirtualQueryEx WaitForDebugEventEx WriteProcessMemory)
-    CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${FUNC})
-    if (HAVE_${CHECK})
+    CHECK_SYMBOL_EXISTS(${FUNC} windows.h HAVE_${FUNC})
+    if (HAVE_${FUNC})
       target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
     endif ()
   endforeach()
+  set(CMAKE_REQUIRED_DEFINITIONS)
 
   include(CheckTypeSize)
   foreach (TYPE
