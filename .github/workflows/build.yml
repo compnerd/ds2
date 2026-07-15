@@ -12,7 +12,7 @@ on:
 
 env:
   LLVM_REF: ec450b19004a653f3db3ad50e88fbf6529a9d841
-  SCCACHE_DIRECT: yes
+  SCCACHE_DIRECT: 'true'
 
 jobs:
 
@@ -20,7 +20,7 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: compnerd/gha-setup-vsdevenv@main
 
       - name: Install Build Tools
@@ -36,7 +36,7 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/RegsGen2 --config Release
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: windows-regsgen2
           path: |
@@ -51,12 +51,12 @@ jobs:
         arch: ['Win32', 'x64'] # ['ARM', 'ARM64']
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Build Tools
         run: choco install winflexbison3
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: windows-regsgen2
           path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
@@ -72,7 +72,7 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: windows-${{ matrix.arch }}-ds2
           path: |
@@ -83,12 +83,12 @@ jobs:
     runs-on: windows-11-arm
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Build Tools
         run: choco install winflexbison3
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: windows-regsgen2
           path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
@@ -104,7 +104,7 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: windows-arm64-ds2
           path: |
@@ -114,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Bazel Build Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           path: ${{ github.workspace }}/SourceCache/ds2
       - run: |
@@ -150,9 +150,9 @@ jobs:
             mingw-w64-${{ matrix.env }}-toolchain
             mingw-w64-${{ matrix.env }}-ninja
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: windows-regsgen2
           path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
@@ -168,7 +168,7 @@ jobs:
       - name: Build
         run: cmake --build $(cygpath -u '${{ github.workspace }}/BinaryCache/ds2') --config Release
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: mingw-${{ matrix.system }}-ds2
           path: |
@@ -180,8 +180,8 @@ jobs:
     runs-on: macos-26-intel
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: actions/checkout@v7
+      - uses: seanmiddleditch/gha-setup-ninja@v6
 
       - name: Configure
         run: |
@@ -193,7 +193,7 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: macOS-x86_64-ds2
           path: |
@@ -237,7 +237,7 @@ jobs:
             cxxflags:
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           path: ${{ github.workspace }}/SourceCache/ds2
 
@@ -266,7 +266,7 @@ jobs:
       - name: tar output
         run: tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/ds2.tar ds2
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: linux-${{ matrix.processor }}-ds2
           path: ${{ github.workspace }}/BinaryCache/ds2.tar
@@ -279,7 +279,7 @@ jobs:
         processor: [ x86_64 ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           path: ${{ github.workspace }}/SourceCache/ds2
 
@@ -302,7 +302,7 @@ jobs:
       - name: tar output
         run: tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/ds2.tar ds2
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: freebsd-${{ matrix.processor }}-ds2
           path: ${{ github.workspace }}/BinaryCache/ds2.tar
@@ -317,9 +317,9 @@ jobs:
         abi: ['x86_64', 'x86', 'arm64-v8a', 'armeabi-v7a']
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: seanmiddleditch/gha-setup-ninja@master
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: seanmiddleditch/gha-setup-ninja@v6
+      - uses: actions/download-artifact@v8
         with:
           name: windows-regsgen2
           path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
@@ -345,7 +345,7 @@ jobs:
       - name: tar output
         run: tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/ds2.tar ds2
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: android-${{ matrix.abi }}-ds2
           path: ${{ github.workspace }}/BinaryCache/ds2.tar
@@ -366,10 +366,10 @@ jobs:
           sudo apt-get install -qq --no-install-recommends lzma-dev liblzma-dev
 
       - if: ${{ !contains(matrix.runner, 'arm') }}
-        uses: seanmiddleditch/gha-setup-ninja@v5
+        uses: seanmiddleditch/gha-setup-ninja@v6
 
       - if: contains(matrix.runner, 'arm')
-        uses: seanmiddleditch/gha-setup-ninja@v5
+        uses: seanmiddleditch/gha-setup-ninja@v6
         with:
           # TODO(andrurogerz): seanmiddleditch/gha-setup-ninja does not properly
           # detect Linux on arm64 and always installs the x86_64 ninja package.
@@ -381,13 +381,13 @@ jobs:
           version: 1.12.1 # latest sccache version
 
       - name: Setup sccache
-        uses: hendrikmuhs/ccache-action@433beb5b585c67c13415f39d5ba7e485b1920710
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
         with:
           key: llvm-${{ runner.os }}-${{ runner.arch }}
           variant: sccache
 
       - name: Checkout llvm project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: llvm/llvm-project
           ref: ${{ env.LLVM_REF }}
@@ -417,7 +417,7 @@ jobs:
       - name: tar output
         run: tar -C ${{ github.workspace }}/BinaryCache -cvf ${{ github.workspace }}/BinaryCache/llvm.tar llvm
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: llvm-${{ runner.os }}-${{ runner.arch }}
           path: ${{ github.workspace }}/BinaryCache/llvm.tar
@@ -517,7 +517,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -qq --no-install-recommends gcc-multilib g++-multilib
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: llvm-${{ runner.os }}-${{ runner.arch }}
           path: ${{ github.workspace }}/BinaryCache
@@ -525,7 +525,7 @@ jobs:
         run: |
           tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: linux-${{ matrix.arch }}-ds2
           path: ${{ github.workspace }}/BinaryCache
@@ -534,14 +534,14 @@ jobs:
           tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
 
       - name: Checkout llvm project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: llvm/llvm-project
           ref: ${{ env.LLVM_REF }}
           path: ${{ github.workspace }}/SourceCache/llvm
 
       - name: Checkout ds2
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: ${{ github.workspace }}/SourceCache/ds2
 
@@ -623,7 +623,7 @@ jobs:
     name: Test Android ${{ matrix.arch}} ${{ matrix.test-category }}
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: llvm-${{ runner.os }}-${{ runner.arch }}
           path: ${{ github.workspace }}/BinaryCache
@@ -631,7 +631,7 @@ jobs:
         run: |
           tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: android-${{ matrix.arch }}-ds2
           path: ${{ github.workspace }}/BinaryCache
@@ -640,21 +640,21 @@ jobs:
           tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
 
       - name: Checkout llvm project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: llvm/llvm-project
           ref: ${{ env.LLVM_REF }}
           path: ${{ github.workspace }}/SourceCache/llvm
 
       - name: Checkout ds2
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: ${{ github.workspace }}/SourceCache/ds2
 
       # Cache the contents of $HOME/.android which contains emulators,
       # snapshots, and adb state.
       - name: Setup AVD cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         id: avd-cache
         with:
           path: ~/.android/**
