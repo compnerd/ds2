@@ -8,7 +8,7 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.25)
 
 project(RegsGen2
   LANGUAGES C CXX)

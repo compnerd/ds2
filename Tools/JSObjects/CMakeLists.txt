@@ -8,7 +8,7 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.25)
 
 project(JSObjects
   LANGUAGES C CXX)
@@ -23,8 +23,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE YES)
 
-find_package(BISON)
-find_package(FLEX)
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
 
 FLEX_TARGET(JSON_SCANNER
             ${JSObjects_SOURCE_DIR}/Sources/libjson/tokenizer.l
