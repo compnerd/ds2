@@ -110,6 +110,44 @@ jobs:
           path: |
             ${{ github.workspace }}/BinaryCache/ds2/Release/ds2.exe
 
+  windows_store:
+    needs: [windows_tools]
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        arch: ['Win32', 'x64']
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Build Tools
+        run: choco install winflexbison3
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: windows-regsgen2
+          path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
+
+      - name: Configure
+        run: |
+          cmake -B ${{ github.workspace }}/BinaryCache/ds2 `
+                -C ${{ github.workspace }}/cmake/caches/MSVCWarnings.cmake `
+                -G "Visual Studio 18 2026" `
+                -A ${{ matrix.arch }} `
+                -D CMAKE_SYSTEM_NAME=WindowsStore `
+                -D CMAKE_SYSTEM_VERSION=10.0 `
+                -D DS2_REGSGEN2=${{ github.workspace }}/BinaryCache/RegsGen2/Release/regsgen2.exe `
+                -S ${{ github.workspace }}
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/BinaryCache/ds2 --config Release
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: windows-store-${{ matrix.arch }}-ds2
+          path: |
+            ${{ github.workspace }}/BinaryCache/ds2/Release/ds2.exe
+
   bazel:
     runs-on: ubuntu-latest
     name: Bazel Build Check
