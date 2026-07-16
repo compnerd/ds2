@@ -66,17 +66,11 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
     return kErrorInvalidArgument;
   }
 
-  ProcessInfo info;
-  ErrorCode error = getInfo(info);
-  if (error != kSuccess) {
-    return error;
-  }
-
   ByteVector codestr;
   PrepareMmapCode(size, convertMemoryProtectionToPOSIX(protection), codestr);
 
   // Code inject and execute
-  error = ptrace().execute(_pid, info, &codestr[0], codestr.size(), *address);
+  ErrorCode error = executeCode(codestr, *address);
   if (error != kSuccess) {
     return error;
   }
@@ -92,11 +86,6 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   if (size == 0)
     return kErrorInvalidArgument;
 
-  ProcessInfo info;
-  ErrorCode error = getInfo(info);
-  if (error != kSuccess)
-    return error;
-
   ByteVector codestr;
   PrepareMunmapCode(address, size, codestr);
 
@@ -104,7 +93,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   // Code inject and execute
   //
   uint64_t result = 0;
-  error = ptrace().execute(_pid, info, &codestr[0], codestr.size(), result);
+  ErrorCode error = executeCode(codestr, result);
   if (error != kSuccess)
     return error;
 

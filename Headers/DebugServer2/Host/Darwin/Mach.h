@@ -33,6 +33,15 @@ public:
                         size_t *nwritten = nullptr);
 
 public:
+  // Flushes the instruction cache (and unifies it with the data cache) for
+  // `address`..+`length` in `ptid`'s address space. Needed after writing
+  // executable code into another process on architectures where
+  // instruction fetches aren't automatically coherent with data writes
+  // (e.g. AArch64 -- unlike x86, which guarantees this in hardware).
+  ErrorCode flushInstructionCache(ProcessThreadId const &ptid,
+                                  Address const &address, size_t length);
+
+public:
   ErrorCode readCPUState(ProcessThreadId const &ptid, ProcessInfo const &info,
                          Architecture::CPUState &state);
   ErrorCode writeCPUState(ProcessThreadId const &ptid, ProcessInfo const &info,
@@ -46,6 +55,12 @@ public:
                  int signal = 0, Address const &address = Address());
   ErrorCode resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                    int signal = 0, Address const &address = Address());
+
+public:
+  // AArch64-only: arms/disarms the MDSCR_EL1.SS hardware single-step trap.
+  // Implemented in MachARM64.cpp; unused (and undefined) on other
+  // architectures, which single-step through other means.
+  ErrorCode setSingleStep(ProcessThreadId const &ptid, bool enable);
 
 public:
   ErrorCode getProcessDylbInfo(ProcessId pid, Address &address);
