@@ -127,38 +127,53 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>                        <span class="keywordtype">size_t</span> *nwritten = <span class="keyword">nullptr</span>);</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  ErrorCode readCPUState(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <a class="code hl_struct" href="structds2_1_1_process_info.html">ProcessInfo</a> <span class="keyword">const</span> &amp;info,</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>                         Architecture::CPUState &amp;state);</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  ErrorCode writeCPUState(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <a class="code hl_struct" href="structds2_1_1_process_info.html">ProcessInfo</a> <span class="keyword">const</span> &amp;info,</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>                          Architecture::CPUState <span class="keyword">const</span> &amp;state);</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>  ErrorCode suspend(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid);</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  <span class="comment">// Flushes the instruction cache (and unifies it with the data cache) for</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>  <span class="comment">// `address`..+`length` in `ptid`&#39;s address space. Needed after writing</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  <span class="comment">// executable code into another process on architectures where</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>  <span class="comment">// instruction fetches aren&#39;t automatically coherent with data writes</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>  <span class="comment">// (e.g. AArch64 -- unlike x86, which guarantees this in hardware).</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>  ErrorCode flushInstructionCache(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid,</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>                                  <a class="code hl_class" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address, <span class="keywordtype">size_t</span> length);</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>  ErrorCode step(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <a class="code hl_struct" href="structds2_1_1_process_info.html">ProcessInfo</a> <span class="keyword">const</span> &amp;pinfo,</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>                 <span class="keywordtype">int</span> signal = 0, <a class="code hl_class" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address = <a class="code hl_class" href="classds2_1_1_address.html">Address</a>());</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>  ErrorCode resume(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <a class="code hl_struct" href="structds2_1_1_process_info.html">ProcessInfo</a> <span class="keyword">const</span> &amp;pinfo,</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                   <span class="keywordtype">int</span> signal = 0, <a class="code hl_class" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address = <a class="code hl_class" href="classds2_1_1_address.html">Address</a>());</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>  ErrorCode readCPUState(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <a class="code hl_struct" href="structds2_1_1_process_info.html">ProcessInfo</a> <span class="keyword">const</span> &amp;info,</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>                         Architecture::CPUState &amp;state);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>  ErrorCode writeCPUState(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <a class="code hl_struct" href="structds2_1_1_process_info.html">ProcessInfo</a> <span class="keyword">const</span> &amp;info,</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>                          Architecture::CPUState <span class="keyword">const</span> &amp;state);</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>  ErrorCode getProcessDylbInfo(ProcessId pid, <a class="code hl_class" href="classds2_1_1_address.html">Address</a> &amp;address);</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>  ErrorCode getProcessMemoryRegion(ProcessId pid, <a class="code hl_class" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>                                   <a class="code hl_struct" href="structds2_1_1_memory_region_info.html">MemoryRegionInfo</a> &amp;info);</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>  ErrorCode getThreadInfo(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;tid, thread_basic_info_t info);</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>  ErrorCode getThreadIdentifierInfo(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;tid,</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>                                    thread_identifier_info_data_t *threadID);</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>  task_t getMachTask(ProcessId pid);</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>  thread_t getMachThread(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;tid);</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>};</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>  ErrorCode suspend(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  ErrorCode step(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <a class="code hl_struct" href="structds2_1_1_process_info.html">ProcessInfo</a> <span class="keyword">const</span> &amp;pinfo,</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>                 <span class="keywordtype">int</span> signal = 0, <a class="code hl_class" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address = <a class="code hl_class" href="classds2_1_1_address.html">Address</a>());</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>  ErrorCode resume(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <a class="code hl_struct" href="structds2_1_1_process_info.html">ProcessInfo</a> <span class="keyword">const</span> &amp;pinfo,</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>                   <span class="keywordtype">int</span> signal = 0, <a class="code hl_class" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address = <a class="code hl_class" href="classds2_1_1_address.html">Address</a>());</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="comment">// AArch64-only: arms/disarms the MDSCR_EL1.SS hardware single-step trap.</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>  <span class="comment">// Implemented in MachARM64.cpp; unused (and undefined) on other</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>  <span class="comment">// architectures, which single-step through other means.</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  ErrorCode setSingleStep(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <span class="keywordtype">bool</span> enable);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  ErrorCode getProcessDylbInfo(ProcessId pid, <a class="code hl_class" href="classds2_1_1_address.html">Address</a> &amp;address);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  ErrorCode getProcessMemoryRegion(ProcessId pid, <a class="code hl_class" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>                                   <a class="code hl_struct" href="structds2_1_1_memory_region_info.html">MemoryRegionInfo</a> &amp;info);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>  ErrorCode getThreadInfo(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;tid, thread_basic_info_t info);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>  ErrorCode getThreadIdentifierInfo(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;tid,</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                                    thread_identifier_info_data_t *threadID);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>  task_t getMachTask(ProcessId pid);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>  thread_t getMachThread(<a class="code hl_struct" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;tid);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>};</div>
 </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>} <span class="comment">// namespace Darwin</span></div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>} <span class="comment">// namespace Host</span></div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>} <span class="comment">// namespace ds2</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>} <span class="comment">// namespace Darwin</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>} <span class="comment">// namespace Host</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>} <span class="comment">// namespace ds2</span></div>
 <div class="ttc" id="aclassds2_1_1_address_html"><div class="ttname"><a href="classds2_1_1_address.html">ds2::Address</a></div><div class="ttdef"><b>Definition</b> Types.h:95</div></div>
 <div class="ttc" id="aclassds2_1_1_host_1_1_darwin_1_1_mach_html"><div class="ttname"><a href="classds2_1_1_host_1_1_darwin_1_1_mach.html">ds2::Host::Darwin::Mach</a></div><div class="ttdef"><b>Definition</b> Mach.h:24</div></div>
 <div class="ttc" id="astructds2_1_1_memory_region_info_html"><div class="ttname"><a href="structds2_1_1_memory_region_info.html">ds2::MemoryRegionInfo</a></div><div class="ttdef"><b>Definition</b> Types.h:361</div></div>
