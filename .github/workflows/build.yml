@@ -214,9 +214,12 @@ jobs:
             ${{ github.workspace }}/BinaryCache/ds2/ds2.exe
 
   macos:
-    # Build on macos-26-intel, which is x86_64-based, until Darwin
-    # on ARM support is implemented.
-    runs-on: macos-26-intel
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        processor: [ arm64, x86_64 ]
 
     steps:
       - uses: actions/checkout@v7
@@ -226,6 +229,7 @@ jobs:
           cmake -B ${{ github.workspace }}/BinaryCache/ds2                      \
                 -C ${{ github.workspace }}/cmake/caches/ClangWarnings.cmake     \
                 -D CMAKE_BUILD_TYPE=Release                                     \
+                -D CMAKE_OSX_ARCHITECTURES="${{ matrix.processor }}"           \
                 -G Ninja                                                        \
                 -S ${{ github.workspace }}
       - name: Build
@@ -233,7 +237,7 @@ jobs:
 
       - uses: actions/upload-artifact@v7
         with:
-          name: macOS-x86_64-ds2
+          name: macOS-${{ matrix.processor }}-ds2
           path: |
             ${{ github.workspace }}/BinaryCache/ds2/ds2
 

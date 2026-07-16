@@ -10,16 +10,50 @@
 
 #include "DebugServer2/Target/Darwin/Thread.h"
 #include "DebugServer2/Architecture/CPUState.h"
+#include "DebugServer2/Target/Process.h"
 
 namespace ds2 {
 namespace Target {
 namespace Darwin {
+
+namespace {
+// PSTATE.SS, per the ARMv8 architecture reference manual.
+constexpr uint64_t kPSTATE_SS = 1ULL << 21;
+}
+
 ErrorCode Thread::step(int signal, Address const &address) {
-  return kErrorUnsupported;
+  ErrorCode error = modifyRegisters([](Architecture::CPUState &state) {
+    state.state64.gp.cpsr |= kPSTATE_SS;
+  });
+  if (error != kSuccess)
+    return error;
+
+  error = process()->mach().setSingleStep(
+      ProcessThreadId(process()->pid(), tid()), true);
+  if (error != kSuccess)
+    return error;
+
+  error = resume(signal, address);
+  if (error != kSuccess)
+    return error;
+
+  // resume() sets _state to kRunning; Process::wait()'s ignored-signal path
+  // checks kStepped to decide whether to re-issue a step or a plain resume
+  // if this step is interrupted before it completes, so this has to be set
+  // after resume(), not folded into it.
+  _state = kStepped;
+  return kSuccess;
 }
 
 ErrorCode Thread::afterResume() {
-  return kErrorUnsupported;
+  ErrorCode error = modifyRegisters([](Architecture::CPUState &state) {
+    state.state64.gp.cpsr &= ~kPSTATE_SS;
+  });
+  if (error != kSuccess)
+    return error;
+
+  return process()->mach().setSingleStep(
+      ProcessThreadId(process()->pid(), tid()), false);
 }
 }
 }
