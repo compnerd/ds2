@@ -144,6 +144,13 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
 
   return kSuccess;
 }
+
+ErrorCode Thread::afterResume() {
+  // Nothing to do here: 32-bit ARM single-steps in software (a temporary
+  // breakpoint via PrepareSoftwareSingleStep), which the breakpoint manager
+  // already cleans up on its own, unlike AArch64's PSTATE.SS/MDSCR_EL1.
+  return kSuccess;
+}
 } // namespace Windows
 } // namespace Target
 } // namespace ds2
