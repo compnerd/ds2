@@ -122,6 +122,13 @@ WINBASEAPI BOOL WINAPI WriteProcessMemory(
 );
 #endif
 
+#if !defined(HAVE_WaitForDebugEvent)
+WINBASEAPI BOOL APIENTRY WaitForDebugEvent(
+  _Out_ LPDEBUG_EVENT lpDebugEvent,
+  _In_  DWORD         dwMilliseconds
+);
+#endif
+
 #if !defined(HAVE_ContinueDebugEvent)
 WINBASEAPI BOOL WINAPI ContinueDebugEvent(
   _In_  DWORD dwProcessId,
@@ -170,6 +177,19 @@ WINBASEAPI SIZE_T WINAPI VirtualQueryEx(
 );
 #endif
 
+#if !defined(HAVE_EnumProcessModules)
+// psapi.h's #define EnumProcessModules -> K32EnumProcessModules (PSAPI_VERSION
+// > 1) is itself nested inside the same DESKTOP|SYSTEM|GAMES guard as the
+// rest of the header, so it's absent here too, and callers reference the
+// literal name "EnumProcessModules" directly, not the K32-prefixed one.
+BOOL WINAPI EnumProcessModules(
+  _In_                     HANDLE   hProcess,
+  _Out_writes_bytes_(cb)   HMODULE *lphModule,
+  _In_                     DWORD    cb,
+  _Out_                    LPDWORD  lpcbNeeded
+);
+#endif
+
 #if !defined(TH32CS_SNAPTHREAD)
 #define TH32CS_SNAPTHREAD 0x00000004
 #endif
@@ -182,6 +202,70 @@ typedef LONG (WINAPI *PTOP_LEVEL_EXCEPTION_FILTER)(
 
 #if !defined(HAVE_LPTOP_LEVEL_EXCEPTION_FILTER)
 typedef PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER;
+#endif
+
+// dbghelp.h's symbol handler: the whole header is unavailable outside the
+// Desktop/WER/Games partitions, so its types need re-declaring here too, not
+// just the functions that use them.
+#if !defined(HAVE_SymInitialize) || !defined(HAVE_SymFromAddr) ||            \
+    !defined(HAVE_SymGetLineFromAddr64)
+
+#if !defined(MAX_SYM_NAME)
+#define MAX_SYM_NAME 2000
+#endif
+
+typedef struct _SYMBOL_INFO {
+  ULONG   SizeOfStruct;
+  ULONG   TypeIndex;
+  ULONG64 Reserved[2];
+  ULONG   Index;
+  ULONG   Size;
+  ULONG64 ModBase;
+  ULONG   Flags;
+  ULONG64 Value;
+  ULONG64 Address;
+  ULONG   Register;
+  ULONG   Scope;
+  ULONG   Tag;
+  ULONG   NameLen;
+  ULONG   MaxNameLen;
+  CHAR    Name[1];
+} SYMBOL_INFO, *PSYMBOL_INFO;
+
+typedef struct _IMAGEHLP_LINE64 {
+  DWORD   SizeOfStruct;
+  PVOID   Key;
+  DWORD   LineNumber;
+  PCHAR   FileName;
+  DWORD64 Address;
+} IMAGEHLP_LINE64, *PIMAGEHLP_LINE64;
+
+#endif
+
+#if !defined(HAVE_SymInitialize)
+WINBASEAPI BOOL WINAPI SymInitialize(
+  _In_     HANDLE hProcess,
+  _In_opt_ PCSTR  UserSearchPath,
+  _In_     BOOL   fInvadeProcess
+);
+#endif
+
+#if !defined(HAVE_SymFromAddr)
+WINBASEAPI BOOL WINAPI SymFromAddr(
+  _In_      HANDLE       hProcess,
+  _In_      DWORD64      Address,
+  _Out_opt_ PDWORD64     Displacement,
+  _Inout_   PSYMBOL_INFO Symbol
+);
+#endif
+
+#if !defined(HAVE_SymGetLineFromAddr64)
+WINBASEAPI BOOL WINAPI SymGetLineFromAddr64(
+  _In_  HANDLE           hProcess,
+  _In_  DWORD64          qwAddr,
+  _Out_ PDWORD           pdwDisplacement,
+  _Out_ PIMAGEHLP_LINE64 Line64
+);
 #endif
 
 } // extern "C"

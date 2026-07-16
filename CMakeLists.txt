@@ -422,8 +422,24 @@ elseif(WIN32)
       foreach (FUNC ContinueDebugEvent DebugActiveProcess DebugActiveProcessStop
           GetModuleHandleA GetModuleHandleW GetWindowsDirectoryW ReadProcessMemory
           SetThreadContext TerminateThread VirtualAllocEx VirtualFreeEx
-          VirtualQueryEx WriteProcessMemory)
+          VirtualQueryEx WaitForDebugEvent WriteProcessMemory)
         CHECK_SYMBOL_EXISTS(${FUNC} windows.h HAVE_${FUNC})
+        if (HAVE_${FUNC})
+          target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
+        endif ()
+      endforeach()
+
+      # EnumProcessModules resolves to K32EnumProcessModules via psapi.h's own
+      # unconditional macro, so it needs its own header rather than the
+      # windows.h-based loop above.
+      CHECK_SYMBOL_EXISTS(EnumProcessModules psapi.h HAVE_EnumProcessModules)
+      if (HAVE_EnumProcessModules)
+        target_compile_definitions(ds2 PRIVATE HAVE_EnumProcessModules)
+      endif ()
+
+      # dbghelp.h's symbol handler APIs, used for backtrace symbolication.
+      foreach (FUNC SymInitialize SymFromAddr SymGetLineFromAddr64)
+        CHECK_SYMBOL_EXISTS(${FUNC} dbghelp.h HAVE_${FUNC})
         if (HAVE_${FUNC})
           target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
         endif ()

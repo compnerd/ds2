@@ -16,6 +16,8 @@
 #include <dlfcn.h>
 #include <execinfo.h>
 #elif defined(OS_WIN32)
+#include "DebugServer2/Host/Windows/ExtraWrappers.h"
+
 #include <dbghelp.h>
 #include <windows.h>
 #include <mutex>
