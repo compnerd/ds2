@@ -25,7 +25,18 @@ ErrorCode Thread::step(int signal, Address const &address) {
   if (error != kSuccess) {
     return error;
   }
-  return resume(signal, address);
+
+  error = resume(signal, address);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  // resume() sets _state to kRunning; Process::wait()'s ignored-signal path
+  // checks kStepped to decide whether to re-issue a step or a plain resume
+  // if this step is interrupted before it completes, so this has to be set
+  // after resume(), not folded into it.
+  _state = kStepped;
+  return kSuccess;
 }
 
 ErrorCode Thread::afterResume() {
