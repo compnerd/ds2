@@ -23,12 +23,27 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
+namespace {
+// PSTATE.SS, per the ARMv8 architecture reference manual. Setting this bit
+// in Cpsr and resuming the thread arms a single hardware step: the kernel
+// arms and disarms the underlying MDSCR_EL1 trap transparently, the same way
+// it already does for EFLAGS.TF on x86, so no separate debug register access
+// is required from user mode.
+constexpr uint64_t kPSTATE_SS = 1ULL << 21;
+}
+
 ErrorCode Thread::step(int signal, Address const &address) {
-  // TODO(compnerd) AArch64 single-step requires setting the SS bit in
-  // MDSCR_EL1, which is not accessible from user mode via
-  // Get/SetThreadContext. Implement software single-step (as is done for
-  // 32-bit ARM) once an AArch64 instruction decoder is available.
-  return kErrorUnsupported;
+  CHK(modifyRegisters([](Architecture::CPUState &state) {
+    state.state64.gp.cpsr |= kPSTATE_SS;
+  }));
+
+  return resume(signal, address);
+}
+
+ErrorCode Thread::afterResume() {
+  return modifyRegisters([](Architecture::CPUState &state) {
+    state.state64.gp.cpsr &= ~kPSTATE_SS;
+  });
 }
 
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {

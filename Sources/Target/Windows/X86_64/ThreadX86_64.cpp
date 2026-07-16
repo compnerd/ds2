@@ -109,6 +109,12 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
 
   return kSuccess;
 }
+
+ErrorCode Thread::afterResume() {
+  // Nothing to do here: unlike AArch64's PSTATE.SS/MDSCR_EL1, x86 has no
+  // separate single-step arming state to disarm.
+  return kSuccess;
+}
 } // namespace Windows
 } // namespace Target
 } // namespace ds2

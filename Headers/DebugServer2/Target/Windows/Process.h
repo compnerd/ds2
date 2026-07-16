@@ -75,6 +75,7 @@ public:
 
 public:
   ErrorCode wait() override;
+  ErrorCode afterResume() override;
 
 public:
   static Target::Process *Create(Host::ProcessSpawner &spawner);

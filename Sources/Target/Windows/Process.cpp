@@ -305,6 +305,22 @@ ErrorCode Process::wait() {
   }
 }
 
+ErrorCode Process::afterResume() {
+  // A normal exit reaches here too (wait() has already set _terminated and
+  // marked _currentThread kTerminated by this point), and the thread's
+  // handle is no longer valid to touch -- Thread::afterResume() would fail
+  // trying to Get/SetThreadContext on it. Skip it in that case, matching
+  // the isAlive() guard super::afterResume() applies to the rest of the
+  // resume bookkeeping.
+  if (isAlive()) {
+    // Give the current thread a chance to disarm anything it armed in
+    // Thread::step() (e.g. AArch64's PSTATE.SS) before falling through to
+    // the generic breakpoint handling.
+    CHK(_currentThread->afterResume());
+  }
+  return super::afterResume();
+}
+
 ErrorCode Process::readString(Address const &address, std::string &str,
                               size_t length, size_t *nread) {
   for (size_t i = 0; i < length; ++i) {
