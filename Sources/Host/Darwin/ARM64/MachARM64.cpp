@@ -126,6 +126,40 @@ ErrorCode Mach::writeCPUState(const ProcessThreadId &tid, const ProcessInfo &inf
   return result == KERN_SUCCESS ? kSuccess : kErrorInvalidArgument;
 }
 
+ErrorCode Mach::setSingleStep(const ProcessThreadId &tid, bool enable) {
+  if (!tid.valid())
+    return kErrorInvalidArgument;
+
+  thread_t thread = getMachThread(tid);
+  if (thread == THREAD_NULL)
+    return kErrorProcessNotFound;
+
+  mach_msg_type_number_t state_count = ARM_DEBUG_STATE64_COUNT;
+  arm_debug_state64_t debug_state;
+  kern_return_t result;
+
+  result = thread_get_state(thread, ARM_DEBUG_STATE64,
+                            reinterpret_cast<thread_state_t>(&debug_state),
+                            &state_count);
+  if (result != KERN_SUCCESS)
+    return kErrorInvalidArgument;
+
+  // MDSCR_EL1 bit 0 (SS) arms the hardware single-step trap. It must be
+  // paired with PSTATE.SS (CPSR bit 21, set on the GP thread state by the
+  // caller) for the very next instruction to actually trap; the CPU clears
+  // PSTATE.SS itself once the trap fires.
+  if (enable) {
+    debug_state.__mdscr_el1 |= 1ULL;
+  } else {
+    debug_state.__mdscr_el1 &= ~1ULL;
+  }
+
+  result = thread_set_state(thread, ARM_DEBUG_STATE64,
+                            reinterpret_cast<thread_state_t>(&debug_state),
+                            ARM_DEBUG_STATE64_COUNT);
+  return result == KERN_SUCCESS ? kSuccess : kErrorInvalidArgument;
+}
+
 }
 }
 }

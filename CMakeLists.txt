@@ -70,6 +70,19 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif()
 endif()
 
+if(APPLE AND CMAKE_OSX_ARCHITECTURES)
+  list(LENGTH CMAKE_OSX_ARCHITECTURES DS2_OSX_ARCHITECTURE_COUNT)
+  if(DS2_OSX_ARCHITECTURE_COUNT EQUAL 1)
+    # On Apple platforms, CMAKE_SYSTEM_PROCESSOR reflects the host running
+    # the configure, not the architecture being targeted -- it is never
+    # derived from CMAKE_OSX_ARCHITECTURES. A single-arch cross build (e.g.
+    # -D CMAKE_OSX_ARCHITECTURES=x86_64 on an arm64 host) would otherwise
+    # select the wrong DS2_ARCHITECTURE below and pick the host's source set
+    # while Clang actually emits code for the requested architecture.
+    set(CMAKE_SYSTEM_PROCESSOR "${CMAKE_OSX_ARCHITECTURES}")
+  endif()
+endif()
+
 if(CMAKE_CXX_COMPILER_ARCHITECTURE_ID MATCHES "ARM64" OR
    CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64|AArch64|ARM64|arm64")
   set(DS2_ARCHITECTURE ARM64)
@@ -231,7 +244,7 @@ if(DS2_ARCHITECTURE MATCHES "ARM|ARM64")
   set_source_files_properties(
     Sources/Architecture/ARM/ThumbBranchInfo.cpp
     PROPERTIES
-      COMPILE_OPTIONS $<$<CXX_COMPILER_ID:Clang>:-Wno-error=comma>)
+      COMPILE_OPTIONS $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:-Wno-error=comma>)
 
   target_sources(ds2 PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}/Headers/DebugServer2/Architecture/ARM/RegistersDescriptors.h
