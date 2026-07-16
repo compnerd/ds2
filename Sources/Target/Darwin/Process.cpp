@@ -321,6 +321,91 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
                             count);
 }
 
+ErrorCode Process::executeCode(ByteVector const &code, uint64_t &result) {
+  if (_currentThread == nullptr)
+    return kErrorProcessNotFound;
+
+  ProcessThreadId ptid(_pid, _currentThread->tid());
+  // PTrace::resume/wait/kill on Darwin only accept a process-only ptid
+  // (tid <= kAnyThreadId): POSIX::PTrace::wait rejects anything else before
+  // ever calling waitpid, and Darwin::PTrace::kill hits a fatal DS2BUG for
+  // anything else. Mach calls below need the real thread id; these don't.
+  ProcessThreadId pptid(_pid);
+  ProcessInfo info;
+  CHK(getInfo(info));
+
+  Architecture::CPUState savedState, resultState;
+  CHK(mach().readCPUState(ptid, info, savedState));
+
+  ByteVector savedCode(code.size());
+  CHK(mach().readMemory(ptid, savedState.pc(), savedCode.data(),
+                        savedCode.size()));
+
+  ErrorCode restoreError;
+  ErrorCode error = mach().writeMemory(ptid, savedState.pc(), code.data(),
+                                       code.size());
+#if defined(ARCH_ARM64)
+  // AArch64 doesn't keep instruction fetches coherent with data writes the
+  // way x86 does; without this, the thread can fetch whatever was
+  // previously cached at this address instead of the code just written.
+  if (error == kSuccess)
+    error = mach().flushInstructionCache(ptid, savedState.pc(), code.size());
+#endif
+  if (error != kSuccess)
+    goto fail;
+
+  error = ptrace().resume(pptid, info);
+  if (error == kSuccess)
+    error = ptrace().wait(pptid);
+
+  if (error == kSuccess) {
+    error = mach().readCPUState(ptid, info, resultState);
+    if (error == kSuccess) {
+      result = resultState.retval();
+
+      // Darwin's raw syscall ABI reports failure via the carry flag, with
+      // the return register left holding a positive errno rather than
+      // POSIX's -1/negative-errno convention (see arm_prepare_u64_syscall_
+      // return in XNU); synthesize the -1 sentinel callers already check
+      // for (MAP_FAILED, or plain `< 0`) so a failed injected syscall
+      // isn't mistaken for success at address/result `errno`.
+#if defined(ARCH_ARM64)
+      if (resultState.state64.gp.cpsr & (1ULL << 29))
+        result = static_cast<uint64_t>(-1);
+#elif defined(ARCH_X86_64)
+      if (resultState.state64.gp.eflags & 1u)
+        result = static_cast<uint64_t>(-1);
+#endif
+    }
+  }
+
+  // Always try to restore the original code/registers, but don't let a
+  // successful restore mask a failure from actually running the injected
+  // code above -- `error` (and `result`) from that point still stand.
+  restoreError = mach().writeMemory(ptid, savedState.pc(), savedCode.data(),
+                                    savedCode.size());
+#if defined(ARCH_ARM64)
+  // Otherwise the thread could re-execute the stale injected stub instead
+  // of the restored original code once resumed.
+  if (restoreError == kSuccess)
+    restoreError = mach().flushInstructionCache(ptid, savedState.pc(),
+                                                savedCode.size());
+#endif
+  if (restoreError == kSuccess)
+    restoreError = mach().writeCPUState(ptid, info, savedState);
+
+  if (restoreError != kSuccess) {
+    error = restoreError;
+    goto fail;
+  }
+
+  return error;
+
+fail:
+  ptrace().kill(pptid, SIGKILL); // we can't really do much at this point :(
+  return error;
+}
+
 ErrorCode Process::afterResume() {
   // We are calling the Thread's afterResume from here, but it might make sense
   // to have this known by ThreadBase and call it from ProcessBase::resume.

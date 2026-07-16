@@ -39,6 +39,13 @@ public:
                            uint64_t *address) override;
   ErrorCode deallocateMemory(uint64_t address, size_t size) override;
 
+protected:
+  // Injects `code` at the current thread's PC, executes it to completion,
+  // and restores the original code/registers. Darwin's ptrace cannot read
+  // or write registers/memory (see Host::Darwin::PTrace), so this goes
+  // through Mach for state/memory access instead of POSIX::PTrace::execute.
+  ErrorCode executeCode(ByteVector const &code, uint64_t &result);
+
 public:
   ErrorCode readString(Address const &address, std::string &str, size_t length,
                        size_t *count = nullptr) override;

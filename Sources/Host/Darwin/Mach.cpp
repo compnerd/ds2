@@ -131,6 +131,23 @@ ErrorCode Mach::writeMemory(ProcessThreadId const &ptid, Address const &address,
   return error;
 }
 
+ErrorCode Mach::flushInstructionCache(ProcessThreadId const &ptid,
+                                      Address const &address, size_t length) {
+  task_t task = getMachTask(ptid.pid);
+  if (task == TASK_NULL) {
+    return kErrorProcessNotFound;
+  }
+
+  vm_machine_attribute_val_t value = MATTR_VAL_CACHE_FLUSH;
+  kern_return_t kret = mach_vm_machine_attribute(
+      task, address.value(), length, MATTR_CACHE, &value);
+  if (kret != KERN_SUCCESS) {
+    return kErrorUnknown;
+  }
+
+  return kSuccess;
+}
+
 ErrorCode Mach::suspend(ProcessThreadId const &ptid) {
   thread_t thread = getMachThread(ptid);
   if (thread == THREAD_NULL) {
