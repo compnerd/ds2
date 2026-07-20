@@ -90,7 +90,7 @@ ErrorCode HardwareBreakpointManager::disableLocation(int idx,
 
 ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint64_t &ctrlReg,
                                                         int idx, Mode mode,
-                                                        int size) {
+                                                        size_t size) {
   int enableIdx = idx * 2;
 #if !defined(OS_WIN32)
   enableIdx += 1;
@@ -193,7 +193,7 @@ int HardwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
     if (debugRegs[kStatusRegIdx] & (1ull << i)) {
       DS2ASSERT(_locations[i] != 0);
       site = _sites.find(_locations[i])->second;
-      regIdx = i;
+      regIdx = static_cast<int>(i);
       break;
     }
   }
@@ -277,11 +277,13 @@ ErrorCode HardwareBreakpointManager::writeDebugRegisters(
     state.dr.dr[i] = (i == 4 || i == 5) ? 0 : regs[i];
   }
 #elif defined(ARCH_X86_64)
-  for (int i = 0; i < kNumDebugRegisters; ++i) {
+  for (size_t i = 0; i < kNumDebugRegisters; ++i) {
     if (state.is32) {
-      state.state32.dr.dr[i] = (i == 4 || i == 5) ? 0 : regs[i];
+      state.state32.dr.dr[i] =
+          (i == 4 || i == 5) ? 0 : static_cast<uint32_t>(regs[i]);
     } else {
-      state.state64.dr.dr[i] = (i == 4 || i == 5) ? 0 : regs[i];
+      state.state64.dr.dr[i] =
+          (i == 4 || i == 5) ? 0 : static_cast<uint32_t>(regs[i]);
     }
   }
 #else
