@@ -432,13 +432,26 @@ elseif(WIN32)
       # (WINAPI_PARTITION_DESKTOP is unavailable); ExtraWrappers.h provides
       # fallback declarations gated on the HAVE_* definitions computed here.
       # They are irrelevant (and skipped) for desktop Windows builds.
-      foreach (FUNC ContinueDebugEvent DebugActiveProcess DebugActiveProcessStop
-          GetModuleHandleA GetModuleHandleW GetWindowsDirectoryW ReadProcessMemory
-          SetThreadContext TerminateThread VirtualAllocEx VirtualFreeEx
-          VirtualQueryEx WaitForDebugEvent WriteProcessMemory)
+      foreach (FUNC ContinueDebugEvent CreateFileW DebugActiveProcess
+          DebugActiveProcessStop GetModuleHandleA GetModuleHandleW
+          GetWindowsDirectoryW ReadProcessMemory SetThreadContext
+          TerminateThread VirtualAllocEx VirtualFreeEx VirtualQueryEx
+          WaitForDebugEvent WriteProcessMemory)
         CHECK_SYMBOL_EXISTS(${FUNC} windows.h HAVE_${FUNC})
         if (HAVE_${FUNC})
           target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
+        endif ()
+      endforeach()
+
+      # HANDLE_FLAG_INHERIT, PROC_THREAD_ATTRIBUTE_HANDLE_LIST, and
+      # STARTF_USESTDHANDLES are macros (not linkable symbols), but
+      # CHECK_SYMBOL_EXISTS works for those too -- it just verifies the
+      # preprocessor name resolves to something usable.
+      foreach (SYM HANDLE_FLAG_INHERIT PROC_THREAD_ATTRIBUTE_HANDLE_LIST
+          STARTF_USESTDHANDLES)
+        CHECK_SYMBOL_EXISTS(${SYM} windows.h HAVE_${SYM})
+        if (HAVE_${SYM})
+          target_compile_definitions(ds2 PRIVATE HAVE_${SYM})
         endif ()
       endforeach()
 
@@ -463,7 +476,8 @@ elseif(WIN32)
       include(CheckTypeSize)
       foreach (TYPE
           "struct _STARTUPINFOW" "struct _PROCESS_INFORMATION"
-          PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER)
+          PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER
+          STARTUPINFOEXW)
         string(REPLACE " " "_" SANITIZED_TYPE ${TYPE})
         CHECK_TYPE_SIZE(${TYPE} ${SANITIZED_TYPE})
         if (HAVE_${SANITIZED_TYPE})

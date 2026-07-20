@@ -51,6 +51,12 @@ public:
   inline bool valid() const { return (_handle != INVALID_SOCKET); }
 
 public:
+  // The underlying native socket handle. Used on Windows to hand a listening
+  // socket's handle to a relaunched child process (there is no fork() to
+  // rely on there); see Sources/main.cpp's Windows SlaveMain.
+  inline SOCKET native_handle() const { return _handle; }
+
+public:
   inline bool listening() const { return (_state == State::Listening); }
   inline bool connected() const override {
     return (_state == State::Connected);

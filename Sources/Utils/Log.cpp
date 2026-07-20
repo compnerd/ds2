@@ -97,6 +97,8 @@ void SetLogOutputFilename(std::string const &filename) {
   sOutputFilename = filename;
 }
 
+void SetLogOutputStream(FILE *stream) { sOutputStream = stream; }
+
 void SetLogColorsEnabled(bool enabled) { sColorsEnabled = enabled; }
 
 static void vLog(int level, char const *classname, char const *funcname,
