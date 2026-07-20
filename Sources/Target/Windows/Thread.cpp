@@ -140,12 +140,26 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       _stopInfo.clear();
       _process->resume();
       break;
-    case STATUS_BREAKPOINT:
-    case STATUS_SINGLE_STEP: {
+    case STATUS_BREAKPOINT: {
       _stopInfo.event = StopInfo::kEventStop;
       auto *hwBpm = process()->hardwareBreakpointManager();
       if (hwBpm == nullptr || !hwBpm->fillStopInfo(this, _stopInfo)) {
         _stopInfo.reason = StopInfo::kReasonBreakpoint;
+      }
+      break;
+    }
+    case STATUS_SINGLE_STEP: {
+      // Hardware breakpoints/watchpoints (DR0-3/DR7 on x86) also arrive as
+      // STATUS_SINGLE_STEP on Windows, not STATUS_BREAKPOINT, so this still
+      // has to consult the hardware breakpoint manager -- it's what fills
+      // in the watchpoint index/address and kReason*Watchpoint from DR6.
+      // Only fall back to kReasonTrace, not kReasonBreakpoint, once that
+      // comes back empty, so a completed step is still distinguishable
+      // from a breakpoint hit.
+      _stopInfo.event = StopInfo::kEventStop;
+      auto *hwBpm = process()->hardwareBreakpointManager();
+      if (hwBpm == nullptr || !hwBpm->fillStopInfo(this, _stopInfo)) {
+        _stopInfo.reason = StopInfo::kReasonTrace;
       }
       break;
     }
