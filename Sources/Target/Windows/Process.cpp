@@ -542,6 +542,11 @@ ErrorCode Process::updateInfo() {
 }
 
 ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
+  // This is the only ProcessSpawner caller that goes on to pump
+  // WaitForDebugEvent/ContinueDebugEvent for the child (elsewhere in this
+  // file), so it is the only one that may ask to be started as a debuggee.
+  spawner.setDebugOnCreate(true);
+
   if (spawner.run() != kSuccess) {
     return nullptr;
   }

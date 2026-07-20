@@ -246,12 +246,33 @@ ErrorCode Platform::TranslateError(DWORD error) {
   case ERROR_NOT_SUPPORTED:
     return ds2::kErrorUnsupported;
   case ERROR_FILE_EXISTS:
+  case ERROR_ALREADY_EXISTS:
     return ds2::kErrorAlreadyExist;
   case ERROR_INVALID_PARAMETER:
     return ds2::kErrorInvalidArgument;
   case ERROR_BAD_EXE_FORMAT:
     return ds2::kErrorInvalidArgument;
   case ERROR_PARTIAL_COPY:
+    return ds2::kErrorNoSpace;
+  // Reachable from CreateFileW on a remote client's vFile:open path, whose
+  // path argument is untrusted input -- map these instead of falling into
+  // the default/DS2BUG case below, which would abort the whole ds2 server
+  // over a bad or busy path rather than returning an F-packet error.
+  case ERROR_SHARING_VIOLATION:
+  case ERROR_LOCK_VIOLATION:
+    return ds2::kErrorBusy;
+  case ERROR_INVALID_NAME:
+  case ERROR_BAD_PATHNAME:
+  case ERROR_DIRECTORY:
+    return ds2::kErrorInvalidArgument;
+  case ERROR_FILENAME_EXCED_RANGE:
+    return ds2::kErrorNameTooLong;
+  // Reachable from WriteFile on a remote client's vFile:pwrite path when the
+  // volume backing the target file fills up -- map these too, for the same
+  // reason as the CreateFileW cases above (a full disk shouldn't abort the
+  // whole ds2 server).
+  case ERROR_DISK_FULL:
+  case ERROR_HANDLE_DISK_FULL:
     return ds2::kErrorNoSpace;
   default:
     DS2BUG("unknown error code: %#lx", error);
@@ -376,8 +397,25 @@ void Platform::EnumerateProcesses(
 }
 
 bool Platform::TerminateProcess(ProcessId pid) {
-  // TODO(andrurogerz): implement using OpenProcess and TerminateProcess.
-  return false;
+  HANDLE processHandle =
+      ::OpenProcess(PROCESS_TERMINATE | SYNCHRONIZE, FALSE, pid);
+  if (processHandle == nullptr)
+    return false;
+
+  bool terminated = ::TerminateProcess(processHandle, 1) == TRUE;
+  if (terminated) {
+    // TerminateProcess only queues the request; it does not wait for the
+    // process to actually exit. Without waiting here, a caller that treats
+    // a true return as "the pid is gone" (e.g. dropping it from a tracked-
+    // process list right away) can race a process that is still tearing
+    // down and still holding files/ports open.
+    terminated =
+        ::WaitForSingleObject(processHandle, INFINITE) == WAIT_OBJECT_0;
+  }
+
+  ::CloseHandle(processHandle);
+
+  return terminated;
 }
 
 std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {

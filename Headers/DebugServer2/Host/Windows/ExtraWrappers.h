@@ -88,6 +88,48 @@ typedef struct _PROCESS_INFORMATION {
 } PROCESS_INFORMATION, *LPPROCESS_INFORMATION;
 #endif
 
+#if !defined(HAVE_HANDLE_FLAG_INHERIT)
+#define HANDLE_FLAG_INHERIT 0x00000001
+#endif
+
+// InitializeProcThreadAttributeList/UpdateProcThreadAttribute and the
+// PROC_THREAD_ATTRIBUTE_LIST type are available in this partition already
+// (they back ConPTY support); only the STARTUPINFOEXW struct and the
+// PROC_THREAD_ATTRIBUTE_HANDLE_LIST attribute constant are missing.
+#if !defined(HAVE_PROC_THREAD_ATTRIBUTE_HANDLE_LIST)
+#if !defined(ProcThreadAttributeValue)
+#define ProcThreadAttributeValue(Number, Thread, Input, Additive)            \
+  ((Number) | ((Thread) ? 0x00010000 : 0) | ((Input) ? 0x00020000 : 0) |     \
+   ((Additive) ? 0x00040000 : 0))
+#endif
+// ProcThreadAttributeHandleList == 2 in the PROC_THREAD_ATTRIBUTE_NUM enum.
+#define PROC_THREAD_ATTRIBUTE_HANDLE_LIST                                   \
+  ProcThreadAttributeValue(2, FALSE, TRUE, FALSE)
+#endif
+
+#if !defined(HAVE_STARTUPINFOEXW)
+typedef struct _STARTUPINFOEXW {
+    STARTUPINFOW StartupInfo;
+    PPROC_THREAD_ATTRIBUTE_LIST lpAttributeList;
+} STARTUPINFOEXW, *LPSTARTUPINFOEXW;
+#endif
+
+#if !defined(HAVE_STARTF_USESTDHANDLES)
+#define STARTF_USESTDHANDLES 0x00000100
+#endif
+
+#if !defined(HAVE_CreateFileW)
+WINBASEAPI HANDLE WINAPI CreateFileW(
+  _In_     LPCWSTR               lpFileName,
+  _In_     DWORD                 dwDesiredAccess,
+  _In_     DWORD                 dwShareMode,
+  _In_opt_ LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+  _In_     DWORD                 dwCreationDisposition,
+  _In_     DWORD                 dwFlagsAndAttributes,
+  _In_opt_ HANDLE                hTemplateFile
+);
+#endif
+
 #if !defined(HAVE_TerminateThread)
 WINBASEAPI BOOL WINAPI TerminateThread(
   _Inout_ HANDLE hThread,

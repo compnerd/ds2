@@ -23,7 +23,7 @@ namespace Host {
 
 class File {
 public:
-  File(std::string const &path, OpenFlags flags, uint32_t mode);
+  File(const std::string &path, OpenFlags flags, uint32_t mode);
   ~File();
 
 public:
@@ -46,7 +46,7 @@ public:
 
 public:
   ErrorCode pread(ByteVector &buf, uint64_t &count, uint64_t offset);
-  ErrorCode pwrite(ByteVector const &buf, uint64_t &count, uint64_t offset);
+  ErrorCode pwrite(const ByteVector &buf, uint64_t &count, uint64_t offset);
   ErrorCode fstat(ByteVector &buffer) const;
 
 public:
@@ -54,20 +54,23 @@ public:
   ErrorCode lastError() const { return _lastError; }
 
 public:
-  static ErrorCode chmod(std::string const &path, uint32_t mode);
+  static ErrorCode chmod(const std::string &path, uint32_t mode);
 
 public:
-  static ErrorCode unlink(std::string const &path);
+  static ErrorCode unlink(const std::string &path);
 
 public:
-  static ErrorCode createDirectory(std::string const &path, uint32_t flags);
+  static ErrorCode createDirectory(const std::string &path, uint32_t flags);
 
 public:
-  static ErrorCode fileSize(std::string const &path, uint64_t &size);
-  static ErrorCode fileMode(std::string const &path, uint32_t &mode);
+  static ErrorCode fileSize(const std::string &path, uint64_t &size);
+  static ErrorCode fileMode(const std::string &path, uint32_t &mode);
 
 protected:
-  int _fd;
+  // Holds a POSIX file descriptor on POSIX, or a Windows HANDLE (cast
+  // through intptr_t, since a HANDLE does not safely fit in an int) on
+  // Windows.
+  intptr_t _fd;
   ErrorCode _lastError;
 };
 } // namespace Host

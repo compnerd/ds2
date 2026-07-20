@@ -36,6 +36,7 @@ void SetLogLevel(LogLevel level);
 void SetLogColorsEnabled(bool enabled);
 std::string const &GetLogOutputFilename();
 void SetLogOutputFilename(std::string const &filename);
+void SetLogOutputStream(FILE *stream);
 
 void Log(int level, char const *classname, char const *funcname,
          char const *format, ...) DS2_ATTRIBUTE_PRINTF(4, 5);

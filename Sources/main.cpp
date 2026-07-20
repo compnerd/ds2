@@ -39,7 +39,11 @@
 #if HAVE_TERMIOS_H
 #include <termios.h>
 #endif
-#if !defined(OS_WIN32)
+#if defined(OS_WIN32)
+#include "DebugServer2/Host/Windows/ExtraWrappers.h"
+#include <windows.h>
+#include <ws2tcpip.h>
+#else
 #include <unistd.h>
 #endif
 
@@ -508,7 +512,6 @@ static int GdbserverMain(int argc, char **argv) {
   return RunDebugServer(channel.get(), impl.get());
 }
 
-#if !defined(OS_WIN32)
 static int PlatformMain(int argc, char **argv) {
   DS2ASSERT(argv[1][0] == 'p');
 
@@ -569,9 +572,151 @@ static int SlaveMain(int argc, char **argv) {
 
   ds2::OptParse opts;
   AddSharedOptions(opts);
+#if defined(OS_WIN32)
+  // Internal use only: carries the numeric handle of the listening socket
+  // that "generation 1" below inherits into the relaunched "generation 2"
+  // process. Not meant to be used directly, hence hidden from --help.
+  opts.addOption(ds2::OptParse::stringOption, "child-socket", 'C',
+                 "internal use only", /*hidden=*/true);
+#endif
   opts.parse(argc, argv);
   HandleSharedOptions(opts);
 
+#if defined(OS_WIN32)
+  // ds2's Windows logging defaults to stdout (see Log.cpp), but generation
+  // 1 below prints its "port pid" status line to that same stdout for
+  // onLaunchDebugServer to parse -- and that pipe is the only stream it
+  // captures, so any --debug/--remote-debug DS2LOG output emitted before
+  // that line (e.g. CreateTCPSocket's "listening on ...") would corrupt it.
+  // Route logs to stderr instead, unless the user asked for a log file.
+  if (ds2::GetLogOutputFilename().empty())
+    ds2::SetLogOutputStream(stderr);
+
+  // There is no fork() on Windows. onLaunchDebugServer (which spawns
+  // whatever "ds2 slave ..." invocation reaches this function) blocks in
+  // ProcessSpawner::wait() until that process exits, then parses a "port
+  // pid" line from its captured stdout. So the process it spawns cannot
+  // itself be the one servicing the eventual gdb-remote connection -- it
+  // must print that line and exit quickly, while a separate, independently
+  // running process keeps listening on `port`.
+  //
+  // Generation 1 (what onLaunchDebugServer actually spawns) binds an
+  // ephemeral listening socket and relaunches itself as a detached process
+  // that inherits just that socket's handle, then reports its port and the
+  // detached process's pid and exits. Generation 2 (detected here via a
+  // non-empty --child-socket) accepts the one client generation 1 promised,
+  // and becomes its debug server.
+  const std::string &childSocketArg = opts.getString("child-socket");
+  if (!childSocketArg.empty()) {
+    // When in slave mode, output is suppressed but for standard error.
+    ::freopen("NUL", "r", stdin);
+    ::freopen("NUL", "w", stdout);
+
+    SOCKET listenHandle = static_cast<SOCKET>(std::stoull(childSocketArg));
+
+    struct sockaddr_storage ss;
+    int sslen = sizeof(ss);
+    SOCKET clientHandle = ::accept(
+        listenHandle, reinterpret_cast<struct sockaddr *>(&ss), &sslen);
+    ::closesocket(listenHandle);
+
+    if (clientHandle == INVALID_SOCKET)
+      DS2LOG(Fatal, "cannot accept slave connection: error %#x",
+             static_cast<unsigned>(::WSAGetLastError()));
+
+    auto client = std::make_unique<Socket>(clientHandle);
+    client->setNonBlocking();
+
+    SlaveSessionImpl impl;
+    return RunDebugServer(client.get(), &impl);
+  }
+
+  std::unique_ptr<Socket> server = CreateTCPSocket(gDefaultHost, "0", false);
+  std::string port = server->port();
+  SOCKET listenHandle = server->native_handle();
+
+  if (!::SetHandleInformation(reinterpret_cast<HANDLE>(listenHandle),
+                              HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT))
+    DS2LOG(Fatal, "cannot make listening socket inheritable: %#lx",
+           ::GetLastError());
+
+  ds2::StringCollection args;
+  args.push_back(Platform::GetSelfExecutablePath());
+  args.push_back("slave");
+  if (opts.getBool("debug"))
+    args.push_back("--debug");
+  if (opts.getBool("remote-debug"))
+    args.push_back("--remote-debug");
+  if (opts.getBool("no-colors"))
+    args.push_back("--no-colors");
+  if (!opts.getString("log-file").empty()) {
+    args.push_back("--log-file");
+    args.push_back(opts.getString("log-file"));
+  }
+  args.push_back("--child-socket");
+  args.push_back(ds2::Utils::ToString(static_cast<uint64_t>(listenHandle)));
+
+  std::wstring commandLine;
+  for (size_t i = 0; i < args.size(); ++i) {
+    if (i > 0)
+      commandLine += L' ';
+    commandLine += L'"';
+    for (auto const &ch : ds2::Utils::NarrowToWideString(args[i])) {
+      if (ch == L'"')
+        commandLine += L'\\';
+      commandLine += ch;
+    }
+    commandLine += L'"';
+  }
+
+  // Restrict handle inheritance to exactly the listening socket. Blanket
+  // bInheritHandles=TRUE would also duplicate our own captured-stdout pipe
+  // (onLaunchDebugServer's ProcessSpawner set that up to read our "port
+  // pid" line above) into generation 2, which then never closes -- so
+  // platform mode would never see EOF on it, hanging onLaunchDebugServer
+  // forever.
+  HANDLE handleList[] = {reinterpret_cast<HANDLE>(listenHandle)};
+
+  SIZE_T attributeListSize = 0;
+  ::InitializeProcThreadAttributeList(nullptr, 1, 0, &attributeListSize);
+
+  std::vector<uint8_t> attributeListBuffer(attributeListSize);
+  auto attributeList = reinterpret_cast<LPPROC_THREAD_ATTRIBUTE_LIST>(
+      attributeListBuffer.data());
+
+  if (!::InitializeProcThreadAttributeList(attributeList, 1, 0,
+                                           &attributeListSize) ||
+      !::UpdateProcThreadAttribute(
+          attributeList, 0, PROC_THREAD_ATTRIBUTE_HANDLE_LIST, handleList,
+          sizeof(handleList), nullptr, nullptr))
+    DS2LOG(Fatal, "cannot set up handle inheritance for slave: %#lx",
+           ::GetLastError());
+
+  STARTUPINFOEXW si = {};
+  si.StartupInfo.cb = sizeof(si);
+  si.lpAttributeList = attributeList;
+
+  PROCESS_INFORMATION pi = {};
+  BOOL result = ::CreateProcessW(nullptr, &commandLine[0], nullptr, nullptr,
+                                 /*bInheritHandles=*/TRUE,
+                                 DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP |
+                                     EXTENDED_STARTUPINFO_PRESENT,
+                                 nullptr, nullptr, &si.StartupInfo, &pi);
+
+  ::DeleteProcThreadAttributeList(attributeList);
+
+  if (!result)
+    DS2LOG(Fatal, "cannot relaunch slave: %#lx", ::GetLastError());
+
+  ::CloseHandle(pi.hThread);
+  ::CloseHandle(pi.hProcess);
+
+  // Write to the standard output to let our parent know where we're
+  // listening.
+  ::fprintf(stdout, "%s %lu\n", port.c_str(), pi.dwProcessId);
+
+  return EXIT_SUCCESS;
+#else
   std::unique_ptr<Socket> server = CreateTCPSocket(gDefaultHost, "0", false);
   std::string port = server->port();
 
@@ -599,8 +744,8 @@ static int SlaveMain(int argc, char **argv) {
   }
 
   return EXIT_SUCCESS;
-}
 #endif
+}
 
 static int VersionMain(int argc, char **argv) {
   std::stringstream ss;
@@ -619,9 +764,7 @@ static int VersionMain(int argc, char **argv) {
 [[noreturn]] static void UsageDie(char const *argv0) {
   std::vector<std::pair<std::string, bool>> modes = {{"version", false},
                                                      {"gdbserver", true}};
-#if !defined(OS_WIN32)
   modes.emplace_back("platform", true);
-#endif
 
   ::fprintf(stderr, "Usage:\n");
   for (auto const &mode : modes) {
@@ -663,12 +806,10 @@ int main(int argc, char **argv) {
 #endif
 
   switch (argv[1][0]) {
-#if !defined(OS_WIN32)
   case 'p':
     return PlatformMain(argc, argv);
   case 's':
     return SlaveMain(argc, argv);
-#endif
   case 'v':
     return VersionMain(argc, argv);
   default:
