@@ -1027,24 +1027,29 @@ void Session::Handle_P(ProtocolInterpreter::Handler const &,
     return;
   }
 
+  // A hex-encoded value can never contain a ';'.
   ptidptr = std::strchr(eptr, ';');
-
-  if (_compatMode != kCompatibilityModeLLDB || ptidptr == nullptr) {
+  if (ptidptr == nullptr) {
     ptidptr = std::strchr(eptr, '\0');
   }
 
   value = HexToString(std::string(eptr, ptidptr - eptr));
 
-  if (_compatMode == kCompatibilityModeLLDB) {
+  if (*ptidptr == ';') {
     //
     // LLDB will send ;thread:tid when sending 'P' commands; pid
-    // is deduced from current process.
-    //
-    if (*ptidptr++ == ';') {
-      if (!ptid.parse(ptidptr, kCompatibilityModeLLDBThread)) {
-        sendError(kErrorInvalidArgument);
-        return;
-      }
+    // is deduced from current process. Only LLDB sends this suffix, so
+    // treat it like QThreadSuffixSupported: a reliable signal to
+    // (re-)enter LLDB mode, since onWriteRegisterValue's register table
+    // choice depends on it.
+    if (_compatMode != kCompatibilityModeLLDB) {
+      DS2LOG(Debug, "entering LLDB compatibility mode");
+      _compatMode = kCompatibilityModeLLDB;
+    }
+
+    if (!ptid.parse(ptidptr + 1, kCompatibilityModeLLDBThread)) {
+      sendError(kErrorInvalidArgument);
+      return;
     }
   } else {
     //
@@ -1067,16 +1072,20 @@ void Session::Handle_p(ProtocolInterpreter::Handler const &,
   ProcessThreadId ptid;
   uint32_t regno = std::strtoul(args.c_str(), &eptr, 16);
 
-  if (_compatMode == kCompatibilityModeLLDB) {
+  if (*eptr == ';') {
     //
     // LLDB will send ;thread:tid when sending 'p' commands; pid
-    // is deduced from current process.
+    // is deduced from current process. Only LLDB sends this suffix, so
+    // treat it the same way as QThreadSuffixSupported / Handle_P.
     //
-    if (*eptr++ == ';') {
-      if (!ptid.parse(eptr, kCompatibilityModeLLDBThread)) {
-        sendError(kErrorInvalidArgument);
-        return;
-      }
+    if (_compatMode != kCompatibilityModeLLDB) {
+      DS2LOG(Debug, "entering LLDB compatibility mode");
+      _compatMode = kCompatibilityModeLLDB;
+    }
+
+    if (!ptid.parse(eptr + 1, kCompatibilityModeLLDBThread)) {
+      sendError(kErrorInvalidArgument);
+      return;
     }
   } else {
     //
