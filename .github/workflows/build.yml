@@ -48,7 +48,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: ['Win32', 'x64'] # ['ARM', 'ARM64']
+        arch: ['Win32', 'x64'] # ARM/ARM64 build separately below in windows_arm64
 
     steps:
       - uses: actions/checkout@v7
@@ -158,7 +158,7 @@ jobs:
           path: ${{ github.workspace }}/SourceCache/ds2
       - run: |
           sudo apt-get update
-          sudo apt-get install -qq --no-install-recommends bison flex ninja-build 
+          sudo apt-get install -qq --no-install-recommends bison flex ninja-build
       - run: |
           bazel build //...
         working-directory: ${{ github.workspace }}/SourceCache/ds2
