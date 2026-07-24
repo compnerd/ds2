@@ -481,3 +481,80 @@ jobs:
     uses: ./.github/workflows/test-android.yml
     with:
       llvm-ref: ${{ needs.vars.outputs.llvm-ref }}
+
+  test-windows:
+    needs: [vars, windows, windows_arm64, build-lldb-windows]
+    uses: ./.github/workflows/test-windows.yml
+    with:
+      llvm-ref: ${{ needs.vars.outputs.llvm-ref }}
+
+  build-lldb-windows:
+    name: Build LLDB (Windows ${{ matrix.runner-arch }})
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-latest
+            runner-arch: X64
+          - runner: windows-11-arm
+            runner-arch: ARM64
+
+    steps:
+      # windows-latest carries several hostedtoolcache Python versions side
+      # by side; CMake's find_package(Python3) picks the newest one it can
+      # see, which need not be the one the plain `python` on PATH resolves
+      # to (the interpreter test-windows later uses to run lldb-dotest).
+      # Capture that one now, before vsdevenv's PATH rewrite, and pin the
+      # lldb build to it so the compiled _lldb extension's Python ABI tag
+      # matches what actually imports it at test time.
+      - name: Locate default Python
+        id: python
+        run: echo "path=$((Get-Command python).Source)" >> $env:GITHUB_OUTPUT
+
+      - uses: compnerd/gha-setup-vsdevenv@v7
+
+      - name: Install Build Tools
+        run: choco install swig make
+
+      - name: Setup sccache
+        uses: hendrikmuhs/ccache-action@d62db5f07c26379fc4b4e0916f098a92573c3b03 # v1.2.23
+        with:
+          key: llvm-${{ runner.os }}-${{ matrix.runner-arch }}
+          variant: sccache
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ env.LLVM_REF }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      # Build clang, lld (required to link test inferiors on Windows) and a
+      # Python-enabled lldb binary to execute the lldb tests.
+      - name: Configure lldb build
+        run: |
+          cmake -B ${{ github.workspace }}/BinaryCache/llvm                     `
+                -S ${{ github.workspace }}/SourceCache/llvm/llvm                `
+                -D LLVM_ENABLE_PROJECTS='clang;lld;lldb'                        `
+                -D LLVM_TARGETS_TO_BUILD="host"                                 `
+                -D LLDB_ENABLE_PYTHON=On                                        `
+                -D Python3_EXECUTABLE="${{ steps.python.outputs.path }}"        `
+                -D CMAKE_C_COMPILER_LAUNCHER=sccache                            `
+                -D CMAKE_CXX_COMPILER_LAUNCHER=sccache                          `
+                -D CMAKE_BUILD_TYPE=Release                                     `
+                -G Ninja
+
+      - name: Build llvm
+        run: |
+          cmake --build ${{ github.workspace }}/BinaryCache/llvm                `
+                --target tools/lldb/test/API/lldb-api-test-deps                 `
+                --target lld                                                    `
+                --config Release
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: llvm-Windows-${{ matrix.runner-arch }}
+          path: ${{ github.workspace }}/BinaryCache/llvm
+
