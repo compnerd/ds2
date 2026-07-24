@@ -117,7 +117,7 @@ $(function(){ initResizable(false); });
 <div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classds2_1_1_host_1_1_file.html">   24</a></span><span class="keyword">class </span><a class="code hl_class" href="classds2_1_1_host_1_1_file.html">File</a> {</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  <a class="code hl_class" href="classds2_1_1_host_1_1_file.html">File</a>(std::string <span class="keyword">const</span> &amp;path, OpenFlags flags, uint32_t mode);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  <a class="code hl_class" href="classds2_1_1_host_1_1_file.html">File</a>(<span class="keyword">const</span> std::string &amp;path, OpenFlags flags, uint32_t mode);</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>  <a class="code hl_class" href="classds2_1_1_host_1_1_file.html">~File</a>();</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">public</span>:</div>
@@ -140,7 +140,7 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keyword">public</span>:</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>  ErrorCode pread(ByteVector &amp;buf, uint64_t &amp;count, uint64_t offset);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>  ErrorCode pwrite(ByteVector <span class="keyword">const</span> &amp;buf, uint64_t &amp;count, uint64_t offset);</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>  ErrorCode pwrite(<span class="keyword">const</span> ByteVector &amp;buf, uint64_t &amp;count, uint64_t offset);</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>  ErrorCode fstat(ByteVector &amp;buffer) <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="keyword">public</span>:</div>
@@ -148,25 +148,28 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  ErrorCode lastError()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _lastError; }</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>  <span class="keyword">static</span> ErrorCode chmod(std::string <span class="keyword">const</span> &amp;path, uint32_t mode);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>  <span class="keyword">static</span> ErrorCode chmod(<span class="keyword">const</span> std::string &amp;path, uint32_t mode);</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keyword">static</span> ErrorCode unlink(std::string <span class="keyword">const</span> &amp;path);</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keyword">static</span> ErrorCode unlink(<span class="keyword">const</span> std::string &amp;path);</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  <span class="keyword">static</span> ErrorCode createDirectory(std::string <span class="keyword">const</span> &amp;path, uint32_t flags);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  <span class="keyword">static</span> ErrorCode createDirectory(<span class="keyword">const</span> std::string &amp;path, uint32_t flags);</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  <span class="keyword">static</span> ErrorCode fileSize(std::string <span class="keyword">const</span> &amp;path, uint64_t &amp;size);</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  <span class="keyword">static</span> ErrorCode fileMode(std::string <span class="keyword">const</span> &amp;path, uint32_t &amp;mode);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  <span class="keyword">static</span> ErrorCode fileSize(<span class="keyword">const</span> std::string &amp;path, uint64_t &amp;size);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  <span class="keyword">static</span> ErrorCode fileMode(<span class="keyword">const</span> std::string &amp;path, uint32_t &amp;mode);</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>  <span class="keywordtype">int</span> _fd;</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>  ErrorCode _lastError;</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>};</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>  <span class="comment">// Holds a POSIX file descriptor on POSIX, or a Windows HANDLE (cast</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>  <span class="comment">// through intptr_t, since a HANDLE does not safely fit in an int) on</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>  <span class="comment">// Windows.</span></div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>  intptr_t _fd;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>  ErrorCode _lastError;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>};</div>
 </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>} <span class="comment">// namespace Host</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>} <span class="comment">// namespace ds2</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>} <span class="comment">// namespace Host</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>} <span class="comment">// namespace ds2</span></div>
 <div class="ttc" id="aclassds2_1_1_host_1_1_file_html"><div class="ttname"><a href="classds2_1_1_host_1_1_file.html">ds2::Host::File</a></div><div class="ttdef"><b>Definition</b> File.h:24</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

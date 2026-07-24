@@ -92,7 +92,9 @@ $(function(){ initResizable(false); });
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-types">Protected Types</a> &#124;
+<a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pro-static-attribs">Static Protected Attributes</a> &#124;
 <a href="classds2_1_1_host_1_1_process_spawner-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ds2::Host::ProcessSpawner Class Reference</div></div>
 </div><!--header-->
@@ -215,28 +217,37 @@ ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>input</b> (ByteV
 <tr class="memitem:a219c23104e354c7e4fccd320167df66f" id="r_a219c23104e354c7e4fccd320167df66f"><td class="memItemLeft" align="right" valign="top"><a id="a219c23104e354c7e4fccd320167df66f" name="a219c23104e354c7e4fccd320167df66f"></a>
 std::string const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>output</b> () const</td></tr>
 <tr class="separator:a219c23104e354c7e4fccd320167df66f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca6ed8de1c7f0c7809c84bbedafeb617" id="r_aca6ed8de1c7f0c7809c84bbedafeb617"><td class="memItemLeft" align="right" valign="top"><a id="aca6ed8de1c7f0c7809c84bbedafeb617" name="aca6ed8de1c7f0c7809c84bbedafeb617"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>setExecutable</b> (std::string const &amp;path)</td></tr>
-<tr class="separator:aca6ed8de1c7f0c7809c84bbedafeb617"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ccbdcc7fd099e236077038e3300b936" id="r_a9ccbdcc7fd099e236077038e3300b936"><td class="memItemLeft" align="right" valign="top"><a id="a9ccbdcc7fd099e236077038e3300b936" name="a9ccbdcc7fd099e236077038e3300b936"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>setShellCommand</b> (std::string const &amp;command)</td></tr>
-<tr class="separator:a9ccbdcc7fd099e236077038e3300b936"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3abab5f7932cb974aac82d57b65f719" id="r_ab3abab5f7932cb974aac82d57b65f719"><td class="memItemLeft" align="right" valign="top"><a id="ab3abab5f7932cb974aac82d57b65f719" name="ab3abab5f7932cb974aac82d57b65f719"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>setWorkingDirectory</b> (std::string const &amp;path)</td></tr>
-<tr class="separator:ab3abab5f7932cb974aac82d57b65f719"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa017033fc1ad890485033719c481e813" id="r_aa017033fc1ad890485033719c481e813"><td class="memItemLeft" align="right" valign="top"><a id="aa017033fc1ad890485033719c481e813" name="aa017033fc1ad890485033719c481e813"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>setArguments</b> (StringCollection const &amp;args)</td></tr>
-<tr class="separator:aa017033fc1ad890485033719c481e813"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2f2a7cb55fe4ec0c60a0b4a701fe7cbc" id="r_a2f2a7cb55fe4ec0c60a0b4a701fe7cbc"><td class="memTemplParams" colspan="2"><a id="a2f2a7cb55fe4ec0c60a0b4a701fe7cbc" name="a2f2a7cb55fe4ec0c60a0b4a701fe7cbc"></a>
+<tr class="memitem:a8113aa584d533849fd53184436875423" id="r_a8113aa584d533849fd53184436875423"><td class="memItemLeft" align="right" valign="top"><a id="a8113aa584d533849fd53184436875423" name="a8113aa584d533849fd53184436875423"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ProcessSpawner</b> (const <a class="el" href="classds2_1_1_host_1_1_process_spawner.html">ProcessSpawner</a> &amp;)=delete</td></tr>
+<tr class="separator:a8113aa584d533849fd53184436875423"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1263721fd8908466d927c27cba970235" id="r_a1263721fd8908466d927c27cba970235"><td class="memItemLeft" align="right" valign="top"><a id="a1263721fd8908466d927c27cba970235" name="a1263721fd8908466d927c27cba970235"></a>
+<a class="el" href="classds2_1_1_host_1_1_process_spawner.html">ProcessSpawner</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classds2_1_1_host_1_1_process_spawner.html">ProcessSpawner</a> &amp;)=delete</td></tr>
+<tr class="separator:a1263721fd8908466d927c27cba970235"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac02b1e4f1c74c974272bf554c7216486" id="r_ac02b1e4f1c74c974272bf554c7216486"><td class="memItemLeft" align="right" valign="top"><a id="ac02b1e4f1c74c974272bf554c7216486" name="ac02b1e4f1c74c974272bf554c7216486"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>setExecutable</b> (const std::string &amp;path)</td></tr>
+<tr class="separator:ac02b1e4f1c74c974272bf554c7216486"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a598baef34345430a9de1217974ab06b5" id="r_a598baef34345430a9de1217974ab06b5"><td class="memItemLeft" align="right" valign="top"><a id="a598baef34345430a9de1217974ab06b5" name="a598baef34345430a9de1217974ab06b5"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>setShellCommand</b> (const std::string &amp;command)</td></tr>
+<tr class="separator:a598baef34345430a9de1217974ab06b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59407fda1ab4ab0119ab86e019e33646" id="r_a59407fda1ab4ab0119ab86e019e33646"><td class="memItemLeft" align="right" valign="top"><a id="a59407fda1ab4ab0119ab86e019e33646" name="a59407fda1ab4ab0119ab86e019e33646"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>setWorkingDirectory</b> (const std::string &amp;path)</td></tr>
+<tr class="separator:a59407fda1ab4ab0119ab86e019e33646"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ebd9648a821f91d92b5a50d996a7285" id="r_a4ebd9648a821f91d92b5a50d996a7285"><td class="memItemLeft" align="right" valign="top"><a id="a4ebd9648a821f91d92b5a50d996a7285" name="a4ebd9648a821f91d92b5a50d996a7285"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>setArguments</b> (const StringCollection &amp;args)</td></tr>
+<tr class="separator:a4ebd9648a821f91d92b5a50d996a7285"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ca167e8cc4ccc30c65da200a9e6bd2a" id="r_a0ca167e8cc4ccc30c65da200a9e6bd2a"><td class="memTemplParams" colspan="2"><a id="a0ca167e8cc4ccc30c65da200a9e6bd2a" name="a0ca167e8cc4ccc30c65da200a9e6bd2a"></a>
 template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a2f2a7cb55fe4ec0c60a0b4a701fe7cbc"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>setArguments</b> (Args const &amp;... args)</td></tr>
-<tr class="separator:a2f2a7cb55fe4ec0c60a0b4a701fe7cbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab37d050835376bc1f140ab883e6ab51c" id="r_ab37d050835376bc1f140ab883e6ab51c"><td class="memItemLeft" align="right" valign="top"><a id="ab37d050835376bc1f140ab883e6ab51c" name="ab37d050835376bc1f140ab883e6ab51c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>setEnvironment</b> (EnvironmentBlock const &amp;args)</td></tr>
-<tr class="separator:ab37d050835376bc1f140ab883e6ab51c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cd853633b09dde9235b95a8b3305862" id="r_a2cd853633b09dde9235b95a8b3305862"><td class="memItemLeft" align="right" valign="top"><a id="a2cd853633b09dde9235b95a8b3305862" name="a2cd853633b09dde9235b95a8b3305862"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>addEnvironment</b> (std::string const &amp;key, std::string const &amp;val)</td></tr>
-<tr class="separator:a2cd853633b09dde9235b95a8b3305862"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ca167e8cc4ccc30c65da200a9e6bd2a"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>setArguments</b> (const Args &amp;...args)</td></tr>
+<tr class="separator:a0ca167e8cc4ccc30c65da200a9e6bd2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8559050af25f5104d9e84c9eb3f4e4be" id="r_a8559050af25f5104d9e84c9eb3f4e4be"><td class="memItemLeft" align="right" valign="top"><a id="a8559050af25f5104d9e84c9eb3f4e4be" name="a8559050af25f5104d9e84c9eb3f4e4be"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>setEnvironment</b> (const EnvironmentBlock &amp;args)</td></tr>
+<tr class="separator:a8559050af25f5104d9e84c9eb3f4e4be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c2792e6bfc2fc0d8aaae15077464f32" id="r_a7c2792e6bfc2fc0d8aaae15077464f32"><td class="memItemLeft" align="right" valign="top"><a id="a7c2792e6bfc2fc0d8aaae15077464f32" name="a7c2792e6bfc2fc0d8aaae15077464f32"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>addEnvironment</b> (const std::string &amp;key, const std::string &amp;val)</td></tr>
+<tr class="separator:a7c2792e6bfc2fc0d8aaae15077464f32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c39be1ac9c184ac76933748e979cdef" id="r_a9c39be1ac9c184ac76933748e979cdef"><td class="memItemLeft" align="right" valign="top"><a id="a9c39be1ac9c184ac76933748e979cdef" name="a9c39be1ac9c184ac76933748e979cdef"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setDebugOnCreate</b> (bool debug)</td></tr>
+<tr class="separator:a9c39be1ac9c184ac76933748e979cdef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1dd1cb5f852a45d004571c20a886fed" id="r_aa1dd1cb5f852a45d004571c20a886fed"><td class="memItemLeft" align="right" valign="top"><a id="aa1dd1cb5f852a45d004571c20a886fed" name="aa1dd1cb5f852a45d004571c20a886fed"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectInputToConsole</b> ()</td></tr>
 <tr class="separator:aa1dd1cb5f852a45d004571c20a886fed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -255,15 +266,15 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectOutputToNull<
 <tr class="memitem:a37d777a38b63de76d560ce6c2b69ab3f" id="r_a37d777a38b63de76d560ce6c2b69ab3f"><td class="memItemLeft" align="right" valign="top"><a id="a37d777a38b63de76d560ce6c2b69ab3f" name="a37d777a38b63de76d560ce6c2b69ab3f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectErrorToNull</b> ()</td></tr>
 <tr class="separator:a37d777a38b63de76d560ce6c2b69ab3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a167fea168c8dc18f8ddbcd97c4a539ab" id="r_a167fea168c8dc18f8ddbcd97c4a539ab"><td class="memItemLeft" align="right" valign="top"><a id="a167fea168c8dc18f8ddbcd97c4a539ab" name="a167fea168c8dc18f8ddbcd97c4a539ab"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectInputToFile</b> (std::string const &amp;path)</td></tr>
-<tr class="separator:a167fea168c8dc18f8ddbcd97c4a539ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45f20dad9832681a55a603f70a597270" id="r_a45f20dad9832681a55a603f70a597270"><td class="memItemLeft" align="right" valign="top"><a id="a45f20dad9832681a55a603f70a597270" name="a45f20dad9832681a55a603f70a597270"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectOutputToFile</b> (std::string const &amp;path)</td></tr>
-<tr class="separator:a45f20dad9832681a55a603f70a597270"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0478c83ae00fa58f3ac569f452b161b4" id="r_a0478c83ae00fa58f3ac569f452b161b4"><td class="memItemLeft" align="right" valign="top"><a id="a0478c83ae00fa58f3ac569f452b161b4" name="a0478c83ae00fa58f3ac569f452b161b4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectErrorToFile</b> (std::string const &amp;path)</td></tr>
-<tr class="separator:a0478c83ae00fa58f3ac569f452b161b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b9f6bc2dea2fa250f2a629eada3f4fe" id="r_a7b9f6bc2dea2fa250f2a629eada3f4fe"><td class="memItemLeft" align="right" valign="top"><a id="a7b9f6bc2dea2fa250f2a629eada3f4fe" name="a7b9f6bc2dea2fa250f2a629eada3f4fe"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectInputToFile</b> (const std::string &amp;path)</td></tr>
+<tr class="separator:a7b9f6bc2dea2fa250f2a629eada3f4fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a055a28948ed9571c2fd70c195a5f2006" id="r_a055a28948ed9571c2fd70c195a5f2006"><td class="memItemLeft" align="right" valign="top"><a id="a055a28948ed9571c2fd70c195a5f2006" name="a055a28948ed9571c2fd70c195a5f2006"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectOutputToFile</b> (const std::string &amp;path)</td></tr>
+<tr class="separator:a055a28948ed9571c2fd70c195a5f2006"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ddbbf0c19891c9739d2dd1f0691b0df" id="r_a2ddbbf0c19891c9739d2dd1f0691b0df"><td class="memItemLeft" align="right" valign="top"><a id="a2ddbbf0c19891c9739d2dd1f0691b0df" name="a2ddbbf0c19891c9739d2dd1f0691b0df"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectErrorToFile</b> (const std::string &amp;path)</td></tr>
+<tr class="separator:a2ddbbf0c19891c9739d2dd1f0691b0df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27c024d874dacd45559ccb55f2307965" id="r_a27c024d874dacd45559ccb55f2307965"><td class="memItemLeft" align="right" valign="top"><a id="a27c024d874dacd45559ccb55f2307965" name="a27c024d874dacd45559ccb55f2307965"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>redirectOutputToBuffer</b> ()</td></tr>
 <tr class="separator:a27c024d874dacd45559ccb55f2307965"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -309,21 +320,21 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>exitStatus</b> () cons
 <tr class="memitem:a6866d096713a54a5ad05abea847299a3" id="r_a6866d096713a54a5ad05abea847299a3"><td class="memItemLeft" align="right" valign="top"><a id="a6866d096713a54a5ad05abea847299a3" name="a6866d096713a54a5ad05abea847299a3"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>signalCode</b> () const</td></tr>
 <tr class="separator:a6866d096713a54a5ad05abea847299a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2912bb5dbb79ae80654645ab523d7ee8" id="r_a2912bb5dbb79ae80654645ab523d7ee8"><td class="memItemLeft" align="right" valign="top"><a id="a2912bb5dbb79ae80654645ab523d7ee8" name="a2912bb5dbb79ae80654645ab523d7ee8"></a>
-std::string const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>executable</b> () const</td></tr>
-<tr class="separator:a2912bb5dbb79ae80654645ab523d7ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4573ef036b1f8e82b2f56f6ac7fb8297" id="r_a4573ef036b1f8e82b2f56f6ac7fb8297"><td class="memItemLeft" align="right" valign="top"><a id="a4573ef036b1f8e82b2f56f6ac7fb8297" name="a4573ef036b1f8e82b2f56f6ac7fb8297"></a>
-StringCollection const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>arguments</b> () const</td></tr>
-<tr class="separator:a4573ef036b1f8e82b2f56f6ac7fb8297"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c65b5c4ea9b54dcc33e567feeb4860b" id="r_a0c65b5c4ea9b54dcc33e567feeb4860b"><td class="memItemLeft" align="right" valign="top"><a id="a0c65b5c4ea9b54dcc33e567feeb4860b" name="a0c65b5c4ea9b54dcc33e567feeb4860b"></a>
-EnvironmentBlock const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>environment</b> () const</td></tr>
-<tr class="separator:a0c65b5c4ea9b54dcc33e567feeb4860b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ded8aff188880fdcf8a1d3a78ca3111" id="r_a2ded8aff188880fdcf8a1d3a78ca3111"><td class="memItemLeft" align="right" valign="top"><a id="a2ded8aff188880fdcf8a1d3a78ca3111" name="a2ded8aff188880fdcf8a1d3a78ca3111"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>input</b> (ByteVector const &amp;buf)</td></tr>
-<tr class="separator:a2ded8aff188880fdcf8a1d3a78ca3111"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a219c23104e354c7e4fccd320167df66f" id="r_a219c23104e354c7e4fccd320167df66f"><td class="memItemLeft" align="right" valign="top"><a id="a219c23104e354c7e4fccd320167df66f" name="a219c23104e354c7e4fccd320167df66f"></a>
-std::string const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>output</b> () const</td></tr>
-<tr class="separator:a219c23104e354c7e4fccd320167df66f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60b6a7692b87b354fc178ff352fcded7" id="r_a60b6a7692b87b354fc178ff352fcded7"><td class="memItemLeft" align="right" valign="top"><a id="a60b6a7692b87b354fc178ff352fcded7" name="a60b6a7692b87b354fc178ff352fcded7"></a>
+const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>executable</b> () const</td></tr>
+<tr class="separator:a60b6a7692b87b354fc178ff352fcded7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad60b2d99679b22305fe861175518a647" id="r_ad60b2d99679b22305fe861175518a647"><td class="memItemLeft" align="right" valign="top"><a id="ad60b2d99679b22305fe861175518a647" name="ad60b2d99679b22305fe861175518a647"></a>
+const StringCollection &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>arguments</b> () const</td></tr>
+<tr class="separator:ad60b2d99679b22305fe861175518a647"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04a0b2441a6087c83d14001048918cb2" id="r_a04a0b2441a6087c83d14001048918cb2"><td class="memItemLeft" align="right" valign="top"><a id="a04a0b2441a6087c83d14001048918cb2" name="a04a0b2441a6087c83d14001048918cb2"></a>
+const EnvironmentBlock &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>environment</b> () const</td></tr>
+<tr class="separator:a04a0b2441a6087c83d14001048918cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1590030e111396ea82e94a1ae754155a" id="r_a1590030e111396ea82e94a1ae754155a"><td class="memItemLeft" align="right" valign="top"><a id="a1590030e111396ea82e94a1ae754155a" name="a1590030e111396ea82e94a1ae754155a"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>input</b> (const ByteVector &amp;buf)</td></tr>
+<tr class="separator:a1590030e111396ea82e94a1ae754155a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20615ff8fdccb1ab09d253fb267db546" id="r_a20615ff8fdccb1ab09d253fb267db546"><td class="memItemLeft" align="right" valign="top"><a id="a20615ff8fdccb1ab09d253fb267db546" name="a20615ff8fdccb1ab09d253fb267db546"></a>
+const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>output</b> () const</td></tr>
+<tr class="separator:a20615ff8fdccb1ab09d253fb267db546"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
 Protected Types</h2></td></tr>
@@ -336,12 +347,48 @@ Protected Types</h2></td></tr>
 &#160;&#160;<b>kRedirectBuffer</b>
 , <b>kRedirectDelegate</b>
 , <b>kRedirectTerminal</b>
+, <b>unset</b>
+, <br />
+&#160;&#160;<b>console</b>
+, <b>null</b>
+, <b>file</b>
+, <b>buffer</b>
 <br />
  }</td></tr>
 <tr class="separator:aeaab00c79a2762ee855a6bdfd549ee12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaab00c79a2762ee855a6bdfd549ee12" id="r_aeaab00c79a2762ee855a6bdfd549ee12"><td class="memItemLeft" align="right" valign="top"><a id="aeaab00c79a2762ee855a6bdfd549ee12" name="aeaab00c79a2762ee855a6bdfd549ee12"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>RedirectMode</b> { <br />
+&#160;&#160;<b>kRedirectUnset</b>
+, <b>kRedirectConsole</b>
+, <b>kRedirectNull</b>
+, <b>kRedirectFile</b>
+, <br />
+&#160;&#160;<b>kRedirectBuffer</b>
+, <b>kRedirectDelegate</b>
+, <b>kRedirectTerminal</b>
+, <b>unset</b>
+, <br />
+&#160;&#160;<b>console</b>
+, <b>null</b>
+, <b>file</b>
+, <b>buffer</b>
+<br />
+ }</td></tr>
+<tr class="separator:aeaab00c79a2762ee855a6bdfd549ee12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedf227bef25d6e3f9f9117c9f61a5b3b" id="r_aedf227bef25d6e3f9f9117c9f61a5b3b"><td class="memItemLeft" align="right" valign="top"><a id="aedf227bef25d6e3f9f9117c9f61a5b3b" name="aedf227bef25d6e3f9f9117c9f61a5b3b"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>StreamIndex</b> { <b>input</b>
+, <b>output</b>
+, <b>error</b>
+, <b>count</b>
+ }</td></tr>
+<tr class="separator:aedf227bef25d6e3f9f9117c9f61a5b3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cbb9183b132cc6a240375e6582b0fe1" id="r_a7cbb9183b132cc6a240375e6582b0fe1"><td class="memItemLeft" align="right" valign="top"><a id="a7cbb9183b132cc6a240375e6582b0fe1" name="a7cbb9183b132cc6a240375e6582b0fe1"></a>
 typedef std::function&lt; void(void *buf, size_t size)&gt;&#160;</td><td class="memItemRight" valign="bottom"><b>RedirectDelegate</b></td></tr>
 <tr class="separator:a7cbb9183b132cc6a240375e6582b0fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-static-methods" name="pro-static-methods"></a>
+Static Protected Member Functions</h2></td></tr>
+<tr class="memitem:a8bd51972a76ad5c1807f9f0a7fc0d4ef" id="r_a8bd51972a76ad5c1807f9f0a7fc0d4ef"><td class="memItemLeft" align="right" valign="top"><a id="a8bd51972a76ad5c1807f9f0a7fc0d4ef" name="a8bd51972a76ad5c1807f9f0a7fc0d4ef"></a>
+static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>Index</b> (StreamIndex stream)</td></tr>
+<tr class="separator:a8bd51972a76ad5c1807f9f0a7fc0d4ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -378,6 +425,24 @@ ProcessId&#160;</td><td class="memItemRight" valign="bottom"><b>_pid</b></td></t
 <tr class="memitem:a2bd30209c22a946e2607e56e2f297a9a" id="r_a2bd30209c22a946e2607e56e2f297a9a"><td class="memItemLeft" align="right" valign="top"><a id="a2bd30209c22a946e2607e56e2f297a9a" name="a2bd30209c22a946e2607e56e2f297a9a"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>_shell</b></td></tr>
 <tr class="separator:a2bd30209c22a946e2607e56e2f297a9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d994ab7abdbfe081bda811a6e749ce5" id="r_a6d994ab7abdbfe081bda811a6e749ce5"><td class="memItemLeft" align="right" valign="top"><a id="a6d994ab7abdbfe081bda811a6e749ce5" name="a6d994ab7abdbfe081bda811a6e749ce5"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>_rawTrailingArgument</b></td></tr>
+<tr class="separator:a6d994ab7abdbfe081bda811a6e749ce5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d7ba24d2e631e75a8c57e513bb30f8f" id="r_a1d7ba24d2e631e75a8c57e513bb30f8f"><td class="memItemLeft" align="right" valign="top"><a id="a1d7ba24d2e631e75a8c57e513bb30f8f" name="a1d7ba24d2e631e75a8c57e513bb30f8f"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>_environmentSet</b></td></tr>
+<tr class="separator:a1d7ba24d2e631e75a8c57e513bb30f8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a380354af6c3eb8ab2320b78b4c91a593" id="r_a380354af6c3eb8ab2320b78b4c91a593"><td class="memItemLeft" align="right" valign="top"><a id="a380354af6c3eb8ab2320b78b4c91a593" name="a380354af6c3eb8ab2320b78b4c91a593"></a>
+std::array&lt; <a class="el" href="structds2_1_1_host_1_1_process_spawner_1_1_redirect_descriptor.html">RedirectDescriptor</a>, kStreamCount &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_descriptors</b></td></tr>
+<tr class="separator:a380354af6c3eb8ab2320b78b4c91a593"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa69a5f6232cffcb28563c75a152da71a" id="r_aa69a5f6232cffcb28563c75a152da71a"><td class="memItemLeft" align="right" valign="top"><a id="aa69a5f6232cffcb28563c75a152da71a" name="aa69a5f6232cffcb28563c75a152da71a"></a>
+std::array&lt; std::thread, kStreamCount &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_redirectThreads</b></td></tr>
+<tr class="separator:aa69a5f6232cffcb28563c75a152da71a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc9ea07e725421d00a785450968c0bbd" id="r_acc9ea07e725421d00a785450968c0bbd"><td class="memItemLeft" align="right" valign="top"><a id="acc9ea07e725421d00a785450968c0bbd" name="acc9ea07e725421d00a785450968c0bbd"></a>
+std::mutex&#160;</td><td class="memItemRight" valign="bottom"><b>_outputBufferMutex</b></td></tr>
+<tr class="separator:acc9ea07e725421d00a785450968c0bbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84590a8010aa03ab4d5a9f4660ccf909" id="r_a84590a8010aa03ab4d5a9f4660ccf909"><td class="memItemLeft" align="right" valign="top"><a id="a84590a8010aa03ab4d5a9f4660ccf909" name="a84590a8010aa03ab4d5a9f4660ccf909"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>_debugOnCreate</b></td></tr>
+<tr class="separator:a84590a8010aa03ab4d5a9f4660ccf909"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f23845d5eda0e6d0be7861102d440be" id="r_a8f23845d5eda0e6d0be7861102d440be"><td class="memItemLeft" align="right" valign="top"><a id="a8f23845d5eda0e6d0be7861102d440be" name="a8f23845d5eda0e6d0be7861102d440be"></a>
 HANDLE&#160;</td><td class="memItemRight" valign="bottom"><b>_handle</b></td></tr>
 <tr class="separator:a8f23845d5eda0e6d0be7861102d440be"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -387,7 +452,37 @@ ThreadId&#160;</td><td class="memItemRight" valign="bottom"><b>_tid</b></td></tr
 <tr class="memitem:af085c92e606c13101d39514793273f36" id="r_af085c92e606c13101d39514793273f36"><td class="memItemLeft" align="right" valign="top"><a id="af085c92e606c13101d39514793273f36" name="af085c92e606c13101d39514793273f36"></a>
 HANDLE&#160;</td><td class="memItemRight" valign="bottom"><b>_threadHandle</b></td></tr>
 <tr class="separator:af085c92e606c13101d39514793273f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-static-attribs" name="pro-static-attribs"></a>
+Static Protected Attributes</h2></td></tr>
+<tr class="memitem:ac0fc1dd1a3733e90cba08cdabda7efe1" id="r_ac0fc1dd1a3733e90cba08cdabda7efe1"><td class="memItemLeft" align="right" valign="top">static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0fc1dd1a3733e90cba08cdabda7efe1">kStreamCount</a></td></tr>
+<tr class="separator:ac0fc1dd1a3733e90cba08cdabda7efe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ac0fc1dd1a3733e90cba08cdabda7efe1" name="ac0fc1dd1a3733e90cba08cdabda7efe1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0fc1dd1a3733e90cba08cdabda7efe1">&#9670;&#160;</a></span>kStreamCount</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t ds2::Host::ProcessSpawner::kStreamCount</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">=</div>
+<div class="line">      <span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(StreamIndex::count)</div>
+</div><!-- fragment -->
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Headers/DebugServer2/Host/POSIX/<a class="el" href="_p_o_s_i_x_2_process_spawner_8h_source.html">ProcessSpawner.h</a></li>
 <li>Headers/DebugServer2/Host/Windows/<a class="el" href="_windows_2_process_spawner_8h_source.html">ProcessSpawner.h</a></li>
