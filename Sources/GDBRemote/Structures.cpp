@@ -18,6 +18,7 @@
 #include "JSObjects/JSObjects.h"
 
 #include <cerrno>
+#include <cctype>
 #include <climits>
 #include <cstdlib>
 #include <cstring>
@@ -133,11 +134,22 @@ bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
     break;
 
   case kCompatibilityModeLLDBThread:
-    if (std::strncmp(str, "thread:", 7) == 0) {
-      str += 7;
-      if (!parse_hex(str, new_tid))
-        return false;
-    }
+    if (std::strncmp(str, "thread:", 7) != 0)
+      return false;
+
+    str += 7;
+    if (!std::isxdigit(static_cast<unsigned char>(*str)))
+      return false;
+
+    if (!parse_hex(str, new_tid))
+      return false;
+
+    // LLDB can terminate the thread suffix with a trailing ';'.
+    if (*eptr == ';')
+      ++eptr;
+
+    if (*eptr != '\0')
+      return false;
     break;
 
   default:
