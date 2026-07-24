@@ -1038,18 +1038,19 @@ void Session::Handle_P(ProtocolInterpreter::Handler const &,
   if (*ptidptr == ';') {
     //
     // LLDB will send ;thread:tid when sending 'P' commands; pid
-    // is deduced from current process. Only LLDB sends this suffix, so
-    // treat it like QThreadSuffixSupported: a reliable signal to
-    // (re-)enter LLDB mode, since onWriteRegisterValue's register table
-    // choice depends on it.
-    if (_compatMode != kCompatibilityModeLLDB) {
-      DS2LOG(Debug, "entering LLDB compatibility mode");
-      _compatMode = kCompatibilityModeLLDB;
-    }
-
+    // is deduced from current process.
+    //
     if (!ptid.parse(ptidptr + 1, kCompatibilityModeLLDBThread)) {
       sendError(kErrorInvalidArgument);
       return;
+    }
+
+    // Only LLDB sends this suffix, so a successful parse is as reliable a
+    // signal as QThreadSuffixSupported: (re-)enter LLDB mode, since
+    // onWriteRegisterValue's register table choice depends on it.
+    if (_compatMode != kCompatibilityModeLLDB) {
+      DS2LOG(Debug, "entering LLDB compatibility mode");
+      _compatMode = kCompatibilityModeLLDB;
     }
   } else {
     //
@@ -1075,17 +1076,18 @@ void Session::Handle_p(ProtocolInterpreter::Handler const &,
   if (*eptr == ';') {
     //
     // LLDB will send ;thread:tid when sending 'p' commands; pid
-    // is deduced from current process. Only LLDB sends this suffix, so
-    // treat it the same way as QThreadSuffixSupported / Handle_P.
+    // is deduced from current process.
     //
-    if (_compatMode != kCompatibilityModeLLDB) {
-      DS2LOG(Debug, "entering LLDB compatibility mode");
-      _compatMode = kCompatibilityModeLLDB;
-    }
-
     if (!ptid.parse(eptr + 1, kCompatibilityModeLLDBThread)) {
       sendError(kErrorInvalidArgument);
       return;
+    }
+
+    // Only LLDB sends this suffix, so treat a successful parse the same
+    // way as QThreadSuffixSupported / Handle_P.
+    if (_compatMode != kCompatibilityModeLLDB) {
+      DS2LOG(Debug, "entering LLDB compatibility mode");
+      _compatMode = kCompatibilityModeLLDB;
     }
   } else {
     //
