@@ -10,6 +10,10 @@ on:
   workflow_dispatch:
   workflow_call:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 env:
   LLVM_REF: ec450b19004a653f3db3ad50e88fbf6529a9d841
   SCCACHE_DIRECT: 'true'
