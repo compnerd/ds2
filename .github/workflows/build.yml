@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  LLVM_REF: ec450b19004a653f3db3ad50e88fbf6529a9d841
+  LLVM_REF: bb9934d4dfef9033ded36d26827dbb6d3ac1dd92 # release/23.x
   SCCACHE_DIRECT: 'true'
 
 jobs:
