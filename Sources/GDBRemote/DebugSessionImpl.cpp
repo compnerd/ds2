@@ -101,6 +101,11 @@ ErrorCode DebugSessionImplBase::onQuerySupported(
     localFeatures.push_back(std::string("QProgramSignals+"));
     localFeatures.push_back(std::string("qXfer:siginfo:read+"));
     localFeatures.push_back(std::string("qXfer:siginfo:write+"));
+    // The forked child is detached and left to run free -- we don't support
+    // debugging it -- but we do detect the fork/vfork and report it as the
+    // corresponding stop reason (see Target::Linux::Thread::updateStopInfo).
+    localFeatures.push_back(std::string("fork-events+"));
+    localFeatures.push_back(std::string("vfork-events+"));
 #else
     localFeatures.push_back(std::string("QProgramSignals-"));
     localFeatures.push_back(std::string("qXfer:siginfo:read-"));
