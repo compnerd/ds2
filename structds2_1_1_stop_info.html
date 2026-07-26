@@ -111,9 +111,11 @@ Collaboration diagram for ds2::StopInfo:</div>
 <div class="dyncontent">
 <div class="center"><img src="structds2_1_1_stop_info__coll__graph.png" border="0" usemap="#ads2_1_1_stop_info_coll__map" alt="Collaboration graph"/></div>
 <map name="ads2_1_1_stop_info_coll__map" id="ads2_1_1_stop_info_coll__map">
-<area shape="rect" title=" " alt="" coords="5,94,103,120"/>
-<area shape="rect" href="classds2_1_1_address.html" title=" " alt="" coords="6,5,102,31"/>
-<area shape="poly" title=" " alt="" coords="57,47,57,94,51,94,51,47"/>
+<area shape="rect" title=" " alt="" coords="77,94,174,120"/>
+<area shape="rect" href="classds2_1_1_address.html" title=" " alt="" coords="5,5,102,31"/>
+<area shape="poly" title=" " alt="" coords="52,46,58,69,70,82,86,91,83,96,67,86,53,71,47,47"/>
+<area shape="rect" href="structds2_1_1_process_thread_id.html" title=" " alt="" coords="125,5,272,31"/>
+<area shape="poly" title=" " alt="" coords="189,46,172,72,145,95,142,91,167,68,184,43"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -139,6 +141,10 @@ Public Types</h2></td></tr>
 &#160;&#160;<b>kReasonThreadSpawn</b>
 , <b>kReasonThreadEntry</b>
 , <b>kReasonThreadExit</b>
+, <b>kReasonFork</b>
+, <br />
+&#160;&#160;<b>kReasonVFork</b>
+, <b>kReasonVForkDone</b>
 <br />
  }</td></tr>
 <tr class="separator:aba7aee842ae6940fa02f61e24f24894e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,6 +181,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>watchpointIndex</b></t
 <tr class="memitem:ad955297380c60869836bee8c21305065" id="r_ad955297380c60869836bee8c21305065"><td class="memItemLeft" align="right" valign="top"><a id="ad955297380c60869836bee8c21305065" name="ad955297380c60869836bee8c21305065"></a>
 std::optional&lt; <a class="el" href="classds2_1_1_address.html">Address</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fault</b></td></tr>
 <tr class="separator:ad955297380c60869836bee8c21305065"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c0d7906e59c5719faf62d6023fe8482" id="r_a9c0d7906e59c5719faf62d6023fe8482"><td class="memItemLeft" align="right" valign="top"><a id="a9c0d7906e59c5719faf62d6023fe8482" name="a9c0d7906e59c5719faf62d6023fe8482"></a>
+<a class="el" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a>&#160;</td><td class="memItemRight" valign="bottom"><b>child</b></td></tr>
+<tr class="separator:a9c0d7906e59c5719faf62d6023fe8482"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>Headers/DebugServer2/<a class="el" href="_types_8h_source.html">Types.h</a></li>

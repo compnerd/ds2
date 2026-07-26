@@ -90,6 +90,7 @@ $(function(){ initResizable(false); });
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classds2_1_1_g_d_b_remote_1_1_debug_session_impl_base-members.html">List of all members</a>  </div>
@@ -143,6 +144,13 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>DebugSessionImplBase</b> (int attachPid)</td></tr>
 <tr class="separator:aa50fc74e712ba26c8268636ce691f830"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classds2_1_1_g_d_b_remote_1_1_session_delegate"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classds2_1_1_g_d_b_remote_1_1_session_delegate')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classds2_1_1_g_d_b_remote_1_1_session_delegate.html">ds2::GDBRemote::SessionDelegate</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
+Protected Types</h2></td></tr>
+<tr class="memitem:a4312e3d9a2a12468d6de67fe24904ce0" id="r_a4312e3d9a2a12468d6de67fe24904ce0"><td class="memItemLeft" align="right" valign="top"><a id="a4312e3d9a2a12468d6de67fe24904ce0" name="a4312e3d9a2a12468d6de67fe24904ce0"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Extension</b> : uint32_t { <b>kExtensionForkEvents</b> = (1u &lt;&lt; 0)
+, <b>kExtensionVForkEvents</b> = (1u &lt;&lt; 1)
+ }</td></tr>
+<tr class="separator:a4312e3d9a2a12468d6de67fe24904ce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -457,6 +465,15 @@ std::map&lt; uint64_t, Architecture::CPUState &gt;&#160;</td><td class="memItemR
 <tr class="memitem:a716a181d53a370e53918decc63a301d2" id="r_a716a181d53a370e53918decc63a301d2"><td class="memItemLeft" align="right" valign="top"><a id="a716a181d53a370e53918decc63a301d2" name="a716a181d53a370e53918decc63a301d2"></a>
 <a class="el" href="classds2_1_1_host_1_1_process_spawner.html">Host::ProcessSpawner</a>&#160;</td><td class="memItemRight" valign="bottom"><b>_spawner</b></td></tr>
 <tr class="separator:a716a181d53a370e53918decc63a301d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb0c0642347c42cf340885c06abdce50" id="r_abb0c0642347c42cf340885c06abdce50"><td class="memItemLeft" align="right" valign="top"><a id="abb0c0642347c42cf340885c06abdce50" name="abb0c0642347c42cf340885c06abdce50"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>_requestedExtensions</b> = 0</td></tr>
+<tr class="separator:abb0c0642347c42cf340885c06abdce50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31523b8c9b424e1f75562376adcbdd5b" id="r_a31523b8c9b424e1f75562376adcbdd5b"><td class="memItemLeft" align="right" valign="top"><a id="a31523b8c9b424e1f75562376adcbdd5b" name="a31523b8c9b424e1f75562376adcbdd5b"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>_supportedExtensions</b> = 0</td></tr>
+<tr class="separator:a31523b8c9b424e1f75562376adcbdd5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa51ecfc0e44fdb53af8dc922cfaa721e" id="r_aa51ecfc0e44fdb53af8dc922cfaa721e"><td class="memItemLeft" align="right" valign="top"><a id="aa51ecfc0e44fdb53af8dc922cfaa721e" name="aa51ecfc0e44fdb53af8dc922cfaa721e"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>_enabledExtensions</b> = 0</td></tr>
+<tr class="separator:aa51ecfc0e44fdb53af8dc922cfaa721e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a286297d34edddcb5175c00c1194dc1a6" id="r_a286297d34edddcb5175c00c1194dc1a6"><td class="memItemLeft" align="right" valign="top"><a id="a286297d34edddcb5175c00c1194dc1a6" name="a286297d34edddcb5175c00c1194dc1a6"></a>
 <a class="el" href="structds2_1_1_g_d_b_remote_1_1_iteration_state.html">IterationState</a>&lt; ThreadId &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_threadIterationState</b></td></tr>
 <tr class="separator:a286297d34edddcb5175c00c1194dc1a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
