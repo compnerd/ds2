@@ -20,6 +20,7 @@
 #include <cerrno>
 #include <cctype>
 #include <climits>
+#include <csignal>
 #include <cstdlib>
 #include <cstring>
 #include <iomanip>
@@ -302,11 +303,35 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
 
     // The stop description conventionally carries the fault address as an
     // "address=<hex>" substring, so a client can locate the faulting
-    // expression; emit 0x so base-auto parsers decode the full value.
+    // expression; emit 0x so base-auto parsers decode the full value. The
+    // description must still lead with "signal <NAME>" the way LLDB's own
+    // client-side StopInfoUnixSignal::GetDescription() would have synthesized
+    // it: that synthesis only runs when the stop-reply carries no
+    // description at all, so sending just the bare address here replaces
+    // "stop reason = signal SIGSEGV" with "stop reason = address=0x..."
+    // instead of adding to it. This mirrors upstream lldb-server's own
+    // "signal " + GetSignalDescription(...) convention (see
+    // lldb/source/Plugins/Process/POSIX/CrashReason.cpp).
     if (fault.has_value()) {
+      char const *signalName = nullptr;
+      if (signal == SIGSEGV) {
+        signalName = "SIGSEGV";
+      }
+#if defined(OS_POSIX)
+      else if (signal == SIGBUS) {
+        signalName = "SIGBUS";
+      }
+#endif
+
       std::ostringstream desc;
-      desc << "address=0x" << std::hex
-           << static_cast<uint64_t>(fault.value());
+      desc << "signal ";
+      if (signalName != nullptr) {
+        desc << signalName;
+      } else {
+        desc << signal;
+      }
+      desc << " (fault address=0x" << std::hex
+           << static_cast<uint64_t>(fault.value()) << ')';
       ss << ';' << "description:" << ToHex(desc.str());
     }
   }
