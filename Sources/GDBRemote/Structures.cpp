@@ -38,6 +38,34 @@ using ds2::Utils::Stringify;
 namespace ds2 {
 namespace GDBRemote {
 
+namespace {
+
+const char *EndianName(Endian endian) {
+  switch (endian) {
+  case kEndianBig:
+    return "big";
+  case kEndianLittle:
+    return "little";
+  case kEndianPDP:
+    return "pdp";
+  default:
+    return "unknown";
+  }
+}
+
+std::string JoinRegisterNumbers(const std::vector<uint32_t> &registers,
+                                bool decimal) {
+  std::ostringstream ss;
+  for (size_t n = 0; n < registers.size(); ++n) {
+    if (n != 0)
+      ss << ',';
+    ss << (decimal ? std::dec : std::hex) << registers[n] << std::dec;
+  }
+  return ss.str();
+}
+
+} // namespace
+
 //
 // feature+ or feature- or feature? or feature=value
 //
@@ -281,7 +309,7 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
   if (!threadName.empty()) {
     ss << ';' << "name:" << threadName;
   }
-  if (!(core < 0)) {
+  if (core >= 0) {
     ss << ';' << "core:" << core;
   }
 
@@ -347,41 +375,39 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
   return ss.str();
 }
 
-void StopInfo::encodeRegisters(std::map<std::string, std::string> &regs,
-                               bool hexIndex) const {
-  for (auto &reg : registers) {
-    std::stringstream regNum;
-    std::stringstream regVal;
-    size_t regsize = reg.second.size << 3;
-
-    if (hexIndex) {
-      regNum << HEX(2) << (reg.first & 0xff);
-    } else {
-      regNum << DEC << reg.first;
-    }
-
-#if defined(ENDIAN_BIG)
-    regVal << HEX(regsize >> 2) << reg.second.value;
-#else
-    regVal << HEX(regsize >> 2) << (Swap64(reg.second.value) >> (64 - regsize));
-#endif
-
-    regs.insert(std::make_pair(regNum.str(), regVal.str()));
+std::string StopInfo::formatRegisterNumber(uint64_t regno, bool hexIndex) const {
+  std::ostringstream ss;
+  if (hexIndex) {
+    ss << HEX(2) << (regno & 0xff);
+  } else {
+    ss << DEC << regno;
   }
+  return ss.str();
+}
+
+std::string
+StopInfo::formatRegisterValue(const Architecture::GPRegisterValue &value) const {
+  std::ostringstream ss;
+  size_t regsize = value.size << 3;
+#if defined(ENDIAN_BIG)
+  ss << HEX(regsize >> 2) << value.value;
+#else
+  ss << HEX(regsize >> 2) << (Swap64(value.value) >> (64 - regsize));
+#endif
+  return ss.str();
 }
 
 std::string StopInfo::encodeRegisters() const {
   std::ostringstream ss;
   bool first = true;
-  std::map<std::string, std::string> regs;
-  encodeRegisters(regs, true);
 
-  for (auto &reg : regs) {
+  for (const auto &reg : registers) {
     if (!first) {
       ss << ';';
     }
 
-    ss << reg.first << ':' << reg.second;
+    ss << formatRegisterNumber(reg.first, true) << ':'
+       << formatRegisterValue(reg.second);
 
     first = false;
   }
@@ -523,11 +549,9 @@ JSDictionary *StopInfo::encodeJson() const {
   }
 
   auto regSet = JSDictionary::New();
-  std::map<std::string, std::string> regs;
-  encodeRegisters(regs, false);
-
-  for (auto const &reg : regs) {
-    regSet->set(reg.first, JSString::New(reg.second));
+  for (const auto &reg : registers) {
+    regSet->set(formatRegisterNumber(reg.first, false),
+                JSString::New(formatRegisterValue(reg.second)));
   }
 
   threadObj->set("registers", regSet);
@@ -588,22 +612,7 @@ std::string HostInfo::encode() const {
   if (!hostName.empty()) {
     ss << "hostname:" << ToHex(hostName) << ';';
   }
-  ss << "endian:";
-  switch (endian) {
-  case kEndianBig:
-    ss << "big";
-    break;
-  case kEndianLittle:
-    ss << "little";
-    break;
-  case kEndianPDP:
-    ss << "pdp";
-    break;
-  default:
-    ss << "unknown";
-    break;
-  }
-  ss << ';';
+  ss << "endian:" << EndianName(endian) << ';';
   ss << "ptrsize:" << pointerSize << ';';
   ss << "watchpoint_exceptions_received:"
      << (watchpointExceptionsReceivedBefore ? "before" : "after") << ';';
@@ -667,22 +676,7 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
         ss << "cpusubtype:" << HEX0 << nativeCPUSubType << ';';
       }
     }
-    ss << "endian:";
-    switch (endian) {
-    case kEndianBig:
-      ss << "big";
-      break;
-    case kEndianLittle:
-      ss << "little";
-      break;
-    case kEndianPDP:
-      ss << "pdp";
-      break;
-    default:
-      ss << "unknown";
-      break;
-    }
-    ss << ';';
+    ss << "endian:" << EndianName(endian) << ';';
     ss << "ptrsize:" << pointerSize << ';';
     ss << "vendor:" << osVendor << ";";
     ss << "ostype:" << osType << ";";
@@ -760,84 +754,84 @@ std::string RegisterInfo::encode(int xmlSet) const {
     return std::string();
   }
 
-  std::vector<std::pair<std::string, std::string>> regInfo;
-
-  regInfo.push_back(std::make_pair("name", registerName));
-  if (!alternateName.empty())
-    regInfo.push_back(
-        std::make_pair(xml ? "altname" : "alt-name", alternateName));
-
-  regInfo.push_back(std::make_pair("bitsize", ds2::Utils::ToString(bitSize)));
-  regInfo.push_back(std::make_pair(
-      "offset", ds2::Utils::ToString(byteOffset < 0 ? 0 : byteOffset)));
-
-  if (encodingName != nullptr)
-    regInfo.push_back(std::make_pair("encoding", encodingName));
-
-  if (formatName != nullptr)
-    regInfo.push_back(std::make_pair("format", formatName));
-
-  if (!setName.empty()) {
-    if (xml)
-      regInfo.push_back(
-          std::make_pair("group_id", ds2::Utils::ToString(xmlSet)));
-    else
-      regInfo.push_back(std::make_pair("set", setName));
-  }
-
-  if (xml) {
-    regInfo.push_back(std::make_pair("regnum", ds2::Utils::ToString(regno)));
-  }
-
-  if (!(ehframeRegisterIndex < 0))
-    regInfo.push_back(
-        std::make_pair(xml ? "ehframe_regnum" : "ehframe",
-                       ds2::Utils::ToString(ehframeRegisterIndex)));
-
-  if (!(dwarfRegisterIndex < 0))
-    regInfo.push_back(std::make_pair(xml ? "dwarf_regnum" : "dwarf",
-                                     ds2::Utils::ToString(dwarfRegisterIndex)));
-
-  if (!genericName.empty())
-    regInfo.push_back(std::make_pair("generic", genericName));
-
-  if (!containerRegisters.empty()) {
-    std::ostringstream contStream;
-    for (size_t n = 0; n < containerRegisters.size(); n++) {
-      if (n != 0)
-        contStream << ',';
-      contStream << (xml ? std::dec : std::hex) << containerRegisters[n]
-                 << std::dec;
-    }
-    regInfo.push_back(std::make_pair(xml ? "value_regnums" : "container-regs",
-                                     contStream.str()));
-  }
-
-  if (!invalidateRegisters.empty()) {
-    std::ostringstream invStream;
-    for (size_t n = 0; n < invalidateRegisters.size(); n++) {
-      if (n != 0)
-        invStream << ',';
-      invStream << (xml ? std::dec : std::hex) << invalidateRegisters[n]
-                << std::dec;
-    }
-    regInfo.push_back(std::make_pair(
-        xml ? "invalidate_regnums" : "invalidate-regs", invStream.str()));
-  }
-
   std::ostringstream ss;
-  if (xml)
+  if (xml) {
     ss << "<reg ";
 
-  for (auto const &entry : regInfo) {
-    if (xml)
-      ss << entry.first << "=" << '"' << entry.second << '"' << ' ';
-    else
-      ss << entry.first << ":" << entry.second << ";";
-  }
+    auto append = [&ss](char const *key, auto const &value) {
+      ss << key << "=" << '"' << value << '"' << ' ';
+    };
 
-  if (xml)
+    append("name", registerName);
+    if (!alternateName.empty())
+      append("altname", alternateName);
+
+    append("bitsize", bitSize);
+    append("offset", byteOffset < 0 ? 0 : byteOffset);
+
+    if (encodingName != nullptr)
+      append("encoding", encodingName);
+
+    if (formatName != nullptr)
+      append("format", formatName);
+
+    if (!setName.empty())
+      append("group_id", xmlSet);
+
+    append("regnum", regno);
+
+    if (ehframeRegisterIndex >= 0)
+      append("ehframe_regnum", ehframeRegisterIndex);
+
+    if (dwarfRegisterIndex >= 0)
+      append("dwarf_regnum", dwarfRegisterIndex);
+
+    if (!genericName.empty())
+      append("generic", genericName);
+
+    if (!containerRegisters.empty())
+      append("value_regnums", JoinRegisterNumbers(containerRegisters, true));
+
+    if (!invalidateRegisters.empty())
+      append("invalidate_regnums", JoinRegisterNumbers(invalidateRegisters, true));
+
     ss << "/>";
+  } else {
+    auto append = [&ss](char const *key, auto const &value) {
+      ss << key << ":" << value << ";";
+    };
+
+    append("name", registerName);
+    if (!alternateName.empty())
+      append("alt-name", alternateName);
+
+    append("bitsize", bitSize);
+    append("offset", byteOffset < 0 ? 0 : byteOffset);
+
+    if (encodingName != nullptr)
+      append("encoding", encodingName);
+
+    if (formatName != nullptr)
+      append("format", formatName);
+
+    if (!setName.empty())
+      append("set", setName);
+
+    if (ehframeRegisterIndex >= 0)
+      append("ehframe", ehframeRegisterIndex);
+
+    if (dwarfRegisterIndex >= 0)
+      append("dwarf", dwarfRegisterIndex);
+
+    if (!genericName.empty())
+      append("generic", genericName);
+
+    if (!containerRegisters.empty())
+      append("container-regs", JoinRegisterNumbers(containerRegisters, false));
+
+    if (!invalidateRegisters.empty())
+      append("invalidate-regs", JoinRegisterNumbers(invalidateRegisters, false));
+  }
 
   return ss.str();
 }
