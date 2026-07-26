@@ -1037,7 +1037,19 @@ ret:
   return error;
 }
 
-ErrorCode DebugSessionImplBase::onDetach(Session &, ProcessId, bool stopped) {
+ErrorCode DebugSessionImplBase::onDetach(Session &, ProcessId pid,
+                                         bool stopped) {
+  // The GDB-remote `D;<pid>` form lets a client detach a specific process
+  // by pid, e.g. the child of a fork()/vfork() we reported under the
+  // fork-events/vfork-events extension. We don't debug that child at all
+  // -- it was already detached and left to run free the moment we saw the
+  // fork -- so there's nothing to do beyond acknowledging the request; in
+  // particular we must *not* fall through to detaching our real (parent)
+  // process below.
+  if (pid != kAnyProcessId && pid != _process->pid()) {
+    return kSuccess;
+  }
+
   SoftwareBreakpointManager *bpm = _process->softwareBreakpointManager();
   if (bpm != nullptr) {
     bpm->clear();
