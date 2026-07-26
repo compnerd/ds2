@@ -116,15 +116,18 @@ Public Types</h2></td></tr>
 <tr class="memitem:a0f7fc7731e135cdf185db05c991d4dab" id="r_a0f7fc7731e135cdf185db05c991d4dab"><td class="memItemLeft" align="right" valign="top"><a id="a0f7fc7731e135cdf185db05c991d4dab" name="a0f7fc7731e135cdf185db05c991d4dab"></a>
 typedef std::vector&lt; <a class="el" href="structds2_1_1_g_d_b_remote_1_1_protocol_interpreter_1_1_handler.html">Handler</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>Collection</b></td></tr>
 <tr class="separator:a0f7fc7731e135cdf185db05c991d4dab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57755cb4f947d08c867dffc2308e8f4e" id="r_a57755cb4f947d08c867dffc2308e8f4e"><td class="memItemLeft" align="right" valign="top"><a id="a57755cb4f947d08c867dffc2308e8f4e" name="a57755cb4f947d08c867dffc2308e8f4e"></a>
-typedef void(ProtocolHandler::*)&#160;</td><td class="memItemRight" valign="bottom"><b>Callback</b>(<a class="el" href="structds2_1_1_g_d_b_remote_1_1_protocol_interpreter_1_1_handler.html">Handler</a> const &amp;handler, std::string const &amp;data)</td></tr>
-<tr class="separator:a57755cb4f947d08c867dffc2308e8f4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1aef7ffcd3ecc0ab1117bf30a157d35" id="r_ae1aef7ffcd3ecc0ab1117bf30a157d35"><td class="memItemLeft" align="right" valign="top"><a id="ae1aef7ffcd3ecc0ab1117bf30a157d35" name="ae1aef7ffcd3ecc0ab1117bf30a157d35"></a>
+typedef void(ProtocolHandler::*)&#160;</td><td class="memItemRight" valign="bottom"><b>Callback</b>(<a class="el" href="structds2_1_1_g_d_b_remote_1_1_protocol_interpreter_1_1_handler.html">Handler</a> const &amp;, std::string const &amp;)</td></tr>
+<tr class="separator:ae1aef7ffcd3ecc0ab1117bf30a157d35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab46d8b09e611ec34669b7d42a8890ddf" id="r_ab46d8b09e611ec34669b7d42a8890ddf"><td class="memItemLeft" align="right" valign="top"><a id="ab46d8b09e611ec34669b7d42a8890ddf" name="ab46d8b09e611ec34669b7d42a8890ddf"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>CallbackType</b> = Callback</td></tr>
+<tr class="separator:ab46d8b09e611ec34669b7d42a8890ddf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae0f8fc98ab5f76ca30d435e5b90ae0d7" id="r_ae0f8fc98ab5f76ca30d435e5b90ae0d7"><td class="memItemLeft" align="right" valign="top"><a id="ae0f8fc98ab5f76ca30d435e5b90ae0d7" name="ae0f8fc98ab5f76ca30d435e5b90ae0d7"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>compare</b> (std::string const &amp;command) const</td></tr>
-<tr class="separator:ae0f8fc98ab5f76ca30d435e5b90ae0d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f858945f67c34d4c29593fd91437562" id="r_a5f858945f67c34d4c29593fd91437562"><td class="memItemLeft" align="right" valign="top"><a id="a5f858945f67c34d4c29593fd91437562" name="a5f858945f67c34d4c29593fd91437562"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>compare</b> (std::string_view command) const</td></tr>
+<tr class="separator:a5f858945f67c34d4c29593fd91437562"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
