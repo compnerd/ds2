@@ -149,6 +149,9 @@ struct StopInfo {
     kReasonThreadSpawn,
     kReasonThreadEntry,
     kReasonThreadExit,
+    kReasonFork,
+    kReasonVFork,
+    kReasonVForkDone,
 #if defined(OS_WIN32)
     kReasonMemoryError,
     kReasonMemoryAlignment,
@@ -180,6 +183,12 @@ struct StopInfo {
   // expression for post-mortem analysis.
   std::optional<Address> fault;
 
+  // Set for kReasonFork/kReasonVFork: the pid/tid of the newly forked
+  // child. We don't support debugging the child (it's detached and left
+  // to run free), but the parent's stop still needs to report who it was,
+  // per the fork-events/vfork-events GDB-remote extension.
+  ProcessThreadId child;
+
   StopInfo() { clear(); }
 
   inline void clear() {
@@ -194,6 +203,7 @@ struct StopInfo {
     watchpointAddress = 0;
     watchpointIndex = -1;
     fault.reset();
+    child.clear();
   }
 };
 
