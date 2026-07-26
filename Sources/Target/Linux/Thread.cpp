@@ -128,6 +128,14 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
         DS2LOG(Warning,
                "tid %d received signal %s from an external source (sender=%d)",
                tid(), strsignal(_stopInfo.signal), si.si_pid);
+
+      // For kernel-generated memory-fault signals, si_addr carries the
+      // faulting address. User-generated SIGSEGV/SIGBUS reports have
+      // si_code <= 0 and a different active union member.
+      if ((_stopInfo.signal == SIGSEGV || _stopInfo.signal == SIGBUS) &&
+          si.si_code > 0) {
+        _stopInfo.fault = reinterpret_cast<uint64_t>(si.si_addr);
+      }
     }
   } break;
 
