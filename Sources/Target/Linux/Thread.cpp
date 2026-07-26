@@ -80,7 +80,10 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
       return error;
     }
 
-    if (waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) { // (1)
+    static constexpr int kEventClone = SIGTRAP | (PTRACE_EVENT_CLONE << 8);
+    const int waitStatusHi = waitStatus >> 8;
+
+    if (waitStatusHi == kEventClone) { // (1)
       _stopInfo.event = StopInfo::kEventNone;
       _stopInfo.reason = StopInfo::kReasonThreadSpawn;
     } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) { // (2)
