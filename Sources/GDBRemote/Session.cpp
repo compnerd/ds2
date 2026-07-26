@@ -36,24 +36,29 @@ namespace GDBRemote {
 
 Session::Session(CompatibilityMode mode)
     : SessionBase(mode), _threadsInStopReply(false) {
-#define REGISTER_HANDLER(MODE, MESSAGE, HANDLER)                               \
-  do {                                                                         \
-    bool REGISTER_HANDLER_result = interpreter().registerHandler(              \
-        MODE, MESSAGE, this, &Session::Handle_##HANDLER);                      \
-    DS2ASSERT(REGISTER_HANDLER_result);                                        \
-  } while (0)
+  auto registerHandler = [this](ProtocolInterpreter::Handler::Mode mode,
+                                char const *command,
+                                void (Session::*callback)(
+                                    ProtocolInterpreter::Handler const &,
+                                    std::string const &)) {
+    bool result = interpreter().registerHandler(mode, command, this, callback);
+    DS2ASSERT(result);
+  };
 
-#define REGISTER_HANDLER_EQUALS_2(MESSAGE, HANDLER)                            \
+#define REGISTER_HANDLER(MODE, MESSAGE, HANDLER)                              \
+  registerHandler(MODE, MESSAGE, &Session::Handle_##HANDLER)
+
+#define REGISTER_HANDLER_EQUALS_2(MESSAGE, HANDLER)                           \
   REGISTER_HANDLER(ProtocolInterpreter::Handler::kModeEquals, MESSAGE, HANDLER)
 
-#define REGISTER_HANDLER_EQUALS_1(HANDLER)                                     \
+#define REGISTER_HANDLER_EQUALS_1(HANDLER)                                    \
   REGISTER_HANDLER_EQUALS_2(#HANDLER, HANDLER)
 
-#define REGISTER_HANDLER_STARTS_WITH_2(MESSAGE, HANDLER)                       \
-  REGISTER_HANDLER(ProtocolInterpreter::Handler::kModeStartsWith, MESSAGE,     \
+#define REGISTER_HANDLER_STARTS_WITH_2(MESSAGE, HANDLER)                      \
+  REGISTER_HANDLER(ProtocolInterpreter::Handler::kModeStartsWith, MESSAGE,    \
                    HANDLER)
 
-#define REGISTER_HANDLER_STARTS_WITH_1(HANDLER)                                \
+#define REGISTER_HANDLER_STARTS_WITH_1(HANDLER)                               \
   REGISTER_HANDLER_STARTS_WITH_2(#HANDLER, HANDLER)
 
   REGISTER_HANDLER_EQUALS_2("\x03", ControlC);
@@ -181,6 +186,7 @@ Session::Session(CompatibilityMode mode)
 #undef REGISTER_HANDLER_STARTS_WITH_2
 #undef REGISTER_HANDLER_EQUALS_1
 #undef REGISTER_HANDLER_EQUALS_2
+#undef REGISTER_HANDLER
 }
 
 bool Session::ParseList(std::string const &string, char separator,
