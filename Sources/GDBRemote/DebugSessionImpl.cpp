@@ -1275,9 +1275,15 @@ void DebugSessionImplBase::applyEnabledExtensionsToProcess() const {
   if (_process == nullptr)
     return;
 
-  _process->setForkEventsEnabled(
-      (_enabledExtensions & kExtensionForkEvents) != 0,
-      (_enabledExtensions & kExtensionVForkEvents) != 0);
+  uint32_t processExtensions = 0;
+  if ((_enabledExtensions & kExtensionForkEvents) != 0) {
+    processExtensions |= Target::ProcessBase::kExtensionForkEvents;
+  }
+  if ((_enabledExtensions & kExtensionVForkEvents) != 0) {
+    processExtensions |= Target::ProcessBase::kExtensionVForkEvents;
+  }
+
+  _process->setEnabledExtensions(processExtensions);
 }
 
 void DebugSessionImplBase::appendOutput(char const *buf, size_t size) {
