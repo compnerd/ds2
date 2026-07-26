@@ -30,6 +30,8 @@ public:
 protected:
   bool _terminated;
   uint32_t _flags;
+  bool _forkEventsEnabled = false;
+  bool _vforkEventsEnabled = false;
   ProcessId _pid;
   ProcessInfo _info;
   Address _loadBase;
@@ -48,6 +50,18 @@ public:
 
 public:
   inline bool attached() const { return (_flags & kFlagAttachedProcess) != 0; }
+
+public:
+  // Whether the client has negotiated support for the fork-events and
+  // vfork-events GDB-remote extensions (see qSupported); stop reasons tied
+  // to these extensions are only reported when the corresponding flag here
+  // is set.
+  inline bool forkEventsEnabled() const { return _forkEventsEnabled; }
+  inline bool vforkEventsEnabled() const { return _vforkEventsEnabled; }
+  inline void setForkEventsEnabled(bool fork, bool vfork) {
+    _forkEventsEnabled = fork;
+    _vforkEventsEnabled = vfork;
+  }
 
 public:
   inline Address const &loadBase() const { return _loadBase; }
