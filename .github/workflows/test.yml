@@ -1,0 +1,477 @@
+name: Test
+
+on:
+  workflow_call:
+    inputs:
+      llvm-ref:
+        description: llvm-project commit/ref the build artifacts were built against
+        required: true
+        type: string
+      platform:
+        description: >-
+          Which platform's jobs to run in this call (linux|android). Callers
+          invoke this workflow once per platform, gated on just that
+          platform's own build jobs, so e.g. Android tests can start as soon
+          as the Android build finishes without waiting on the Linux build.
+          Adding Windows support later is meant to follow the same shape:
+          a new test-windows-* job gated on `inputs.platform == 'windows'`,
+          plus a third call from build.yml -- nothing about the Linux/Android
+          jobs below should need to change.
+        required: true
+        type: string
+
+jobs:
+
+  # ---------------------------------------------------------------------
+  # Linux
+  # ---------------------------------------------------------------------
+  #
+  # Each category shard is a genuinely separate job/runner (a strategy.matrix,
+  # same as before this file existed) rather than a single job backgrounding
+  # all four shards together: that would put four ds2+lldb-dotest instances
+  # on one runner's fixed CPU budget, contending with each other instead of
+  # actually running in parallel. The job's own `name:` deliberately does NOT
+  # interpolate matrix.test-category (unlike the version of this file that a
+  # reviewer flagged): GitHub groups matrix jobs that share an identical name
+  # into a single collapsible entry in the PR checks list, which is what
+  # actually fixes the one-check-per-category-per-arch clutter -- varying the
+  # name per category is what defeats that grouping and is why each category
+  # showed up as its own separate, differently-named check before. The
+  # *-status job per arch gives branch protection one plain, matrix-independent
+  # check name to require rather than depending on how that grouping is
+  # surfaced there.
+
+  test-linux-i686:
+    if: inputs.platform == 'linux'
+    runs-on: ubuntu-latest
+    name: Test Linux i686
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test-category: misc
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/api
+              SourceCache/llvm/lldb/test/API/lang
+              SourceCache/llvm/lldb/test/API/linux
+              SourceCache/llvm/lldb/test/API/tools
+              SourceCache/llvm/lldb/test/API/sanity
+              SourceCache/llvm/lldb/test/API/types
+          - test-category: commands
+            test-subdirs: SourceCache/llvm/lldb/test/API/commands
+          - test-category: Python API
+            test-subdirs: SourceCache/llvm/lldb/test/API/python_api
+          - test-category: functionalities
+            test-subdirs: SourceCache/llvm/lldb/test/API/functionalities
+
+    steps:
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -qq --no-install-recommends gcc-multilib g++-multilib
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Linux-X64
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: linux-i686-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - uses: ./SourceCache/ds2/.github/actions/run-lldb-tests
+        with:
+          ds2-path: ${{ github.workspace }}/BinaryCache/ds2/ds2
+          lldb-dotest-path: ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
+          ds2-repo-path: ${{ github.workspace }}/SourceCache/ds2
+          arch: i686
+          platform: linux
+          working-dir: ${{ github.workspace }}/temp
+          test-subdirs: ${{ matrix.test-subdirs }}
+
+  test-linux-i686-status:
+    needs: [test-linux-i686]
+    if: always() && inputs.platform == 'linux'
+    runs-on: ubuntu-latest
+    name: Test Linux i686 (status)
+    steps:
+      - if: needs.test-linux-i686.result != 'success'
+        run: exit 1
+
+  test-linux-x86_64:
+    if: inputs.platform == 'linux'
+    runs-on: ubuntu-latest
+    name: Test Linux x86_64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test-category: misc
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/api
+              SourceCache/llvm/lldb/test/API/lang
+              SourceCache/llvm/lldb/test/API/linux
+              SourceCache/llvm/lldb/test/API/tools
+              SourceCache/llvm/lldb/test/API/sanity
+              SourceCache/llvm/lldb/test/API/types
+          - test-category: commands
+            test-subdirs: SourceCache/llvm/lldb/test/API/commands
+          - test-category: Python API
+            test-subdirs: SourceCache/llvm/lldb/test/API/python_api
+          - test-category: functionalities
+            test-subdirs: SourceCache/llvm/lldb/test/API/functionalities
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Linux-X64
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: linux-x86_64-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - uses: ./SourceCache/ds2/.github/actions/run-lldb-tests
+        with:
+          ds2-path: ${{ github.workspace }}/BinaryCache/ds2/ds2
+          lldb-dotest-path: ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
+          ds2-repo-path: ${{ github.workspace }}/SourceCache/ds2
+          arch: x86_64
+          platform: linux
+          working-dir: ${{ github.workspace }}/temp
+          test-subdirs: ${{ matrix.test-subdirs }}
+
+  test-linux-x86_64-status:
+    needs: [test-linux-x86_64]
+    if: always() && inputs.platform == 'linux'
+    runs-on: ubuntu-latest
+    name: Test Linux x86_64 (status)
+    steps:
+      - if: needs.test-linux-x86_64.result != 'success'
+        run: exit 1
+
+  test-linux-aarch64:
+    if: inputs.platform == 'linux'
+    runs-on: ubuntu-24.04-arm
+    name: Test Linux aarch64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test-category: misc
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/api
+              SourceCache/llvm/lldb/test/API/lang
+              SourceCache/llvm/lldb/test/API/linux
+              SourceCache/llvm/lldb/test/API/tools
+              SourceCache/llvm/lldb/test/API/sanity
+              SourceCache/llvm/lldb/test/API/types
+          - test-category: commands
+            test-subdirs: SourceCache/llvm/lldb/test/API/commands
+          - test-category: Python API
+            test-subdirs: SourceCache/llvm/lldb/test/API/python_api
+          - test-category: functionalities
+            test-subdirs: SourceCache/llvm/lldb/test/API/functionalities
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Linux-ARM64
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: linux-aarch64-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - uses: ./SourceCache/ds2/.github/actions/run-lldb-tests
+        with:
+          ds2-path: ${{ github.workspace }}/BinaryCache/ds2/ds2
+          lldb-dotest-path: ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
+          ds2-repo-path: ${{ github.workspace }}/SourceCache/ds2
+          arch: aarch64
+          platform: linux
+          working-dir: ${{ github.workspace }}/temp
+          test-subdirs: ${{ matrix.test-subdirs }}
+
+  test-linux-aarch64-status:
+    needs: [test-linux-aarch64]
+    if: always() && inputs.platform == 'linux'
+    runs-on: ubuntu-latest
+    name: Test Linux aarch64 (status)
+    steps:
+      - if: needs.test-linux-aarch64.result != 'success'
+        run: exit 1
+
+  # ---------------------------------------------------------------------
+  # Android
+  # ---------------------------------------------------------------------
+  #
+  # The emulator-runner action takes the whole test invocation as a single
+  # shell script string executed inside its own wrapper, so it can't invoke
+  # the run-lldb-tests composite action as a normal step the way the Linux
+  # jobs do -- the dotest invocation stays inlined here, same as before this
+  # file existed.
+
+  test-android-x86_64:
+    if: inputs.platform == 'android'
+    runs-on: ubuntu-latest
+    name: Test Android x86_64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test-category: misc
+            test-subdirs: >-
+              SourceCache/llvm/lldb/test/API/android
+              SourceCache/llvm/lldb/test/API/api
+              SourceCache/llvm/lldb/test/API/lang
+              SourceCache/llvm/lldb/test/API/linux
+              SourceCache/llvm/lldb/test/API/tools
+              SourceCache/llvm/lldb/test/API/sanity
+              SourceCache/llvm/lldb/test/API/types
+          - test-category: commands
+            test-subdirs: SourceCache/llvm/lldb/test/API/commands
+          - test-category: Python API
+            test-subdirs: SourceCache/llvm/lldb/test/API/python_api
+          - test-category: functionalities
+            test-subdirs: SourceCache/llvm/lldb/test/API/functionalities
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Linux-X64
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: android-x86_64-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      # Cache the contents of $HOME/.android which contains emulators,
+      # snapshots, and adb state.
+      - name: Setup AVD cache
+        uses: actions/cache@v6
+        id: avd-cache
+        with:
+          path: ~/.android/**
+          key: avd-${{ runner.os }}-x86_64-28
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-window -noaudio -no-boot-anim -camera-back none -gpu swiftshader_indirect
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Run lldb tests against ds2 on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          arch: x86_64
+          force-avd-creation: false
+          # NOTE: -no-snapshot will not load or save state and the emulator will
+          # cold boot. Ideally, we would specify -no-snapshot-save instead so it
+          # would load the snapshot created in the caching step (but not save a
+          # new one). However, doing that causes the emulator to hang during
+          # shutdown. We're still saving time by reusing the device created in
+          # the caching step and not wiping userdata on boot.
+          emulator-options: -no-snapshot -no-window -noaudio -no-boot-anim -camera-back none -gpu swiftshader_indirect
+          disable-animations: true
+          script: >
+            $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432
+
+            $ANDROID_SDK_ROOT/platform-tools/adb push "${{ github.workspace }}/BinaryCache/ds2/ds2" /data/local/tmp
+
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "chmod +x /data/local/tmp/ds2"
+
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432"
+
+            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest 1>/dev/null
+            --out-of-tree-debugserver
+            --arch x86_64
+            --platform-name remote-android
+            --platform-url connect://localhost:5432
+            --platform-working-dir /data/local/tmp
+            --compiler=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android28-clang
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-x86_64.excluded
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-x86_64.excluded
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
+            -v
+            ${{ matrix.test-subdirs }}
+
+  test-android-x86_64-status:
+    needs: [test-android-x86_64]
+    if: always() && inputs.platform == 'android'
+    runs-on: ubuntu-latest
+    name: Test Android x86_64 (status)
+    steps:
+      - if: needs.test-android-x86_64.result != 'success'
+        run: exit 1
+
+  # Run a small sub-set of tests on arm64. The emulator is very slow so it is
+  # not practical to run more tests until we can run on an arm64 runner with
+  # virtualization. Only one category runs here, so this already reports as
+  # a single check with no matrix/grouping concerns.
+  test-android-arm64-v8a:
+    if: inputs.platform == 'android'
+    runs-on: ubuntu-latest
+    name: Test Android arm64-v8a sanity
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Linux-X64
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: android-arm64-v8a-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - name: Setup AVD cache
+        uses: actions/cache@v6
+        id: avd-cache
+        with:
+          path: ~/.android/**
+          key: avd-${{ runner.os }}-arm64-v8a-27
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          # Android emulator supports ARM on x86 only on API < 28.
+          api-level: 27
+          arch: arm64-v8a
+          force-avd-creation: false
+          # This is the most recent build of the emulator that supports
+          # booting arm64 images.
+          emulator-build: 12234392
+          emulator-options: -no-window -noaudio -no-boot-anim -camera-back none -gpu swiftshader_indirect -qemu -machine virt -cpu max
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: Run lldb tests against ds2 on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 27
+          arch: arm64-v8a
+          force-avd-creation: false
+          emulator-build: 12234392
+          emulator-options: -no-snapshot -no-window -noaudio -no-boot-anim -camera-back none -gpu swiftshader_indirect -qemu -machine virt -cpu max
+          disable-animations: true
+          script: >
+            $ANDROID_SDK_ROOT/platform-tools/adb forward tcp:5432 tcp:5432
+
+            $ANDROID_SDK_ROOT/platform-tools/adb push "${{ github.workspace }}/BinaryCache/ds2/ds2" /data/local/tmp
+
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "chmod +x /data/local/tmp/ds2"
+
+            $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432"
+
+            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest 1>/dev/null
+            --out-of-tree-debugserver
+            --arch aarch64
+            --platform-name remote-android
+            --platform-url connect://localhost:5432
+            --platform-working-dir /data/local/tmp
+            --compiler=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android27-clang
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-aarch64.excluded
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-aarch64.excluded
+            --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
+            -v
+            SourceCache/llvm/lldb/test/API/android
+            SourceCache/llvm/lldb/test/API/api
+            SourceCache/llvm/lldb/test/API/linux
+            SourceCache/llvm/lldb/test/API/sanity

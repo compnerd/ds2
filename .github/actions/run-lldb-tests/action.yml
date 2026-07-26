@@ -1,0 +1,87 @@
+name: Run lldb tests against ds2
+description: >-
+  Starts ds2 in platform mode and runs the lldb-dotest suite against it,
+  applying the standard upstream/ds2/non-debugserver exclusion lists for
+  the given platform and architecture.
+
+inputs:
+  ds2-path:
+    description: Path to the ds2 (platform mode) executable
+    required: true
+  lldb-dotest-path:
+    description: Path to the lldb-dotest wrapper script
+    required: true
+  ds2-repo-path:
+    description: Path to the checked-out ds2 repository
+    required: true
+  arch:
+    description: Architecture to pass to dotest.py's --arch (e.g. x86_64, i686, aarch64)
+    required: true
+  platform:
+    description: >-
+      Short platform name used both to build the lldb platform plugin name
+      (remote-<platform>) and to locate the exclusion lists
+      (Support/Testing/Excluded/{upstream,ds2}/<platform>-<arch>.excluded)
+    required: true
+  working-dir:
+    description: Remote platform working directory
+    required: true
+  test-subdirs:
+    description: Space-separated list of test subdirectories to run
+    required: true
+  listen-port:
+    description: TCP port ds2's platform server listens on
+    default: "5432"
+  python:
+    description: Python interpreter used to invoke the lldb-dotest wrapper script
+    default: "python3"
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        set -euo pipefail
+
+        mkdir -p "${{ inputs.working-dir }}"
+
+        # --daemonize is POSIX-only (Sources/main.cpp gates it on OS_POSIX, so
+        # Windows' ds2 rejects it as unrecognized); background the process at
+        # the shell level instead, which works the same way on every platform
+        # this action runs on.
+        "${{ inputs.ds2-path }}" platform --server --listen localhost:${{ inputs.listen-port }} &
+
+        # Backgrounding returns immediately, before the socket is necessarily
+        # listening, so poll for it rather than racing lldb-dotest's connect
+        # against ds2's startup. Poll with the same Python interpreter used
+        # to run the tests rather than bash's /dev/tcp: Git for Windows'
+        # bundled bash isn't built with net redirections, so /dev/tcp there
+        # silently fails every iteration and the loop always runs out its
+        # full timeout instead of detecting readiness.
+        "${{ inputs.python }}" - <<'PY'
+        import socket
+        import sys
+        import time
+
+        for _ in range(50):
+            try:
+                with socket.create_connection(("localhost", ${{ inputs.listen-port }}), timeout=0.2):
+                    sys.exit(0)
+            except OSError:
+                time.sleep(0.2)
+        sys.exit(0)  # best-effort: fall through and let lldb-dotest's own connect report the real error
+        PY
+
+        excluded_dir="${{ inputs.ds2-repo-path }}/Support/Testing/Excluded"
+
+        "${{ inputs.python }}" "${{ inputs.lldb-dotest-path }}" \
+          --out-of-tree-debugserver \
+          --arch "${{ inputs.arch }}" \
+          --platform-name "remote-${{ inputs.platform }}" \
+          --platform-url "connect://localhost:${{ inputs.listen-port }}" \
+          --platform-working-dir "${{ inputs.working-dir }}" \
+          --excluded "$excluded_dir/upstream/${{ inputs.platform }}-${{ inputs.arch }}.excluded" \
+          --excluded "$excluded_dir/ds2/${{ inputs.platform }}-${{ inputs.arch }}.excluded" \
+          --excluded "$excluded_dir/upstream/non-debugserver-tests.excluded" \
+          -v \
+          ${{ inputs.test-subdirs }}
