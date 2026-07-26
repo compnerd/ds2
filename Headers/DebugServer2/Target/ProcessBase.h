@@ -25,13 +25,16 @@ namespace Target {
 class ProcessBase {
 public:
   enum { kFlagNewProcess = (1 << 0), kFlagAttachedProcess = (1 << 1) };
+  enum Extension : uint32_t {
+    kExtensionForkEvents = (1u << 0),
+    kExtensionVForkEvents = (1u << 1),
+  };
   typedef std::map<ThreadId, Thread *> IdentityMap;
 
 protected:
   bool _terminated;
   uint32_t _flags;
-  bool _forkEventsEnabled = false;
-  bool _vforkEventsEnabled = false;
+  uint32_t _enabledExtensions = 0;
   ProcessId _pid;
   ProcessInfo _info;
   Address _loadBase;
@@ -56,11 +59,28 @@ public:
   // vfork-events GDB-remote extensions (see qSupported); stop reasons tied
   // to these extensions are only reported when the corresponding flag here
   // is set.
-  inline bool forkEventsEnabled() const { return _forkEventsEnabled; }
-  inline bool vforkEventsEnabled() const { return _vforkEventsEnabled; }
+  inline bool hasExtension(Extension extension) const {
+    return (_enabledExtensions & extension) != 0;
+  }
+  inline uint32_t enabledExtensions() const { return _enabledExtensions; }
+  inline bool forkEventsEnabled() const {
+    return hasExtension(kExtensionForkEvents);
+  }
+  inline bool vforkEventsEnabled() const {
+    return hasExtension(kExtensionVForkEvents);
+  }
+  inline void setEnabledExtensions(uint32_t extensions) {
+    _enabledExtensions = extensions;
+  }
   inline void setForkEventsEnabled(bool fork, bool vfork) {
-    _forkEventsEnabled = fork;
-    _vforkEventsEnabled = vfork;
+    uint32_t extensions = 0;
+    if (fork) {
+      extensions |= kExtensionForkEvents;
+    }
+    if (vfork) {
+      extensions |= kExtensionVForkEvents;
+    }
+    setEnabledExtensions(extensions);
   }
 
 public:
