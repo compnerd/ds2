@@ -22,8 +22,9 @@ class ProtocolInterpreter : public PacketProcessorDelegate {
 public:
   struct Handler {
     typedef std::vector<Handler> Collection;
-    typedef void (ProtocolHandler::*Callback)(Handler const &handler,
-                                              std::string const &data);
+    typedef void (ProtocolHandler::*Callback)(Handler const &,
+                                               std::string const &);
+    using CallbackType = Callback;
 
     enum Mode { kModeEquals, kModeStartsWith };
 
