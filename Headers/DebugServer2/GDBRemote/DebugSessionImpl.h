@@ -30,6 +30,20 @@ protected:
   Host::ProcessSpawner _spawner;
 
 protected:
+  enum Extension : uint32_t {
+    kExtensionForkEvents = (1u << 0),
+    kExtensionVForkEvents = (1u << 1),
+  };
+
+  // GDB-remote extension negotiation state from qSupported. Mutable because
+  // onQuerySupported is const, and applied to _process whenever it is
+  // (re)created, since negotiation and process creation can happen in either
+  // order.
+  mutable uint32_t _requestedExtensions = 0;
+  mutable uint32_t _supportedExtensions = 0;
+  mutable uint32_t _enabledExtensions = 0;
+
+protected:
   // a struct to help iterate over the thread list for onQueryThreadList
   mutable IterationState<ThreadId> _threadIterationState;
 
@@ -185,6 +199,8 @@ private:
   ErrorCode spawnProcess(StringCollection const &args,
                          EnvironmentBlock const &env);
   void appendOutput(char const *buf, size_t size);
+  void updateEnabledExtensions() const;
+  void applyEnabledExtensionsToProcess() const;
 };
 
 using DebugSessionImpl =

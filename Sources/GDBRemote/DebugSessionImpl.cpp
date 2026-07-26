@@ -43,6 +43,8 @@ DebugSessionImplBase::DebugSessionImplBase(int attachPid)
   _process = ds2::Target::Process::Attach(attachPid);
   if (_process == nullptr)
     DS2LOG(Fatal, "cannot attach to pid %d", attachPid);
+  else
+    applyEnabledExtensionsToProcess();
 }
 
 DebugSessionImplBase::DebugSessionImplBase()
@@ -73,9 +75,34 @@ ErrorCode DebugSessionImplBase::onInterrupt(Session &) {
 ErrorCode DebugSessionImplBase::onQuerySupported(
     Session &session, Feature::Collection const &remoteFeatures,
     Feature::Collection &localFeatures) const {
-  for (auto feature : remoteFeatures) {
-    DS2LOG(Debug, "gdb feature: %s", feature.name.c_str());
+  _requestedExtensions = 0;
+  _supportedExtensions = 0;
+
+  if (session.mode() != kCompatibilityModeLLDB) {
+#if defined(OS_LINUX)
+    _supportedExtensions |= kExtensionForkEvents | kExtensionVForkEvents;
+#endif
   }
+
+  for (auto const &feature : remoteFeatures) {
+    DS2LOG(Debug, "gdb feature: %s", feature.name.c_str());
+    if (feature.flag != Feature::kSupported)
+      continue;
+    if (feature.name == "fork-events") {
+      _requestedExtensions |= kExtensionForkEvents;
+    } else if (feature.name == "vfork-events") {
+      _requestedExtensions |= kExtensionVForkEvents;
+    }
+  }
+
+  updateEnabledExtensions();
+
+  // The fork-events/vfork-events extension is only in effect once both
+  // sides have agreed to it: we advertise support for it below regardless
+  // of what the client asked for, but we only actually report fork/vfork
+  // stops (see Target::Linux::Thread::updateStopInfo) once the client has
+  // requested the corresponding feature here as well.
+  applyEnabledExtensionsToProcess();
 
   // TODO PacketSize should be respected
   localFeatures.push_back(std::string("qEcho+"));
@@ -856,6 +883,7 @@ ErrorCode DebugSessionImplBase::onAttach(Session &session, ProcessId pid,
   if (_process == nullptr) {
     return kErrorProcessNotFound;
   }
+  applyEnabledExtensionsToProcess();
 
   return queryStopInfo(session, pid, stop);
 }
@@ -1046,13 +1074,17 @@ ErrorCode DebugSessionImplBase::onDetach(Session &, ProcessId pid,
                                          bool stopped) {
   // The GDB-remote `D;<pid>` form lets a client detach a specific process
   // by pid, e.g. the child of a fork()/vfork() we reported under the
-  // fork-events/vfork-events extension. We don't debug that child at all
-  // -- it was already detached and left to run free the moment we saw the
-  // fork -- so there's nothing to do beyond acknowledging the request; in
-  // particular we must *not* fall through to detaching our real (parent)
-  // process below.
+  // fork-events/vfork-events extension.
   if (pid != kAnyProcessId && pid != _process->pid()) {
+#if defined(OS_POSIX)
+    ErrorCode error = _process->ptrace().detach(pid);
+    if (error == kErrorProcessNotFound) {
+      return kSuccess;
+    }
+    return error;
+#else
     return kSuccess;
+#endif
   }
 
   SoftwareBreakpointManager *bpm = _process->softwareBreakpointManager();
@@ -1230,8 +1262,22 @@ ErrorCode DebugSessionImplBase::spawnProcess(StringCollection const &args,
     DS2LOG(Error, "cannot execute '%s'", args[0].c_str());
     return kErrorUnknown;
   }
+  applyEnabledExtensionsToProcess();
 
   return kSuccess;
+}
+
+void DebugSessionImplBase::updateEnabledExtensions() const {
+  _enabledExtensions = _requestedExtensions & _supportedExtensions;
+}
+
+void DebugSessionImplBase::applyEnabledExtensionsToProcess() const {
+  if (_process == nullptr)
+    return;
+
+  _process->setForkEventsEnabled(
+      (_enabledExtensions & kExtensionForkEvents) != 0,
+      (_enabledExtensions & kExtensionVForkEvents) != 0);
 }
 
 void DebugSessionImplBase::appendOutput(char const *buf, size_t size) {
