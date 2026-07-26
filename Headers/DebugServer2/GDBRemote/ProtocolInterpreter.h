@@ -12,6 +12,8 @@
 
 #include "DebugServer2/GDBRemote/PacketProcessor.h"
 
+#include <string_view>
+
 namespace ds2 {
 namespace GDBRemote {
 
@@ -33,7 +35,7 @@ public:
     ProtocolHandler *handler;
     Callback callback;
 
-    int compare(std::string const &command) const;
+    int compare(std::string_view command) const;
   };
 
 private:
@@ -51,7 +53,7 @@ public:
   }
 
 public:
-  void onCommand(std::string const &command, std::string const &arguments);
+  void onCommand(std::string_view command, std::string_view arguments);
 
 public:
   bool registerHandler(Handler const &handler);
@@ -65,7 +67,7 @@ public:
   }
 
 private:
-  Handler const *findHandler(std::string const &command,
+  Handler const *findHandler(std::string_view command,
                              size_t &commandLength) const;
 
 public:
