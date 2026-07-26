@@ -75,27 +75,60 @@ ErrorCode DebugSessionImplBase::onInterrupt(Session &) {
 ErrorCode DebugSessionImplBase::onQuerySupported(
     Session &session, Feature::Collection const &remoteFeatures,
     Feature::Collection &localFeatures) const {
-  _requestedExtensions = 0;
-  _supportedExtensions = 0;
+  _extensions.reset();
 
-  if (session.mode() != kCompatibilityModeLLDB) {
+  bool isLLDB = (session.mode() == kCompatibilityModeLLDB);
+
+  auto supported = [this](Extension extension) { _extensions.enable(extension); };
+
+  static constexpr Extension kAlwaysSupported[] = {
+      ExtensionSet::kQEcho,
+      ExtensionSet::kQStartNoAckMode,
+      ExtensionSet::kQXferFeaturesRead,
+      ExtensionSet::kQListThreadsInStopReply,
+      ExtensionSet::kQPassSignals,
+  };
+  for (Extension extension : kAlwaysSupported)
+    supported(extension);
+
+#if defined(OS_LINUX) || defined(OS_FREEBSD)
+  supported(ExtensionSet::kQXferAuxvRead);
+  supported(ExtensionSet::kQXferLibrariesSVR4Read);
+#elif defined(OS_WIN32)
+  supported(ExtensionSet::kQXferLibrariesRead);
+#endif
+
+  if (!isLLDB) {
+    static constexpr Extension kNonLLDBSupported[] = {
+        ExtensionSet::kBreakpointCommands,
+        ExtensionSet::kMultiprocess,
+        ExtensionSet::kQDisableRandomization,
+        ExtensionSet::kQNonStop,
+        ExtensionSet::kQXferOSDataRead,
+        ExtensionSet::kQXferThreadsRead,
+    };
+    for (Extension extension : kNonLLDBSupported)
+      supported(extension);
+
 #if defined(OS_LINUX)
-    _supportedExtensions |= kExtensionForkEvents | kExtensionVForkEvents;
+    static constexpr Extension kLinuxOnlySupported[] = {
+        ExtensionSet::kQProgramSignals,
+        ExtensionSet::kQXferSiginfoRead,
+        ExtensionSet::kQXferSiginfoWrite,
+        ExtensionSet::kForkEvents,
+        ExtensionSet::kVForkEvents,
+    };
+    for (Extension extension : kLinuxOnlySupported)
+      supported(extension);
 #endif
   }
 
-  for (auto const &feature : remoteFeatures) {
-    DS2LOG(Debug, "gdb feature: %s", feature.name.c_str());
-    if (feature.flag != Feature::kSupported)
+  for (auto const &remoteFeature : remoteFeatures) {
+    DS2LOG(Debug, "gdb feature: %s", remoteFeature.name.c_str());
+    if (remoteFeature.flag != Feature::kSupported)
       continue;
-    if (feature.name == "fork-events") {
-      _requestedExtensions |= kExtensionForkEvents;
-    } else if (feature.name == "vfork-events") {
-      _requestedExtensions |= kExtensionVForkEvents;
-    }
+    _extensions.negotiate(remoteFeature.name);
   }
-
-  updateEnabledExtensions();
 
   // The fork-events/vfork-events extension is only in effect once both
   // sides have agreed to it: we advertise support for it below regardless
@@ -104,49 +137,93 @@ ErrorCode DebugSessionImplBase::onQuerySupported(
   // requested the corresponding feature here as well.
   applyEnabledExtensionsToProcess();
 
-  // TODO PacketSize should be respected
-  localFeatures.push_back(std::string("qEcho+"));
-  localFeatures.push_back(std::string("PacketSize=3fff"));
-  localFeatures.push_back(std::string("QStartNoAckMode+"));
-  localFeatures.push_back(std::string("qXfer:features:read+"));
-#if defined(OS_LINUX) || defined(OS_FREEBSD)
-  localFeatures.push_back(std::string("qXfer:auxv:read+"));
-  localFeatures.push_back(std::string("qXfer:libraries-svr4:read+"));
-#elif defined(OS_WIN32)
-  localFeatures.push_back(std::string("qXfer:libraries:read+"));
-#endif
-  localFeatures.push_back(std::string("QListThreadsInStopReply+"));
-  localFeatures.push_back(std::string("QPassSignals+"));
+  localFeatures.reserve(localFeatures.size() + (isLLDB ? 8u : 26u));
 
-  if (session.mode() != kCompatibilityModeLLDB) {
-    localFeatures.push_back(std::string("ConditionalBreakpoints-"));
-    localFeatures.push_back(std::string("BreakpointCommands+"));
-    localFeatures.push_back(std::string("multiprocess+"));
-    localFeatures.push_back(std::string("QDisableRandomization+"));
-    localFeatures.push_back(std::string("QNonStop+"));
-#if defined(OS_LINUX)
-    localFeatures.push_back(std::string("QProgramSignals+"));
-    localFeatures.push_back(std::string("qXfer:siginfo:read+"));
-    localFeatures.push_back(std::string("qXfer:siginfo:write+"));
+  auto addFeature = [&localFeatures](char const *name, Feature::Flag flag,
+                                     char const *value = nullptr) {
+    Feature feature;
+    feature.name = name;
+    feature.flag = flag;
+    if (value != nullptr)
+      feature.value = value;
+    localFeatures.push_back(feature);
+  };
+
+  auto enable =
+      [this, &addFeature](Extension extension,
+                             bool advertiseWhenUnsupported = false) {
+        ExtensionSet::AdvertisedFeature feature =
+            _extensions.advertise(extension, advertiseWhenUnsupported);
+        if (feature.name == nullptr)
+          return;
+
+        addFeature(feature.name,
+                   feature.supported ? Feature::kSupported
+                                     : Feature::kNotSupported);
+      };
+
+  // TODO PacketSize should be respected
+  static constexpr Extension kAlwaysAdvertised[] = {
+      ExtensionSet::kQEcho,
+      ExtensionSet::kQStartNoAckMode,
+      ExtensionSet::kQXferFeaturesRead,
+      ExtensionSet::kQXferAuxvRead,
+      ExtensionSet::kQXferLibrariesSVR4Read,
+      ExtensionSet::kQXferLibrariesRead,
+      ExtensionSet::kQListThreadsInStopReply,
+      ExtensionSet::kQPassSignals,
+  };
+  enable(kAlwaysAdvertised[0]);
+  addFeature("PacketSize", Feature::kSupported, "3fff");
+  for (size_t index = 1; index < sizeof(kAlwaysAdvertised) / sizeof(*kAlwaysAdvertised);
+       ++index) {
+    enable(kAlwaysAdvertised[index]);
+  }
+
+  if (!isLLDB) {
+    addFeature("ConditionalBreakpoints", Feature::kNotSupported);
+
+    static constexpr Extension kNonLLDBAdvertised[] = {
+        ExtensionSet::kBreakpointCommands,
+        ExtensionSet::kMultiprocess,
+        ExtensionSet::kQDisableRandomization,
+        ExtensionSet::kQNonStop,
+    };
+    for (Extension extension : kNonLLDBAdvertised)
+      enable(extension);
+
+    static constexpr Extension kAdvertisedWithUnsupportedFallback[] = {
+        ExtensionSet::kQProgramSignals,
+        ExtensionSet::kQXferSiginfoRead,
+        ExtensionSet::kQXferSiginfoWrite,
+    };
+    for (Extension extension : kAdvertisedWithUnsupportedFallback)
+      enable(extension, true);
+
     // The forked child is detached and left to run free -- we don't support
     // debugging it -- but we do detect the fork/vfork and report it as the
     // corresponding stop reason (see Target::Linux::Thread::updateStopInfo).
-    localFeatures.push_back(std::string("fork-events+"));
-    localFeatures.push_back(std::string("vfork-events+"));
-#else
-    localFeatures.push_back(std::string("QProgramSignals-"));
-    localFeatures.push_back(std::string("qXfer:siginfo:read-"));
-    localFeatures.push_back(std::string("qXfer:siginfo:write-"));
-#endif
-    localFeatures.push_back(std::string("qXfer:osdata:read+"));
-    localFeatures.push_back(std::string("qXfer:threads:read+"));
+    static constexpr Extension kForkEventExtensions[] = {
+        ExtensionSet::kForkEvents,
+        ExtensionSet::kVForkEvents,
+    };
+    for (Extension extension : kForkEventExtensions)
+      enable(extension, true);
+
+    static constexpr Extension kProcessInfoAdvertised[] = {
+        ExtensionSet::kQXferOSDataRead,
+        ExtensionSet::kQXferThreadsRead,
+    };
+    for (Extension extension : kProcessInfoAdvertised)
+      enable(extension);
+
     // Disable unsupported tracepoints
-    localFeatures.push_back(std::string("Qbtrace:bts-"));
-    localFeatures.push_back(std::string("Qbtrace:off-"));
-    localFeatures.push_back(std::string("tracenz-"));
-    localFeatures.push_back(std::string("ConditionalTracepoints-"));
-    localFeatures.push_back(std::string("TracepointSource-"));
-    localFeatures.push_back(std::string("EnableDisableTracepoints-"));
+    addFeature("Qbtrace:bts", Feature::kNotSupported);
+    addFeature("Qbtrace:off", Feature::kNotSupported);
+    addFeature("tracenz", Feature::kNotSupported);
+    addFeature("ConditionalTracepoints", Feature::kNotSupported);
+    addFeature("TracepointSource", Feature::kNotSupported);
+    addFeature("EnableDisableTracepoints", Feature::kNotSupported);
   }
 
   return kSuccess;
@@ -1267,19 +1344,15 @@ ErrorCode DebugSessionImplBase::spawnProcess(StringCollection const &args,
   return kSuccess;
 }
 
-void DebugSessionImplBase::updateEnabledExtensions() const {
-  _enabledExtensions = _requestedExtensions & _supportedExtensions;
-}
-
 void DebugSessionImplBase::applyEnabledExtensionsToProcess() const {
   if (_process == nullptr)
     return;
 
   uint32_t processExtensions = 0;
-  if ((_enabledExtensions & kExtensionForkEvents) != 0) {
+  if (_extensions.enabled(ExtensionSet::kForkEvents)) {
     processExtensions |= Target::ProcessBase::kExtensionForkEvents;
   }
-  if ((_enabledExtensions & kExtensionVForkEvents) != 0) {
+  if (_extensions.enabled(ExtensionSet::kVForkEvents)) {
     processExtensions |= Target::ProcessBase::kExtensionVForkEvents;
   }
 

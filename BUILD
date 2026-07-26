@@ -181,6 +181,7 @@ filegroup(
         "Headers/DebugServer2/GDBRemote/Base.h",
         "Headers/DebugServer2/GDBRemote/DebugSessionImpl.h",
         "Headers/DebugServer2/GDBRemote/DummySessionDelegateImpl.h",
+        "Headers/DebugServer2/GDBRemote/ExtensionSet.h",
         "Headers/DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h",
         "Headers/DebugServer2/GDBRemote/Mixins/ProcessLaunchMixin.h",
         "Headers/DebugServer2/GDBRemote/PacketProcessor.h",
