@@ -46,29 +46,40 @@ jobs:
     runs-on: ubuntu-latest
     name: Test Linux i686
 
+    # test-category is the matrix's only key -- GitHub renders every matrix
+    # key/value pair in the check name (e.g. "Test Linux i686 (Python API)"),
+    # so test-subdirs is resolved from test-category by the step below
+    # instead of being a second matrix axis, which would otherwise render as
+    # "Test Linux i686 (Python API, SourceCache/llvm/lldb/test/API/python_api)".
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - test-category: misc
-            test-subdirs: >-
-              SourceCache/llvm/lldb/test/API/api
-              SourceCache/llvm/lldb/test/API/lang
-              SourceCache/llvm/lldb/test/API/linux
-              SourceCache/llvm/lldb/test/API/tools
-              SourceCache/llvm/lldb/test/API/sanity
-              SourceCache/llvm/lldb/test/API/types
-          - test-category: commands
-            test-subdirs: SourceCache/llvm/lldb/test/API/commands
-          - test-category: Python API
-            test-subdirs: SourceCache/llvm/lldb/test/API/python_api
-          - test-category: functionalities
-            test-subdirs: SourceCache/llvm/lldb/test/API/functionalities
+        test-category: [misc, commands, Python API, functionalities]
 
     steps:
       - run: |
           sudo apt-get update
           sudo apt-get install -qq --no-install-recommends gcc-multilib g++-multilib
+
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        shell: bash
+        run: |
+          case "${{ matrix.test-category }}" in
+            misc)
+              dirs="SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/linux SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+              ;;
+            commands)
+              dirs="SourceCache/llvm/lldb/test/API/commands"
+              ;;
+            "Python API")
+              dirs="SourceCache/llvm/lldb/test/API/python_api"
+              ;;
+            functionalities)
+              dirs="SourceCache/llvm/lldb/test/API/functionalities"
+              ;;
+          esac
+          echo "dirs=$dirs" >> "$GITHUB_OUTPUT"
 
       - uses: actions/download-artifact@v8
         with:
@@ -102,7 +113,7 @@ jobs:
           arch: i686
           platform: linux
           working-dir: ${{ github.workspace }}/temp
-          test-subdirs: ${{ matrix.test-subdirs }}
+          test-subdirs: ${{ steps.test-subdirs.outputs.dirs }}
 
   test-linux-i686-status:
     needs: [test-linux-i686]
@@ -121,23 +132,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - test-category: misc
-            test-subdirs: >-
-              SourceCache/llvm/lldb/test/API/api
-              SourceCache/llvm/lldb/test/API/lang
-              SourceCache/llvm/lldb/test/API/linux
-              SourceCache/llvm/lldb/test/API/tools
-              SourceCache/llvm/lldb/test/API/sanity
-              SourceCache/llvm/lldb/test/API/types
-          - test-category: commands
-            test-subdirs: SourceCache/llvm/lldb/test/API/commands
-          - test-category: Python API
-            test-subdirs: SourceCache/llvm/lldb/test/API/python_api
-          - test-category: functionalities
-            test-subdirs: SourceCache/llvm/lldb/test/API/functionalities
+        test-category: [misc, commands, Python API, functionalities]
 
     steps:
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        shell: bash
+        run: |
+          case "${{ matrix.test-category }}" in
+            misc)
+              dirs="SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/linux SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+              ;;
+            commands)
+              dirs="SourceCache/llvm/lldb/test/API/commands"
+              ;;
+            "Python API")
+              dirs="SourceCache/llvm/lldb/test/API/python_api"
+              ;;
+            functionalities)
+              dirs="SourceCache/llvm/lldb/test/API/functionalities"
+              ;;
+          esac
+          echo "dirs=$dirs" >> "$GITHUB_OUTPUT"
+
       - uses: actions/download-artifact@v8
         with:
           name: llvm-Linux-X64
@@ -170,7 +187,7 @@ jobs:
           arch: x86_64
           platform: linux
           working-dir: ${{ github.workspace }}/temp
-          test-subdirs: ${{ matrix.test-subdirs }}
+          test-subdirs: ${{ steps.test-subdirs.outputs.dirs }}
 
   test-linux-x86_64-status:
     needs: [test-linux-x86_64]
@@ -189,23 +206,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - test-category: misc
-            test-subdirs: >-
-              SourceCache/llvm/lldb/test/API/api
-              SourceCache/llvm/lldb/test/API/lang
-              SourceCache/llvm/lldb/test/API/linux
-              SourceCache/llvm/lldb/test/API/tools
-              SourceCache/llvm/lldb/test/API/sanity
-              SourceCache/llvm/lldb/test/API/types
-          - test-category: commands
-            test-subdirs: SourceCache/llvm/lldb/test/API/commands
-          - test-category: Python API
-            test-subdirs: SourceCache/llvm/lldb/test/API/python_api
-          - test-category: functionalities
-            test-subdirs: SourceCache/llvm/lldb/test/API/functionalities
+        test-category: [misc, commands, Python API, functionalities]
 
     steps:
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        shell: bash
+        run: |
+          case "${{ matrix.test-category }}" in
+            misc)
+              dirs="SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/linux SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+              ;;
+            commands)
+              dirs="SourceCache/llvm/lldb/test/API/commands"
+              ;;
+            "Python API")
+              dirs="SourceCache/llvm/lldb/test/API/python_api"
+              ;;
+            functionalities)
+              dirs="SourceCache/llvm/lldb/test/API/functionalities"
+              ;;
+          esac
+          echo "dirs=$dirs" >> "$GITHUB_OUTPUT"
+
       - uses: actions/download-artifact@v8
         with:
           name: llvm-Linux-ARM64
@@ -238,7 +261,7 @@ jobs:
           arch: aarch64
           platform: linux
           working-dir: ${{ github.workspace }}/temp
-          test-subdirs: ${{ matrix.test-subdirs }}
+          test-subdirs: ${{ steps.test-subdirs.outputs.dirs }}
 
   test-linux-aarch64-status:
     needs: [test-linux-aarch64]
@@ -267,24 +290,29 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - test-category: misc
-            test-subdirs: >-
-              SourceCache/llvm/lldb/test/API/android
-              SourceCache/llvm/lldb/test/API/api
-              SourceCache/llvm/lldb/test/API/lang
-              SourceCache/llvm/lldb/test/API/linux
-              SourceCache/llvm/lldb/test/API/tools
-              SourceCache/llvm/lldb/test/API/sanity
-              SourceCache/llvm/lldb/test/API/types
-          - test-category: commands
-            test-subdirs: SourceCache/llvm/lldb/test/API/commands
-          - test-category: Python API
-            test-subdirs: SourceCache/llvm/lldb/test/API/python_api
-          - test-category: functionalities
-            test-subdirs: SourceCache/llvm/lldb/test/API/functionalities
+        test-category: [misc, commands, Python API, functionalities]
 
     steps:
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        shell: bash
+        run: |
+          case "${{ matrix.test-category }}" in
+            misc)
+              dirs="SourceCache/llvm/lldb/test/API/android SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/linux SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+              ;;
+            commands)
+              dirs="SourceCache/llvm/lldb/test/API/commands"
+              ;;
+            "Python API")
+              dirs="SourceCache/llvm/lldb/test/API/python_api"
+              ;;
+            functionalities)
+              dirs="SourceCache/llvm/lldb/test/API/functionalities"
+              ;;
+          esac
+          echo "dirs=$dirs" >> "$GITHUB_OUTPUT"
+
       - uses: actions/download-artifact@v8
         with:
           name: llvm-Linux-X64
@@ -358,7 +386,7 @@ jobs:
 
             $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432"
 
-            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest 1>/dev/null
+            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
             --out-of-tree-debugserver
             --arch x86_64
             --platform-name remote-android
@@ -369,7 +397,9 @@ jobs:
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-x86_64.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
             -v
-            ${{ matrix.test-subdirs }}
+            ${{ steps.test-subdirs.outputs.dirs }}
+            1>/dev/null 2>/tmp/dotest-android-x86_64.log;
+            rc=$?; grep -v '^UNSUPPORTED: LLDB ' /tmp/dotest-android-x86_64.log; exit $rc
 
   test-android-x86_64-status:
     needs: [test-android-x86_64]
@@ -460,7 +490,7 @@ jobs:
 
             $ANDROID_SDK_ROOT/platform-tools/adb shell "/data/local/tmp/ds2 platform --server --daemonize --listen localhost:5432"
 
-            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest 1>/dev/null
+            ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
             --out-of-tree-debugserver
             --arch aarch64
             --platform-name remote-android
@@ -475,3 +505,5 @@ jobs:
             SourceCache/llvm/lldb/test/API/api
             SourceCache/llvm/lldb/test/API/linux
             SourceCache/llvm/lldb/test/API/sanity
+            1>/dev/null 2>/tmp/dotest-android-arm64-v8a.log;
+            rc=$?; grep -v '^UNSUPPORTED: LLDB ' /tmp/dotest-android-arm64-v8a.log; exit $rc
