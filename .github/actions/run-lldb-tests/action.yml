@@ -74,6 +74,13 @@ runs:
 
         excluded_dir="${{ inputs.ds2-repo-path }}/Support/Testing/Excluded"
 
+        # dotest's LLDBTestResult.addSkip() unconditionally writes one
+        # "UNSUPPORTED: LLDB (...) :: ..." line per skipped test, regardless
+        # of -v -- with thousands of tests, most of them skipped for this
+        # platform/arch, that drowns out the PASS/FAIL lines that actually
+        # matter. Filter it out here rather than patching upstream dotest.
+        # `pipefail` (set above) keeps the step's exit status tied to
+        # lldb-dotest itself, not to grep.
         "${{ inputs.python }}" "${{ inputs.lldb-dotest-path }}" \
           --out-of-tree-debugserver \
           --arch "${{ inputs.arch }}" \
@@ -84,4 +91,4 @@ runs:
           --excluded "$excluded_dir/ds2/${{ inputs.platform }}-${{ inputs.arch }}.excluded" \
           --excluded "$excluded_dir/upstream/non-debugserver-tests.excluded" \
           -v \
-          ${{ inputs.test-subdirs }}
+          ${{ inputs.test-subdirs }} 2>&1 | grep -v '^UNSUPPORTED: LLDB '
