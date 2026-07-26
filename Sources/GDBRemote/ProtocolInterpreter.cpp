@@ -56,6 +56,9 @@ CommandRange splitCommand(const std::string &data) {
     if (end != std::string::npos) {
       range.first = end;
       range.second = end + 1;
+    } else {
+      // No delimiter found; command spans entire packet.
+      range.first = data.length();
     }
   } else if (data[0] == 'b') {
     //
@@ -81,6 +84,9 @@ CommandRange splitCommand(const std::string &data) {
     if (end != std::string::npos) {
       range.first = end;
       range.second = end + 1;
+    } else {
+      // No delimiter found; command spans entire packet.
+      range.first = data.length();
     }
   } else {
     //
@@ -89,7 +95,7 @@ CommandRange splitCommand(const std::string &data) {
     range.first = 1;
   }
 
-  if (range.second == std::string::npos && range.first < data.length())
+  if (range.second == std::string::npos && range.first <= data.length())
     range.second = range.first;
 
   return range;
