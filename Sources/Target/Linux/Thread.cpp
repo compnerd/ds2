@@ -57,6 +57,14 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     //     WSTOPSIG(status) == SIGTRAP. We mark the thread stopped for no
     //     reason so it just gets restarted immediately (see
     //     Linux::Process::wait);
+    // (1b) a thread traced with PTRACE_O_TRACEFORK/TRACEVFORK calls
+    //      fork(2)/vfork(2); reported the same way as (1), but via
+    //      PTRACE_EVENT_FORK/VFORK instead of PTRACE_EVENT_CLONE, and
+    //      reported as a real stop per the fork-events/vfork-events
+    //      GDB-remote extension;
+    // (1c) a thread that vfork(2)'d resumes after its child calls execve(2)
+    //      or _exit(2) and stops sharing memory with it, reported via
+    //      PTRACE_EVENT_VFORK_DONE the same way as (1)/(1b);
     // (2) we sent the thread a SIGSTOP (with tkill(2)) to suspend it e.g.:
     //     when a thread hits a breakpoint, we have to stop every other thread,
     //     so we send each one of them a SIGSTOP with tkill(2). These other
@@ -81,11 +89,57 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     }
 
     static constexpr int kEventClone = SIGTRAP | (PTRACE_EVENT_CLONE << 8);
+    static constexpr int kEventFork = SIGTRAP | (PTRACE_EVENT_FORK << 8);
+    static constexpr int kEventVFork = SIGTRAP | (PTRACE_EVENT_VFORK << 8);
+    static constexpr int kEventVForkDone =
+      SIGTRAP | (PTRACE_EVENT_VFORK_DONE << 8);
     const int waitStatusHi = waitStatus >> 8;
 
     if (waitStatusHi == kEventClone) { // (1)
       _stopInfo.event = StopInfo::kEventNone;
       _stopInfo.reason = StopInfo::kReasonThreadSpawn;
+    } else if (waitStatusHi == kEventFork || waitStatusHi == kEventVFork) { // (1b)
+      bool isVFork = waitStatusHi == kEventVFork;
+      unsigned long childPid = 0;
+      ErrorCode eventError =
+          process()->ptrace().getEventMessage(ptid, childPid);
+      if (eventError != kSuccess) {
+        DS2LOG(Warning,
+               "unable to get %s child pid for tid %d, errno=%s",
+               isVFork ? "vfork" : "fork", tid(), Stringify::Errno(errno));
+      }
+
+      ErrorCode detachError = kSuccess;
+      if (eventError == kSuccess) {
+        int childStatus = 0;
+        pid_t waited = ::waitpid(static_cast<pid_t>(childPid), &childStatus,
+                                 __WALL);
+        if (waited != static_cast<pid_t>(childPid)) {
+          DS2LOG(Warning,
+                 "unable to collect initial stop for %s child pid %lu "
+                 "(tid %d), errno=%s",
+                 isVFork ? "vfork" : "fork", childPid, tid(),
+                 Stringify::Errno(errno));
+          detachError = kErrorProcessNotFound;
+        } else {
+          detachError = process()->ptrace().detach(static_cast<ProcessId>(childPid));
+          if (detachError != kSuccess && detachError != kErrorProcessNotFound) {
+            DS2LOG(Warning,
+                   "unable to detach %s child pid %lu (tid %d), error=%d",
+                   isVFork ? "vfork" : "fork", childPid, tid(), detachError);
+          }
+        }
+      }
+
+      if (eventError == kSuccess &&
+          (detachError == kSuccess || detachError == kErrorProcessNotFound)) {
+        _stopInfo.reason =
+            isVFork ? StopInfo::kReasonVFork : StopInfo::kReasonFork;
+        _stopInfo.child = ProcessThreadId(static_cast<ProcessId>(childPid),
+                                          static_cast<ThreadId>(childPid));
+      }
+    } else if (waitStatusHi == kEventVForkDone) { // (1c)
+      _stopInfo.reason = StopInfo::kReasonVForkDone;
     } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) { // (2)
       // The only signal we are supposed to send to the inferior is a SIGSTOP.
       DS2ASSERT(_stopInfo.signal == SIGSTOP);
