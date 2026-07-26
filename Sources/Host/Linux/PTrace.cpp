@@ -63,13 +63,19 @@ ErrorCode PTrace::traceThat(ProcessId pid) {
   if (pid <= 0)
     return kErrorInvalidArgument;
 
-  unsigned long traceFlags = PTRACE_O_TRACECLONE;
+  //
+  // Trace clone events to track threads; trace fork/vfork for the
+  // fork-events/vfork-events GDB-remote extension (the forked child is
+  // detached once its initial ptrace stop is collected, so it doesn't get
+  // consumed as a thread in the parent process); trace vfork-done so the
+  // parent's stop after the child execs/exits is also reported.
+  //
+  static constexpr unsigned long kTraceFlags =
+      PTRACE_O_TRACECLONE | PTRACE_O_TRACEFORK | PTRACE_O_TRACEVFORK |
+      PTRACE_O_TRACEVFORKDONE;
 
-  //
-  // Trace clone and exit events to track threads.
-  //
-  if (wrapPtrace(PTRACE_SETOPTIONS, pid, nullptr, traceFlags) < 0) {
-    DS2LOG(Warning, "unable to set PTRACE_O_TRACECLONE on pid %d, error=%s",
+  if (wrapPtrace(PTRACE_SETOPTIONS, pid, nullptr, kTraceFlags) < 0) {
+    DS2LOG(Warning, "unable to set ptrace trace options on pid %d, error=%s",
            pid, strerror(errno));
     return Platform::TranslateError();
   }
