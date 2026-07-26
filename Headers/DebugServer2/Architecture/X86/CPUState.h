@@ -192,47 +192,27 @@ public:
 
 public:
   inline void getStopGPState(GPRegisterStopMap &regs, bool forLLDB) const {
-    if (forLLDB) {
-#define _SETREG(REG) regs[reg_lldb_##REG] = _REGVALUE(REG)
-      _SETREG(eax);
-      _SETREG(ebx);
-      _SETREG(ecx);
-      _SETREG(edx);
-      _SETREG(ebx);
-      _SETREG(esi);
-      _SETREG(edi);
-      _SETREG(ebp);
-      _SETREG(esp);
-      _SETREG(eip);
-      _SETREG(cs);
-      _SETREG(ss);
-      _SETREG(ds);
-      _SETREG(es);
-      _SETREG(fs);
-      _SETREG(gs);
-      _SETREG(eflags);
-#undef _SETREG
-    } else {
-#define _SETREG(REG) regs[reg_gdb_##REG] = _REGVALUE(REG)
-      _SETREG(eax);
-      _SETREG(ebx);
-      _SETREG(ecx);
-      _SETREG(edx);
-      _SETREG(ebx);
-      _SETREG(esi);
-      _SETREG(edi);
-      _SETREG(ebp);
-      _SETREG(esp);
-      _SETREG(eip);
-      _SETREG(cs);
-      _SETREG(ss);
-      _SETREG(ds);
-      _SETREG(es);
-      _SETREG(fs);
-      _SETREG(gs);
-      _SETREG(eflags);
-#undef _SETREG
-    }
+    auto set = [&](uint32_t lldbReg, uint32_t gdbReg,
+                   const GPRegisterValue &value) {
+      regs[forLLDB ? lldbReg : gdbReg] = value;
+    };
+
+    set(reg_lldb_eax, reg_gdb_eax, _REGVALUE(eax));
+    set(reg_lldb_ebx, reg_gdb_ebx, _REGVALUE(ebx));
+    set(reg_lldb_ecx, reg_gdb_ecx, _REGVALUE(ecx));
+    set(reg_lldb_edx, reg_gdb_edx, _REGVALUE(edx));
+    set(reg_lldb_esi, reg_gdb_esi, _REGVALUE(esi));
+    set(reg_lldb_edi, reg_gdb_edi, _REGVALUE(edi));
+    set(reg_lldb_ebp, reg_gdb_ebp, _REGVALUE(ebp));
+    set(reg_lldb_esp, reg_gdb_esp, _REGVALUE(esp));
+    set(reg_lldb_eip, reg_gdb_eip, _REGVALUE(eip));
+    set(reg_lldb_cs, reg_gdb_cs, _REGVALUE(cs));
+    set(reg_lldb_ss, reg_gdb_ss, _REGVALUE(ss));
+    set(reg_lldb_ds, reg_gdb_ds, _REGVALUE(ds));
+    set(reg_lldb_es, reg_gdb_es, _REGVALUE(es));
+    set(reg_lldb_fs, reg_gdb_fs, _REGVALUE(fs));
+    set(reg_lldb_gs, reg_gdb_gs, _REGVALUE(gs));
+    set(reg_lldb_eflags, reg_gdb_eflags, _REGVALUE(eflags));
   }
 #undef _REGVALUE
 

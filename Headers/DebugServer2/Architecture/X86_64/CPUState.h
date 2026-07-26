@@ -249,61 +249,35 @@ public:
 
 public:
   inline void getStopGPState(GPRegisterStopMap &regs, bool forLLDB) const {
-    if (forLLDB) {
-#define _SETREG(REG) regs[reg_lldb_##REG] = _REGVALUE(REG)
-      _SETREG(rax);
-      _SETREG(rcx);
-      _SETREG(rdx);
-      _SETREG(rbx);
-      _SETREG(rsi);
-      _SETREG(rdi);
-      _SETREG(rsp);
-      _SETREG(rbp);
-      _SETREG(r8);
-      _SETREG(r9);
-      _SETREG(r10);
-      _SETREG(r11);
-      _SETREG(r12);
-      _SETREG(r13);
-      _SETREG(r14);
-      _SETREG(r15);
-      _SETREG(rip);
-      _SETREG(eflags);
-      _SETREG(cs);
-      _SETREG(ss);
-      _SETREG(ds);
-      _SETREG(es);
-      _SETREG(fs);
-      _SETREG(gs);
-#undef _SETREG
-    } else {
-#define _SETREG(REG) regs[reg_gdb_##REG] = _REGVALUE(REG)
-      _SETREG(rax);
-      _SETREG(rcx);
-      _SETREG(rdx);
-      _SETREG(rbx);
-      _SETREG(rsi);
-      _SETREG(rdi);
-      _SETREG(rsp);
-      _SETREG(rbp);
-      _SETREG(r8);
-      _SETREG(r9);
-      _SETREG(r10);
-      _SETREG(r11);
-      _SETREG(r12);
-      _SETREG(r13);
-      _SETREG(r14);
-      _SETREG(r15);
-      _SETREG(rip);
-      _SETREG(eflags);
-      _SETREG(cs);
-      _SETREG(ss);
-      _SETREG(ds);
-      _SETREG(es);
-      _SETREG(fs);
-      _SETREG(gs);
-#undef _SETREG
-    }
+    auto set = [&](uint32_t lldbReg, uint32_t gdbReg,
+                   const GPRegisterValue &value) {
+      regs[forLLDB ? lldbReg : gdbReg] = value;
+    };
+
+    set(reg_lldb_rax, reg_gdb_rax, _REGVALUE(rax));
+    set(reg_lldb_rcx, reg_gdb_rcx, _REGVALUE(rcx));
+    set(reg_lldb_rdx, reg_gdb_rdx, _REGVALUE(rdx));
+    set(reg_lldb_rbx, reg_gdb_rbx, _REGVALUE(rbx));
+    set(reg_lldb_rsi, reg_gdb_rsi, _REGVALUE(rsi));
+    set(reg_lldb_rdi, reg_gdb_rdi, _REGVALUE(rdi));
+    set(reg_lldb_rsp, reg_gdb_rsp, _REGVALUE(rsp));
+    set(reg_lldb_rbp, reg_gdb_rbp, _REGVALUE(rbp));
+    set(reg_lldb_r8, reg_gdb_r8, _REGVALUE(r8));
+    set(reg_lldb_r9, reg_gdb_r9, _REGVALUE(r9));
+    set(reg_lldb_r10, reg_gdb_r10, _REGVALUE(r10));
+    set(reg_lldb_r11, reg_gdb_r11, _REGVALUE(r11));
+    set(reg_lldb_r12, reg_gdb_r12, _REGVALUE(r12));
+    set(reg_lldb_r13, reg_gdb_r13, _REGVALUE(r13));
+    set(reg_lldb_r14, reg_gdb_r14, _REGVALUE(r14));
+    set(reg_lldb_r15, reg_gdb_r15, _REGVALUE(r15));
+    set(reg_lldb_rip, reg_gdb_rip, _REGVALUE(rip));
+    set(reg_lldb_eflags, reg_gdb_eflags, _REGVALUE(eflags));
+    set(reg_lldb_cs, reg_gdb_cs, _REGVALUE(cs));
+    set(reg_lldb_ss, reg_gdb_ss, _REGVALUE(ss));
+    set(reg_lldb_ds, reg_gdb_ds, _REGVALUE(ds));
+    set(reg_lldb_es, reg_gdb_es, _REGVALUE(es));
+    set(reg_lldb_fs, reg_gdb_fs, _REGVALUE(fs));
+    set(reg_lldb_gs, reg_gdb_gs, _REGVALUE(gs));
   }
 #undef _REGVALUE
 
