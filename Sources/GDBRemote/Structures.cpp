@@ -238,6 +238,15 @@ void StopInfo::reasonToString(std::string &key, std::string &val,
   case StopInfo::kReasonTrap:
     val = "trap";
     break;
+  case StopInfo::kReasonFork:
+    val = "fork";
+    break;
+  case StopInfo::kReasonVFork:
+    val = "vfork";
+    break;
+  case StopInfo::kReasonVForkDone:
+    val = "vforkdone";
+    break;
   case StopInfo::kReasonWriteWatchpoint:
   case StopInfo::kReasonReadWatchpoint:
   case StopInfo::kReasonAccessWatchpoint:
@@ -300,6 +309,20 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
            << static_cast<uint64_t>(fault.value());
       ss << ';' << "description:" << ToHex(desc.str());
     }
+  }
+
+  if (reason == StopInfo::kReasonFork || reason == StopInfo::kReasonVFork) {
+    // The fork-events/vfork-events extension reports the forked child using
+    // the same GDB multiprocess-style "p<pid>.<tid>" format ProcessThreadId
+    // ::encode() already produces for kCompatibilityModeGDBMultiprocess.
+    auto [processId, threadId] = child;
+    ss << ';' << (reason == StopInfo::kReasonFork ? "fork" : "vfork") << ":p"
+       << HEX0 << static_cast<uint64_t>(processId) << '.' << HEX0
+       << static_cast<uint64_t>(threadId) << DEC;
+  }
+
+  if (reason == StopInfo::kReasonVForkDone) {
+    ss << ';' << "vforkdone:";
   }
 
   if (listThreads) {
