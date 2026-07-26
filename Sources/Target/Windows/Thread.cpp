@@ -121,6 +121,11 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   switch (de.dwDebugEventCode) {
   case EXCEPTION_DEBUG_EVENT:
     _state = kStopped;
+    _lastExceptionCode = de.u.Exception.ExceptionRecord.ExceptionCode;
+#if defined(ARCH_ARM64)
+    _wasExplicitStep = _explicitStep;
+    _explicitStep = false;
+#endif
 
     DS2LOG(
         Debug,

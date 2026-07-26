@@ -12,6 +12,7 @@
 
 #include "DebugServer2/Core/BreakpointManager.h"
 
+#include <unordered_map>
 #include <unordered_set>
 
 namespace ds2 {
@@ -76,6 +77,18 @@ protected:
   virtual ErrorCode disableDebugCtrlReg(uint64_t &ctrlReg, int idx);
   virtual ErrorCode enableDebugCtrlReg(uint64_t &ctrlReg, int idx, Mode mode,
                                        int size);
+#endif
+
+#if defined(ARCH_ARM64) && defined(OS_WIN32)
+protected:
+  // Last known contents of each enabled watchpoint's memory range, keyed by
+  // slot index. Windows ARM64 has no hardware signal for "which (if any)
+  // watchpoint actually trapped" (see
+  // Sources/Core/Windows/ARM64/HardwareBreakpointManager.cpp), so hit()
+  // compares against this to tell whether a stop that could be either a
+  // watchpoint or an unrelated explicit step actually touched a watched
+  // byte.
+  std::unordered_map<int, ByteVector> _lastKnownValues;
 #endif
 
 public:

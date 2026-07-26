@@ -271,9 +271,16 @@ ErrorCode Process::wait() {
     case EXCEPTION_DEBUG_EVENT: {
       // First-chance exceptions may yet be caught by the debugee, so don't
       // break for them. Breakpoints can never be handled by the inferior, so
-      // ignore here.
+      // ignore here. Hardware breakpoints/watchpoints also always arrive as
+      // STATUS_SINGLE_STEP on Windows (see Thread::updateState()), not
+      // STATUS_BREAKPOINT, so the same reasoning applies to it: continuing
+      // it first-chance would hand the trap to the debugee's own VEH/SEH
+      // handlers before Thread::updateState()/hit() ever classify it,
+      // letting a handler silently consume it and, even when unhandled,
+      // delaying detection until second chance.
       auto code = de.u.Exception.ExceptionRecord.ExceptionCode;
-      if (de.u.Exception.dwFirstChance && code != STATUS_BREAKPOINT) {
+      if (de.u.Exception.dwFirstChance && code != STATUS_BREAKPOINT &&
+          code != STATUS_SINGLE_STEP) {
         DS2LOG(Error,
                "Ignoring first-chance exception and continuing; code: %s",
                Stringify::ExceptionCode(
@@ -586,6 +593,15 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
 
   return kSuccess;
 }
+
+#if defined(ARCH_ARM64)
+int Process::getMaxWatchpoints() const {
+  // Architecturally ARM64 allows up to 16 watchpoints, but Windows only
+  // tracks/exposes ARM64_MAX_WATCHPOINTS (2) worth of Wcr/Wvr slots in
+  // CONTEXT_DEBUG_REGISTERS; see winnt.h.
+  return ARM64_MAX_WATCHPOINTS;
+}
+#endif
 
 ErrorCode Process::enumerateSharedLibraries(
     std::function<void(SharedLibraryInfo const &)> const &cb) {
