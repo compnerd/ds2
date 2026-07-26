@@ -141,12 +141,12 @@ ErrorCode DebugSessionImplBase::onQuerySupported(
 
   auto addFeature = [&localFeatures](char const *name, Feature::Flag flag,
                                      char const *value = nullptr) {
-    Feature feature;
+    localFeatures.emplace_back();
+    Feature &feature = localFeatures.back();
     feature.name = name;
     feature.flag = flag;
     if (value != nullptr)
       feature.value = value;
-    localFeatures.push_back(feature);
   };
 
   auto enable =
