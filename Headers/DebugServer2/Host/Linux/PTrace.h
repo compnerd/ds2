@@ -14,6 +14,8 @@
 #include "DebugServer2/Host/POSIX/PTrace.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <vector>
+
 namespace ds2 {
 namespace Host {
 namespace Linux {
@@ -110,6 +112,22 @@ public:
 #if defined(ARCH_ARM64)
 protected:
   int getMaxStoppoints(ProcessThreadId const &ptid, int regSet);
+
+public:
+  // Reads/writes the DBGWVRn_EL1/DBGWCRn_EL1 hardware watchpoint value/control
+  // register pairs (accessed via PTRACE_GETREGSET/SETREGSET with
+  // NT_ARM_HW_WATCH, i.e. `struct user_hwdebug_state`), one entry per
+  // hardware-supported watchpoint slot. `addresses`/`controls` are resized by
+  // readHardwareWatchpointControl() to the number of watchpoint slots the
+  // target actually supports (as reported by dbg_info), which callers should
+  // treat as the authoritative slot count instead of assuming a fixed value.
+  ErrorCode readHardwareWatchpointControl(ProcessThreadId const &ptid,
+                                          std::vector<uint64_t> &addresses,
+                                          std::vector<uint32_t> &controls);
+  ErrorCode
+  writeHardwareWatchpointControl(ProcessThreadId const &ptid,
+                                 std::vector<uint64_t> const &addresses,
+                                 std::vector<uint32_t> const &controls);
 #endif
 };
 } // namespace Linux

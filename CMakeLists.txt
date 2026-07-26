@@ -310,6 +310,11 @@ if(WIN32 OR WINDOWS_STORE)
     Sources/Utils/Windows/Daemon.cpp
     Sources/Utils/Windows/FaultHandler.cpp
     Sources/Utils/Windows/Stringify.cpp)
+
+  if(DS2_ARCHITECTURE MATCHES "ARM64")
+    target_sources(ds2 PRIVATE
+      Sources/Core/Windows/ARM64/HardwareBreakpointManager.cpp)
+  endif()
 else()
   # Assumes that any non-Windows platform is POSIX.
   target_sources(ds2 PRIVATE
@@ -347,6 +352,11 @@ else()
       Sources/Target/Linux/Process.cpp
       Sources/Target/Linux/Thread.cpp
       Sources/Target/Linux/${DS2_ARCHITECTURE}/Process${DS2_ARCHITECTURE}.cpp)
+
+    if(DS2_ARCHITECTURE MATCHES "ARM64")
+      target_sources(ds2 PRIVATE
+        Sources/Core/Linux/ARM64/HardwareBreakpointManager.cpp)
+    endif()
   elseif(APPLE)
     target_sources(ds2 PRIVATE
       Sources/Host/Darwin/LibProc.cpp
@@ -360,6 +370,11 @@ else()
       Sources/Target/Darwin/Thread.cpp
       Sources/Target/Darwin/${DS2_ARCHITECTURE}/Process${DS2_ARCHITECTURE}.cpp
       Sources/Target/Darwin/${DS2_ARCHITECTURE}/Thread${DS2_ARCHITECTURE}.cpp)
+
+    if(DS2_ARCHITECTURE MATCHES "ARM64")
+      target_sources(ds2 PRIVATE
+        Sources/Core/Darwin/ARM64/HardwareBreakpointManager.cpp)
+    endif()
   elseif("${BSD}" STREQUAL "FreeBSD")
     target_sources(ds2 PRIVATE
       Sources/Host/FreeBSD/Platform.cpp
@@ -370,6 +385,11 @@ else()
       Sources/Target/FreeBSD/Process.cpp
       Sources/Target/FreeBSD/Thread.cpp
       Sources/Target/FreeBSD/${DS2_ARCHITECTURE}/Process${DS2_ARCHITECTURE}.cpp)
+
+    if(DS2_ARCHITECTURE MATCHES "ARM64")
+      target_sources(ds2 PRIVATE
+        Sources/Core/FreeBSD/ARM64/HardwareBreakpointManager.cpp)
+    endif()
   endif()
 endif()
 

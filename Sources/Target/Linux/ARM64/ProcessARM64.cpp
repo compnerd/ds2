@@ -56,6 +56,14 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
 ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   return kErrorUnsupported;
 }
+
+int Process::getMaxBreakpoints() const {
+  return ptrace().getMaxHardwareBreakpoints(_pid);
+}
+
+int Process::getMaxWatchpoints() const {
+  return ptrace().getMaxHardwareWatchpoints(_pid);
+}
 } // namespace Linux
 } // namespace Target
 } // namespace ds2

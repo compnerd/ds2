@@ -73,6 +73,11 @@ public:
                            uint64_t *address) override;
   ErrorCode deallocateMemory(uint64_t address, size_t size) override;
 
+#if defined(ARCH_ARM64)
+public:
+  int getMaxWatchpoints() const override;
+#endif
+
 public:
   ErrorCode wait() override;
   ErrorCode afterResume() override;

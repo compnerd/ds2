@@ -67,10 +67,17 @@ protected:
   ErrorCode writeCPUState(ThreadId tid, Architecture::CPUState const &state,
                           uint32_t flags = 0);
 
-#if defined(ARCH_ARM)
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
 public:
   int getMaxBreakpoints() const override;
   int getMaxWatchpoints() const override;
+#endif
+
+// ARM64's hardware watchpoints are always explicitly sized per-slot (there is
+// no architectural equivalent of ARM32's single global maximum watchpoint
+// size), so this is only meaningful for ARM.
+#if defined(ARCH_ARM)
+public:
   int getMaxWatchpointSize() const override;
 #endif
 

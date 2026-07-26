@@ -15,6 +15,8 @@
 #include "DebugServer2/Utils/Log.h"
 
 #include <cstring>
+#include <iterator>
+#include <vector>
 #include <windows.h>
 
 using ds2::Host::Platform;
@@ -23,20 +25,12 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
-namespace {
-// PSTATE.SS, per the ARMv8 architecture reference manual. Setting this bit
-// in Cpsr and resuming the thread arms a single hardware step: the kernel
-// arms and disarms the underlying MDSCR_EL1 trap transparently, the same way
-// it already does for EFLAGS.TF on x86, so no separate debug register access
-// is required from user mode.
-constexpr uint64_t kPSTATE_SS = 1ULL << 21;
-}
-
 ErrorCode Thread::step(int signal, Address const &address) {
   CHK(modifyRegisters([](Architecture::CPUState &state) {
     state.state64.gp.cpsr |= kPSTATE_SS;
   }));
 
+  setExplicitStep();
   return resume(signal, address);
 }
 
@@ -100,6 +94,46 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
 
   BOOL result = SetThreadContext(_handle, &context);
   if (!result) {
+    return Platform::TranslateError();
+  }
+
+  return kSuccess;
+}
+
+ErrorCode Thread::readWatchpointRegisters(std::vector<uint64_t> &addresses,
+                                          std::vector<uint32_t> &controls) {
+  CONTEXT context;
+
+  std::memset(&context, 0, sizeof(context));
+  context.ContextFlags = CONTEXT_CONTROL | CONTEXT_DEBUG_REGISTERS;
+
+  if (!GetThreadContext(_handle, &context)) {
+    return Platform::TranslateError();
+  }
+
+  addresses.assign(std::begin(context.Wvr), std::end(context.Wvr));
+  controls.assign(std::begin(context.Wcr), std::end(context.Wcr));
+
+  return kSuccess;
+}
+
+ErrorCode
+Thread::writeWatchpointRegisters(std::vector<uint64_t> const &addresses,
+                                 std::vector<uint32_t> const &controls) {
+  DS2ASSERT(addresses.size() == controls.size());
+  DS2ASSERT(addresses.size() <= ARM64_MAX_WATCHPOINTS);
+
+  CONTEXT context;
+
+  std::memset(&context, 0, sizeof(context));
+  context.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+
+  for (size_t i = 0; i < addresses.size(); ++i) {
+    context.Wvr[i] = addresses[i];
+    context.Wcr[i] = controls[i];
+  }
+
+  if (!SetThreadContext(_handle, &context)) {
     return Platform::TranslateError();
   }
 

@@ -137,6 +137,20 @@ static inline int personality(unsigned long persona) {
 #endif // !PTRACE_SETHBPREGS
 #endif // ARCH_ARM
 
+// NT_ARM_HW_BREAK/NT_ARM_HW_WATCH (the PTRACE_GETREGSET/SETREGSET note types
+// used to access `struct user_hwdebug_state`, i.e. the DBGBVR/DBGBCR and
+// DBGWVR/DBGWCR hardware breakpoint/watchpoint registers) are normally
+// provided by <linux/elf.h>; shim them in case an older sysroot lacks them.
+#if defined(ARCH_ARM64)
+#if !defined(NT_ARM_HW_BREAK)
+#define NT_ARM_HW_BREAK 0x402
+#endif // !NT_ARM_HW_BREAK
+
+#if !defined(NT_ARM_HW_WATCH)
+#define NT_ARM_HW_WATCH 0x403
+#endif // !NT_ARM_HW_WATCH
+#endif // ARCH_ARM64
+
 #if !defined(PTRACE_GETREGSET)
 #define PTRACE_GETREGSET 0x4204
 #endif // !PTRACE_GETREGSET
