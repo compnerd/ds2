@@ -290,6 +290,16 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
 
   if (reason == StopInfo::kReasonSignalStop) {
     ss << ';' << "signal:" << signal;
+
+    // The stop description conventionally carries the fault address as an
+    // "address=<hex>" substring, so a client can locate the faulting
+    // expression; emit 0x so base-auto parsers decode the full value.
+    if (fault.has_value()) {
+      std::ostringstream desc;
+      desc << "address=0x" << std::hex
+           << static_cast<uint64_t>(fault.value());
+      ss << ';' << "description:" << ToHex(desc.str());
+    }
   }
 
   if (listThreads) {

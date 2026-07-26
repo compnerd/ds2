@@ -18,6 +18,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <map>
+#include <optional>
 #include <string>
 #include <vector>
 #if !defined(OS_WIN32)
@@ -173,6 +174,12 @@ struct StopInfo {
   Address watchpointAddress;
   int watchpointIndex;
 
+  // Set from siginfo_t's si_addr for memory-fault signals (SIGSEGV/SIGBUS).
+  // The GDB-remote stop-reply description field conventionally carries this
+  // as an "address=<hex>" substring, letting a client locate the faulting
+  // expression for post-mortem analysis.
+  std::optional<Address> fault;
+
   StopInfo() { clear(); }
 
   inline void clear() {
@@ -186,6 +193,7 @@ struct StopInfo {
     core = -1;
     watchpointAddress = 0;
     watchpointIndex = -1;
+    fault.reset();
   }
 };
 
