@@ -140,6 +140,14 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
       }
     } else if (waitStatusHi == kEventVForkDone) { // (1c)
       _stopInfo.reason = StopInfo::kReasonVForkDone;
+
+      unsigned long childPid = 0;
+      ErrorCode eventError =
+          process()->ptrace().getEventMessage(ptid, childPid);
+      if (eventError == kSuccess) {
+        _stopInfo.child = ProcessThreadId(static_cast<ProcessId>(childPid),
+                                          static_cast<ThreadId>(childPid));
+      }
     } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) { // (2)
       // The only signal we are supposed to send to the inferior is a SIGSTOP.
       DS2ASSERT(_stopInfo.signal == SIGSTOP);
