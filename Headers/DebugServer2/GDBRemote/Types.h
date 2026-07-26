@@ -64,8 +64,9 @@ private:
   void reasonToString(std::string &key, std::string &val,
                       CompatibilityMode mode) const;
   std::string encodeInfo(CompatibilityMode mode, bool listThreads) const;
-  void encodeRegisters(std::map<std::string, std::string> &regs,
-                       bool hexIndex) const;
+  std::string formatRegisterNumber(uint64_t regno, bool hexIndex) const;
+  std::string formatRegisterValue(const Architecture::GPRegisterValue &value)
+      const;
   std::string encodeRegisters() const;
 
 public:
