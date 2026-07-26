@@ -4,5 +4,6 @@ var searchData=
   ['elfinfo_1',['ELFInfo',['../structds2_1_1_host_1_1_linux_1_1_proc_f_s_1_1_e_l_f_info.html',1,'ds2::Host::Linux::ProcFS']]],
   ['elfprocess_2',['ELFProcess',['../classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html',1,'ds2::Target::POSIX']]],
   ['elfsupport_3',['ELFSupport',['../classds2_1_1_support_1_1_e_l_f_support.html',1,'ds2::Support']]],
-  ['enablebitmaskoperators_4',['EnableBitMaskOperators',['../struct_enable_bit_mask_operators.html',1,'']]]
+  ['enablebitmaskoperators_4',['EnableBitMaskOperators',['../struct_enable_bit_mask_operators.html',1,'']]],
+  ['extensionset_5',['ExtensionSet',['../classds2_1_1_g_d_b_protocol_1_1_extension_set.html',1,'ds2::GDBProtocol']]]
 ];

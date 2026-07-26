@@ -202,12 +202,21 @@ ProcessId&#160;</td><td class="memItemRight" valign="bottom"><b>pid</b> () const
 <tr class="memitem:ab62674df85bf5d58692c930d576dabac inherit pub_methods_classds2_1_1_target_1_1_process_base" id="r_ab62674df85bf5d58692c930d576dabac"><td class="memItemLeft" align="right" valign="top">
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>attached</b> () const</td></tr>
 <tr class="separator:ab62674df85bf5d58692c930d576dabac inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2d8619b429176a840afd60101d8e208 inherit pub_methods_classds2_1_1_target_1_1_process_base" id="r_ad2d8619b429176a840afd60101d8e208"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>hasExtension</b> (Extension extension) const</td></tr>
+<tr class="separator:ad2d8619b429176a840afd60101d8e208 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af98e44ca85861186d5e3db68389cffd9 inherit pub_methods_classds2_1_1_target_1_1_process_base" id="r_af98e44ca85861186d5e3db68389cffd9"><td class="memItemLeft" align="right" valign="top">
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>enabledExtensions</b> () const</td></tr>
+<tr class="separator:af98e44ca85861186d5e3db68389cffd9 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fa94a3340af8b5e4c6b71ce23c02f7c inherit pub_methods_classds2_1_1_target_1_1_process_base" id="r_a0fa94a3340af8b5e4c6b71ce23c02f7c"><td class="memItemLeft" align="right" valign="top">
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>forkEventsEnabled</b> () const</td></tr>
 <tr class="separator:a0fa94a3340af8b5e4c6b71ce23c02f7c inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a250bf8e56458144243b0c7877051595c inherit pub_methods_classds2_1_1_target_1_1_process_base" id="r_a250bf8e56458144243b0c7877051595c"><td class="memItemLeft" align="right" valign="top">
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>vforkEventsEnabled</b> () const</td></tr>
 <tr class="separator:a250bf8e56458144243b0c7877051595c inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeef2aa5cb5cd60aecb21204987892fb0 inherit pub_methods_classds2_1_1_target_1_1_process_base" id="r_aeef2aa5cb5cd60aecb21204987892fb0"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setEnabledExtensions</b> (uint32_t extensions)</td></tr>
+<tr class="separator:aeef2aa5cb5cd60aecb21204987892fb0 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae811dfbc66b91d3d77f6a59d7169aa80 inherit pub_methods_classds2_1_1_target_1_1_process_base" id="r_ae811dfbc66b91d3d77f6a59d7169aa80"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setForkEventsEnabled</b> (bool fork, bool vfork)</td></tr>
 <tr class="separator:ae811dfbc66b91d3d77f6a59d7169aa80 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -365,12 +374,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>_terminated</b></td><
 <tr class="memitem:a664b5a6e49044b04fde098387fd91d6a inherit pro_attribs_classds2_1_1_target_1_1_process_base" id="r_a664b5a6e49044b04fde098387fd91d6a"><td class="memItemLeft" align="right" valign="top">
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>_flags</b></td></tr>
 <tr class="separator:a664b5a6e49044b04fde098387fd91d6a inherit pro_attribs_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a289439f49c2878addc0e6827af4c525f inherit pro_attribs_classds2_1_1_target_1_1_process_base" id="r_a289439f49c2878addc0e6827af4c525f"><td class="memItemLeft" align="right" valign="top">
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_forkEventsEnabled</b> = false</td></tr>
-<tr class="separator:a289439f49c2878addc0e6827af4c525f inherit pro_attribs_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a401714cddc48a305a80fc77520972ff3 inherit pro_attribs_classds2_1_1_target_1_1_process_base" id="r_a401714cddc48a305a80fc77520972ff3"><td class="memItemLeft" align="right" valign="top">
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_vforkEventsEnabled</b> = false</td></tr>
-<tr class="separator:a401714cddc48a305a80fc77520972ff3 inherit pro_attribs_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67a8c33bed4383136eab538b46eb81c7 inherit pro_attribs_classds2_1_1_target_1_1_process_base" id="r_a67a8c33bed4383136eab538b46eb81c7"><td class="memItemLeft" align="right" valign="top">
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>_enabledExtensions</b> = 0</td></tr>
+<tr class="separator:a67a8c33bed4383136eab538b46eb81c7 inherit pro_attribs_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a8d329b7b90bce867b0e3d60298c0d3 inherit pro_attribs_classds2_1_1_target_1_1_process_base" id="r_a5a8d329b7b90bce867b0e3d60298c0d3"><td class="memItemLeft" align="right" valign="top">
 ProcessId&#160;</td><td class="memItemRight" valign="bottom"><b>_pid</b></td></tr>
 <tr class="separator:a5a8d329b7b90bce867b0e3d60298c0d3 inherit pro_attribs_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -412,6 +418,10 @@ Additional Inherited Members</h2></td></tr>
 , <b>kFlagAttachedProcess</b> = (1 &lt;&lt; 1)
  }</td></tr>
 <tr class="separator:ad574e63928af9b150928d91bcd6b5f2a inherit pub_types_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67b4e1f65a8a22294b18672441b302ad inherit pub_types_classds2_1_1_target_1_1_process_base" id="r_a67b4e1f65a8a22294b18672441b302ad"><td class="memItemLeft" align="right" valign="top"><a id="a67b4e1f65a8a22294b18672441b302ad" name="a67b4e1f65a8a22294b18672441b302ad"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Extension</b> : uint32_t { <b>kExtensionForkEvents</b> = (1u &lt;&lt; 0)
+, <b>kExtensionVForkEvents</b> = (1u &lt;&lt; 1)
+ }</td></tr>
+<tr class="separator:a67b4e1f65a8a22294b18672441b302ad inherit pub_types_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83d99dd09439af0d514943a3885bf805 inherit pub_types_classds2_1_1_target_1_1_process_base" id="r_a83d99dd09439af0d514943a3885bf805"><td class="memItemLeft" align="right" valign="top">
 typedef std::map&lt; ThreadId, Thread * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>IdentityMap</b></td></tr>
 <tr class="separator:a83d99dd09439af0d514943a3885bf805 inherit pub_types_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
