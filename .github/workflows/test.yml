@@ -392,7 +392,7 @@ jobs:
             --platform-name remote-android
             --platform-url connect://localhost:5432
             --platform-working-dir /data/local/tmp
-            --compiler=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android28-clang
+            --compiler=$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android28-clang
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-x86_64.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-x86_64.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
@@ -496,7 +496,7 @@ jobs:
             --platform-name remote-android
             --platform-url connect://localhost:5432
             --platform-working-dir /data/local/tmp
-            --compiler=$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android27-clang
+            --compiler=$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android27-clang
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-aarch64.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-aarch64.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
