@@ -39,7 +39,7 @@ protected:
   bool checkInterrupt(ThreadId tid, int waitStatus);
 
 public:
-  ErrorCode detach() override;
+  ErrorCode detach(bool stopped) override;
   ErrorCode interrupt() override;
   ErrorCode terminate() override;
   bool isAlive() const override;
