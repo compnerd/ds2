@@ -19,6 +19,7 @@
 #include <csignal>
 #include <cstring>
 #include <memory>
+#include <vector>
 
 #include <sys/mman.h>
 #include <sys/wait.h>
@@ -50,10 +51,33 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   return kSuccess;
 }
 
-ErrorCode Process::detach() {
+ErrorCode Process::detach(bool stopped) {
   prepareForDetach();
 
-  CHK(ptrace().detach(_pid));
+  // PTRACE_DETACH resumes the tracee as it stops being traced, so a plain
+  // detach with no signal leaves it running. When the caller wants the
+  // target left stopped (LLDB's GDB-remote D1 detach-and-stay-stopped
+  // mode), SIGSTOP has to be delivered as part of the detach itself rather
+  // than relied on as a side effect of an earlier suspend, since suspending
+  // a thread beforehand only leaves a signal pending and does not by
+  // itself survive detaching.
+  int const signal = stopped ? SIGSTOP : 0;
+
+  // ptrace() traces each thread of a multithreaded process as its own
+  // tracee. Threads created after the initial attach show up via
+  // PTRACE_EVENT_CLONE rather than a fresh PTRACE_ATTACH, but they still
+  // need their own PTRACE_DETACH. Detaching only the main pid would leave
+  // every other thread parked in its last ptrace-stop forever, so this
+  // best-effort detaches the rest of the threads first.
+  std::vector<ThreadId> tids;
+  getThreadIds(tids);
+  for (ThreadId tid : tids) {
+    if (tid != _pid) {
+      ptrace().detach(tid, signal);
+    }
+  }
+
+  CHK(ptrace().detach(_pid, signal));
 
   cleanup();
   _flags &= ~kFlagAttachedProcess;

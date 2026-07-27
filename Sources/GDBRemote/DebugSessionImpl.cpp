@@ -1173,7 +1173,7 @@ ErrorCode DebugSessionImplBase::onDetach(Session &, ProcessId pid,
     CHK(_process->suspend());
   }
 
-  return _process->detach();
+  return _process->detach(stopped);
 }
 
 ErrorCode DebugSessionImplBase::onTerminate(Session &session,

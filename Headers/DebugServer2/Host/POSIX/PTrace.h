@@ -38,7 +38,7 @@ public:
 
 public:
   virtual ErrorCode attach(ProcessId pid);
-  virtual ErrorCode detach(ProcessId pid);
+  virtual ErrorCode detach(ProcessId pid, int signal = 0);
 
 public:
   virtual ErrorCode kill(ProcessThreadId const &ptid, int signal) = 0;

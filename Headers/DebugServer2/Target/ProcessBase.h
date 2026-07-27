@@ -107,7 +107,7 @@ protected:
   virtual void cleanup();
 
 public:
-  virtual ErrorCode detach() = 0;
+  virtual ErrorCode detach(bool stopped) = 0;
 
 public:
   virtual ErrorCode suspend();

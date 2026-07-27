@@ -72,7 +72,7 @@ Process::~Process() {
   // exit, so we detach at this point. This is required because otherwise the
   // debugged winphone process might stay alive in an unclosable state. If
   // detached, the winphone process dies gracefully.
-  detach();
+  detach(false);
   ::CloseHandle(_handle);
 }
 
@@ -125,8 +125,13 @@ Target::Process *Process::Attach(ProcessId pid) {
   return process.release();
 }
 
-ErrorCode Process::detach() {
+ErrorCode Process::detach(bool stopped) {
   prepareForDetach();
+
+  // DebugActiveProcessStop has no equivalent of POSIX's detach-and-leave-
+  // stopped: the debuggee always resumes once debugging is stopped, so
+  // there is nothing here to do differently when stopped is requested.
+  (void)stopped;
 
   BOOL result = DebugActiveProcessStop(_pid);
   if (!result) {

@@ -76,13 +76,14 @@ ErrorCode PTrace::attach(ProcessId pid) {
   return kSuccess;
 }
 
-ErrorCode PTrace::detach(ProcessId pid) {
+ErrorCode PTrace::detach(ProcessId pid, int signal) {
   if (pid <= kAnyProcessId)
     return kErrorProcessNotFound;
 
-  DS2LOG(Debug, "detaching from pid %" PRIu64, (uint64_t)pid);
+  DS2LOG(Debug, "detaching from pid %" PRIu64 " with signal %d", (uint64_t)pid,
+         signal);
 
-  if (wrapPtrace(PTCMD(DETACH), pid, nullptr, nullptr) < 0)
+  if (wrapPtrace(PTCMD(DETACH), pid, nullptr, signal) < 0)
     return Platform::TranslateError();
 
   return kSuccess;
