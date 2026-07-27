@@ -1,0 +1,219 @@
+name: Test Linux
+
+on:
+  workflow_call:
+    inputs:
+      llvm-ref:
+        description: llvm-project commit/ref the build artifacts were built against
+        required: true
+        type: string
+
+jobs:
+
+  # -----------------------------------------------------------------------
+  # Linux
+  # -----------------------------------------------------------------------
+  #
+  # Each category shard is a genuinely separate job/runner (a strategy.matrix,
+  # same as before this file existed) rather than a single job backgrounding
+  # all four shards together: that would put four ds2+lldb-dotest instances
+  # on one runner's fixed CPU budget, contending with each other instead of
+  # actually running in parallel. The job's own `name:` deliberately does NOT
+  # interpolate matrix.test-category (unlike the version of this file that a
+  # reviewer flagged): GitHub groups matrix jobs that share an identical name
+  # into a single collapsible entry in the PR checks list, which is what
+  # actually fixes the one-check-per-category-per-arch clutter -- varying the
+  # name per category is what defeats that grouping and is why each category
+  # showed up as its own separate, differently-named check before. The
+  # *-status job per arch gives branch protection one plain, matrix-independent
+  # check name to require rather than depending on how that grouping is
+  # surfaced there.
+
+  test-linux-i686:
+    runs-on: ubuntu-latest
+    name: Test Linux i686
+
+    # test-category is the matrix's only key -- GitHub renders every matrix
+    # key/value pair in the check name (e.g. "Test Linux i686 (Python API)"),
+    # so test-subdirs is resolved from test-category by the step below
+    # instead of being a second matrix axis, which would otherwise render as
+    # "Test Linux i686 (Python API, SourceCache/llvm/lldb/test/API/python_api)".
+    strategy:
+      fail-fast: false
+      matrix:
+        test-category: [misc, commands, Python API, functionalities]
+
+    steps:
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -qq --no-install-recommends gcc-multilib g++-multilib
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Linux-X64
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: linux-i686-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        uses: ./SourceCache/ds2/.github/actions/resolve-test-subdirs
+        with:
+          test-category: ${{ matrix.test-category }}
+          misc-dirs: "SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/linux SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+
+      - uses: ./SourceCache/ds2/.github/actions/run-lldb-tests
+        with:
+          ds2-path: ${{ github.workspace }}/BinaryCache/ds2/ds2
+          lldb-dotest-path: ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
+          ds2-repo-path: ${{ github.workspace }}/SourceCache/ds2
+          arch: i686
+          platform: linux
+          working-dir: ${{ github.workspace }}/temp
+          test-subdirs: ${{ steps.test-subdirs.outputs.dirs }}
+
+  test-linux-i686-status:
+    needs: [test-linux-i686]
+    if: always()
+    runs-on: ubuntu-latest
+    name: Test Linux i686 (status)
+    steps:
+      - if: needs.test-linux-i686.result != 'success'
+        run: exit 1
+
+  test-linux-x86_64:
+    runs-on: ubuntu-latest
+    name: Test Linux x86_64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test-category: [misc, commands, Python API, functionalities]
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Linux-X64
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: linux-x86_64-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        uses: ./SourceCache/ds2/.github/actions/resolve-test-subdirs
+        with:
+          test-category: ${{ matrix.test-category }}
+          misc-dirs: "SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/linux SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+
+      - uses: ./SourceCache/ds2/.github/actions/run-lldb-tests
+        with:
+          ds2-path: ${{ github.workspace }}/BinaryCache/ds2/ds2
+          lldb-dotest-path: ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
+          ds2-repo-path: ${{ github.workspace }}/SourceCache/ds2
+          arch: x86_64
+          platform: linux
+          working-dir: ${{ github.workspace }}/temp
+          test-subdirs: ${{ steps.test-subdirs.outputs.dirs }}
+
+  test-linux-x86_64-status:
+    needs: [test-linux-x86_64]
+    if: always()
+    runs-on: ubuntu-latest
+    name: Test Linux x86_64 (status)
+    steps:
+      - if: needs.test-linux-x86_64.result != 'success'
+        run: exit 1
+
+  test-linux-aarch64:
+    runs-on: ubuntu-24.04-arm
+    name: Test Linux aarch64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test-category: [misc, commands, Python API, functionalities]
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Linux-ARM64
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/llvm.tar
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: linux-aarch64-ds2
+          path: ${{ github.workspace }}/BinaryCache
+      - run: tar -C ${{ github.workspace }}/BinaryCache -xvf ${{ github.workspace }}/BinaryCache/ds2.tar
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        uses: ./SourceCache/ds2/.github/actions/resolve-test-subdirs
+        with:
+          test-category: ${{ matrix.test-category }}
+          misc-dirs: "SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/linux SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+
+      - uses: ./SourceCache/ds2/.github/actions/run-lldb-tests
+        with:
+          ds2-path: ${{ github.workspace }}/BinaryCache/ds2/ds2
+          lldb-dotest-path: ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
+          ds2-repo-path: ${{ github.workspace }}/SourceCache/ds2
+          arch: aarch64
+          platform: linux
+          working-dir: ${{ github.workspace }}/temp
+          test-subdirs: ${{ steps.test-subdirs.outputs.dirs }}
+
+  test-linux-aarch64-status:
+    needs: [test-linux-aarch64]
+    if: always()
+    runs-on: ubuntu-latest
+    name: Test Linux aarch64 (status)
+    steps:
+      - if: needs.test-linux-aarch64.result != 'success'
+        run: exit 1

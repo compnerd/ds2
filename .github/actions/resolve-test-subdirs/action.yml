@@ -1,0 +1,42 @@
+name: Resolve lldb test subdirectories
+description: >-
+  Maps a test-category matrix value (misc/commands/Python API/functionalities)
+  to the concrete lldb test/API subdirectories to run. The misc category's
+  directory list is platform-specific (each platform test.yml file has its
+  own set of OS-specific test dirs mixed in), so it's passed in by the caller
+  rather than hardcoded here.
+
+inputs:
+  test-category:
+    description: The matrix.test-category value (misc, commands, Python API, functionalities)
+    required: true
+  misc-dirs:
+    description: Space-separated list of directories to use for the "misc" category on this platform
+    required: true
+
+outputs:
+  dirs:
+    description: Space-separated list of resolved test subdirectories
+    value: ${{ steps.resolve.outputs.dirs }}
+
+runs:
+  using: composite
+  steps:
+    - id: resolve
+      shell: bash
+      run: |
+        case "${{ inputs.test-category }}" in
+          misc)
+            dirs="${{ inputs.misc-dirs }}"
+            ;;
+          commands)
+            dirs="SourceCache/llvm/lldb/test/API/commands"
+            ;;
+          "Python API")
+            dirs="SourceCache/llvm/lldb/test/API/python_api"
+            ;;
+          functionalities)
+            dirs="SourceCache/llvm/lldb/test/API/functionalities"
+            ;;
+        esac
+        echo "dirs=$dirs" >> "$GITHUB_OUTPUT"
