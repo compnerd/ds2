@@ -472,14 +472,12 @@ jobs:
   # waiting for every build job to complete before any test starts.
   test-linux:
     needs: [vars, linux, build-lldb-linux]
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-linux.yml
     with:
       llvm-ref: ${{ needs.vars.outputs.llvm-ref }}
-      platform: linux
 
   test-android:
     needs: [vars, android-windows-ndk, build-lldb-linux]
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/test-android.yml
     with:
       llvm-ref: ${{ needs.vars.outputs.llvm-ref }}
-      platform: android
