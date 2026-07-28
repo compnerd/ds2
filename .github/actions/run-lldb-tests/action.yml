@@ -91,4 +91,4 @@ runs:
           --excluded "$excluded_dir/ds2/${{ inputs.platform }}-${{ inputs.arch }}.excluded" \
           --excluded "$excluded_dir/upstream/non-debugserver-tests.excluded" \
           -v \
-          ${{ inputs.test-subdirs }} 2>&1 | grep -v '^UNSUPPORTED: LLDB '
+          ${{ inputs.test-subdirs }} 2>&1 | grep -a -v '^UNSUPPORTED: LLDB '
