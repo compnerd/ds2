@@ -13,6 +13,7 @@
 #include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
 #include "DebugServer2/Host/Platform.h"
 
+#include <filesystem>
 #include <iomanip>
 #include <sstream>
 
@@ -23,12 +24,30 @@ namespace ds2 {
 namespace GDBRemote {
 
 template <typename T>
-ErrorCode FileOperationsMixin<T>::onFileOpen(Session &, std::string const &path,
+std::string FileOperationsMixin<T>::resolvePath(Session &session,
+                                                 std::string const &path) const {
+  if (std::filesystem::path(path).is_absolute()) {
+    return path;
+  }
+
+  std::string workingDirectory;
+  if (this->onQueryWorkingDirectory(session, workingDirectory) != kSuccess ||
+      workingDirectory.empty()) {
+    return path;
+  }
+
+  // onSetWorkingDirectory canonicalizes to an absolute path before storing
+  // it, so this join always yields an absolute result.
+  return (std::filesystem::path(workingDirectory) / path).string();
+}
+
+template <typename T>
+ErrorCode FileOperationsMixin<T>::onFileOpen(Session &session, std::string const &path,
                                              OpenFlags flags, uint32_t mode,
                                              int &fd) {
   static int fileIdx = 0;
 
-  Host::File file(path, flags, mode);
+  Host::File file(resolvePath(session, path), flags, mode);
   if (!file.valid()) {
     return file.lastError();
   }
@@ -76,29 +95,30 @@ ErrorCode FileOperationsMixin<T>::onFileWrite(Session &session, int fd,
 }
 
 template <typename T>
-ErrorCode FileOperationsMixin<T>::onFileCreateDirectory(Session &,
+ErrorCode FileOperationsMixin<T>::onFileCreateDirectory(Session &session,
                                                         std::string const &path,
                                                         uint32_t flags) {
-  return Host::File::createDirectory(path, flags);
+  return Host::File::createDirectory(resolvePath(session, path), flags);
 }
 
 template <typename T>
-ErrorCode FileOperationsMixin<T>::onFileExists(Session &,
+ErrorCode FileOperationsMixin<T>::onFileExists(Session &session,
                                                std::string const &path) {
-  return Host::Platform::IsFilePresent(path) ? kSuccess : kErrorNotFound;
+  return Host::Platform::IsFilePresent(resolvePath(session, path)) ? kSuccess
+                                                                    : kErrorNotFound;
 }
 
 template <typename T>
 ErrorCode FileOperationsMixin<T>::onFileGetSize(Session &session, std::string const &path,
                         uint64_t &size){
-  return Host::File::fileSize(path, size);
+  return Host::File::fileSize(resolvePath(session, path), size);
 }
 
 template <typename T>
 ErrorCode FileOperationsMixin<T>::onFileGetMode(Session &session,
                                                 std::string const &path,
                                                 uint32_t &mode) const {
-  return Host::File::fileMode(path, mode);
+  return Host::File::fileMode(resolvePath(session, path), mode);
 }
 
 template <typename T>
@@ -114,14 +134,14 @@ ErrorCode FileOperationsMixin<T>::onFileFstat(Session &session, int fd,
 template <typename T>
 ErrorCode FileOperationsMixin<T>::onFileRemove(Session &session,
                                                std::string const &path) {
-  return Host::File::unlink(path);
+  return Host::File::unlink(resolvePath(session, path));
 }
 
 template <typename T>
 ErrorCode FileOperationsMixin<T>::onFileSetPermissions(Session &session,
                                                        std::string const &path,
                                                        uint32_t mode) {
-  return Host::File::chmod(path, mode);
+  return Host::File::chmod(resolvePath(session, path), mode);
 }
 
 template <typename T>

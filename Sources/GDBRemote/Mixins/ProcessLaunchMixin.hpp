@@ -13,6 +13,7 @@
 #include "DebugServer2/GDBRemote/Mixins/ProcessLaunchMixin.h"
 
 #include <algorithm>
+#include <filesystem>
 
 namespace ds2 {
 namespace GDBRemote {
@@ -35,7 +36,23 @@ template <typename T>
 ErrorCode
 ProcessLaunchMixin<T>::onSetWorkingDirectory(Session &,
                                              std::string const &path) {
-  _workingDirectory = path;
+  // ds2 serves each platform client on its own thread with its own session
+  // (see PlatformMain in Sources/main.cpp), so the working directory has to
+  // stay session-local state rather than ds2's actual process cwd, which is
+  // shared by every concurrently-connected client.
+  //
+  // Canonicalize to an absolute path here, once, rather than storing
+  // whatever the client sent verbatim: a relative path only means
+  // something relative to ds2's own starting directory (there is nothing
+  // else for it to be relative to, since ds2's cwd never changes), and
+  // resolving it eagerly means every later consumer of _workingDirectory
+  // (vFile path resolution, ProcessSpawner) can treat it as absolute
+  // without redoing this resolution or applying it a second time.
+  std::filesystem::path resolved(path);
+  if (!resolved.is_absolute())
+    resolved = std::filesystem::path(Platform::GetWorkingDirectory()) / resolved;
+
+  _workingDirectory = resolved.string();
   return kSuccess;
 }
 
