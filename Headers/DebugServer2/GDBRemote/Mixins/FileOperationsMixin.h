@@ -30,6 +30,17 @@ public:
   explicit FileOperationsMixin(Args &&... args)
       : T(std::forward<Args>(args)...) {}
 
+private:
+  // vFile paths are frequently relative (e.g. a bare filename an inferior
+  // writes into its own working directory); unlike qPlatform_shell, the
+  // vFile packets carry no separate working-directory field, so ds2 has to
+  // apply the platform session's own configured working directory itself.
+  // This has to stay session-local rather than mutating ds2's actual
+  // process cwd: platform mode serves each connected client on its own
+  // thread with its own session (see PlatformMain in Sources/main.cpp), and
+  // the process cwd is shared state across all of them.
+  std::string resolvePath(Session &session, std::string const &path) const;
+
 protected:
   ErrorCode onFileOpen(Session &session, std::string const &path,
                        OpenFlags flags, uint32_t mode, int &fd) override;
