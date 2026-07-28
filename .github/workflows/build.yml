@@ -364,10 +364,18 @@ jobs:
           name: freebsd-${{ matrix.processor }}-ds2
           path: ${{ github.workspace }}/BinaryCache/ds2.tar
 
-  # Cross-compile for Android on a Windows host.
-  android-windows-ndk:
-    needs: [windows_tools]
-    runs-on: windows-latest
+  # Cross-compile for Android. This runs on a Linux host rather than Windows:
+  # Windows coverage for ds2 itself is already provided by the native
+  # windows/windows_arm64/windows_store/mingw jobs and test-windows, so this
+  # job doesn't need to also prove the Windows-host NDK cross-compile path,
+  # and Linux runners build noticeably faster (no per-file AV scanning, no
+  # NTFS metadata overhead). No pre-built RegsGen2 is needed here either:
+  # unlike the Windows jobs, which share one regsgen2.exe built once by
+  # windows_tools, omitting DS2_REGSGEN2 lets CMake build RegsGen2 itself
+  # against the host compiler via ExternalProject, same as the Linux job
+  # above.
+  android-ndk:
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -375,26 +383,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/download-artifact@v8
-        with:
-          name: windows-regsgen2
-          path: ${{ github.workspace }}/BinaryCache/RegsGen2/Release
 
-      - name: Install Build Tools
-        run: choco install winflexbison3
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -qq --no-install-recommends bison flex ninja-build
 
-      # The Windows runner image ships several NDK versions side by side
-      # (ANDROID_NDK/ANDROID_NDK_HOME point at an older default); pin to
-      # ANDROID_NDK_LATEST_HOME explicitly so ds2 is built with the same NDK
-      # release used to compile the lldb test inferiors in test-android.
       - name: Configure
         run: |
-          cmake -B ${{ github.workspace }}/BinaryCache/ds2 `
-                -D CMAKE_BUILD_TYPE=Release `
-                -D CMAKE_SYSTEM_NAME=Android `
-                -D CMAKE_ANDROID_ARCH_ABI=${{ matrix.abi }} `
-                -D CMAKE_ANDROID_NDK="$($env:ANDROID_NDK_LATEST_HOME -replace '\\', '/')" `
-                -D DS2_REGSGEN2=${{ github.workspace }}/BinaryCache/RegsGen2/Release/regsgen2.exe `
+          cmake -B ${{ github.workspace }}/BinaryCache/ds2   \
+                -D CMAKE_BUILD_TYPE=Release                  \
+                -D CMAKE_SYSTEM_NAME=Android                 \
+                -D CMAKE_ANDROID_ARCH_ABI=${{ matrix.abi }}   \
+                -D CMAKE_ANDROID_NDK=$ANDROID_NDK_LATEST_HOME \
                 -G Ninja
 
       - name: Build
@@ -477,7 +477,7 @@ jobs:
       llvm-ref: ${{ needs.vars.outputs.llvm-ref }}
 
   test-android:
-    needs: [vars, android-windows-ndk, build-lldb-linux]
+    needs: [vars, android-ndk, build-lldb-linux]
     uses: ./.github/workflows/test-android.yml
     with:
       llvm-ref: ${{ needs.vars.outputs.llvm-ref }}
