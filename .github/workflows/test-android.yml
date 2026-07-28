@@ -125,15 +125,6 @@ jobs:
             1>/dev/null 2>/tmp/dotest-android-x86_64.log;
             rc=$?; grep -v '^UNSUPPORTED: LLDB ' /tmp/dotest-android-x86_64.log; exit $rc
 
-  test-android-x86_64-status:
-    needs: [test-android-x86_64]
-    if: always()
-    runs-on: ubuntu-latest
-    name: Test Android x86_64 (status)
-    steps:
-      - if: needs.test-android-x86_64.result != 'success'
-        run: exit 1
-
   # Run a small sub-set of tests on arm64. The emulator is very slow so it is
   # not practical to run more tests until we can run on an arm64 runner with
   # virtualization. Only one category runs here, so this already reports as

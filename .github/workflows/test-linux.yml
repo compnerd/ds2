@@ -24,10 +24,7 @@ jobs:
   # into a single collapsible entry in the PR checks list, which is what
   # actually fixes the one-check-per-category-per-arch clutter -- varying the
   # name per category is what defeats that grouping and is why each category
-  # showed up as its own separate, differently-named check before. The
-  # *-status job per arch gives branch protection one plain, matrix-independent
-  # check name to require rather than depending on how that grouping is
-  # surfaced there.
+  # showed up as its own separate, differently-named check before.
 
   test-linux-i686:
     runs-on: ubuntu-latest
@@ -89,15 +86,6 @@ jobs:
           working-dir: ${{ github.workspace }}/temp
           test-subdirs: ${{ steps.test-subdirs.outputs.dirs }}
 
-  test-linux-i686-status:
-    needs: [test-linux-i686]
-    if: always()
-    runs-on: ubuntu-latest
-    name: Test Linux i686 (status)
-    steps:
-      - if: needs.test-linux-i686.result != 'success'
-        run: exit 1
-
   test-linux-x86_64:
     runs-on: ubuntu-latest
     name: Test Linux x86_64
@@ -149,15 +137,6 @@ jobs:
           working-dir: ${{ github.workspace }}/temp
           test-subdirs: ${{ steps.test-subdirs.outputs.dirs }}
 
-  test-linux-x86_64-status:
-    needs: [test-linux-x86_64]
-    if: always()
-    runs-on: ubuntu-latest
-    name: Test Linux x86_64 (status)
-    steps:
-      - if: needs.test-linux-x86_64.result != 'success'
-        run: exit 1
-
   test-linux-aarch64:
     runs-on: ubuntu-24.04-arm
     name: Test Linux aarch64
@@ -208,12 +187,3 @@ jobs:
           platform: linux
           working-dir: ${{ github.workspace }}/temp
           test-subdirs: ${{ steps.test-subdirs.outputs.dirs }}
-
-  test-linux-aarch64-status:
-    needs: [test-linux-aarch64]
-    if: always()
-    runs-on: ubuntu-latest
-    name: Test Linux aarch64 (status)
-    steps:
-      - if: needs.test-linux-aarch64.result != 'success'
-        run: exit 1
