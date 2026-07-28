@@ -136,8 +136,8 @@ Collaboration diagram for ds2::Target::POSIX::Process:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af5a1263fdd98114103f9aa062cde6ab1" id="r_af5a1263fdd98114103f9aa062cde6ab1"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5a1263fdd98114103f9aa062cde6ab1">detach</a> () override</td></tr>
-<tr class="separator:af5a1263fdd98114103f9aa062cde6ab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adefece8498128b559389686ea24e267e" id="r_adefece8498128b559389686ea24e267e"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adefece8498128b559389686ea24e267e">detach</a> (bool stopped) override</td></tr>
+<tr class="separator:adefece8498128b559389686ea24e267e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03e6ef912fc3d363db91660af04b789e" id="r_a03e6ef912fc3d363db91660af04b789e"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03e6ef912fc3d363db91660af04b789e">interrupt</a> () override</td></tr>
 <tr class="separator:a03e6ef912fc3d363db91660af04b789e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71ab00b2f09668c56371727dc3bf993d" id="r_a71ab00b2f09668c56371727dc3bf993d"><td class="memItemLeft" align="right" valign="top">ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71ab00b2f09668c56371727dc3bf993d">terminate</a> () override</td></tr>
@@ -386,8 +386,8 @@ typedef std::map&lt; ThreadId, Thread * &gt;&#160;</td><td class="memItemRight" 
 <tr class="separator:a83d99dd09439af0d514943a3885bf805 inherit pub_types_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="af5a1263fdd98114103f9aa062cde6ab1" name="af5a1263fdd98114103f9aa062cde6ab1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5a1263fdd98114103f9aa062cde6ab1">&#9670;&#160;</a></span>detach()</h2>
+<a id="adefece8498128b559389686ea24e267e" name="adefece8498128b559389686ea24e267e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adefece8498128b559389686ea24e267e">&#9670;&#160;</a></span>detach()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -398,7 +398,7 @@ typedef std::map&lt; ThreadId, Thread * &gt;&#160;</td><td class="memItemRight" 
         <tr>
           <td class="memname">ErrorCode ds2::Target::POSIX::Process::detach </td>
           <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>stopped</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
