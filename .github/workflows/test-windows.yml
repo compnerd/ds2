@@ -1,0 +1,249 @@
+name: Test Windows
+
+on:
+  workflow_call:
+    inputs:
+      llvm-ref:
+        description: llvm-project commit/ref the build artifacts were built against
+        required: true
+        type: string
+
+jobs:
+
+  # -----------------------------------------------------------------------
+  # Windows
+  # -----------------------------------------------------------------------
+  #
+  # i686 reuses the x64 lldb-dotest build, cross-compiling test inferiors to
+  # i686-pc-windows-msvc, the same way Test Linux i686 reuses the x86_64
+  # build. NOTE: unlike x64/arm64 below, this cross-triple path hasn't been
+  # exercised yet -- if it fails, first check whether clang can actually
+  # find 32-bit MSVC/SDK import libs from this runner image.
+  #
+  # ds2 on Windows doesn't support --daemonize (Sources/main.cpp gates it on
+  # OS_POSIX), so the platform server is backgrounded at the shell level
+  # instead, same as the Linux/Android composite action does; a raw bash
+  # step isn't available on these runners, so this is inlined in PowerShell
+  # rather than going through that composite action.
+
+  test-windows-x64:
+    runs-on: windows-latest
+    name: Test Windows x64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test-category: [misc, commands, Python API, functionalities]
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Windows-X64
+          path: ${{ github.workspace }}/BinaryCache/llvm
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: windows-x64-ds2
+          path: ${{ github.workspace }}/BinaryCache/ds2/Release
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        uses: ./SourceCache/ds2/.github/actions/resolve-test-subdirs
+        with:
+          test-category: ${{ matrix.test-category }}
+          misc-dirs: "SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/windows SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+
+      - name: Install test dependencies
+        run: python -m pip install --quiet packaging psutil
+
+      - name: Run lldb tests against ds2
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path ${{ github.workspace }}\temp | Out-Null
+
+          Start-Process -NoNewWindow -FilePath "${{ github.workspace }}\BinaryCache\ds2\Release\ds2.exe" -ArgumentList "platform","--server","--listen","localhost:5432"
+
+          for ($i = 0; $i -lt 50; $i++) {
+            try {
+              $client = New-Object System.Net.Sockets.TcpClient
+              $client.Connect("localhost", 5432)
+              $client.Close()
+              break
+            } catch {
+              Start-Sleep -Milliseconds 200
+            }
+          }
+
+          python "${{ github.workspace }}\BinaryCache\llvm\bin\lldb-dotest" `
+              --triple x86_64-pc-windows-msvc `
+              --out-of-tree-debugserver `
+              --platform-name remote-windows `
+              --platform-url connect://localhost:5432 `
+              --platform-working-dir ${{ github.workspace }}\temp `
+              --excluded ${{ github.workspace }}\SourceCache\ds2\Support\Testing\Excluded\upstream\windows-x86_64.excluded `
+              --excluded ${{ github.workspace }}\SourceCache\ds2\Support\Testing\Excluded\ds2\windows-x86_64.excluded `
+              --excluded ${{ github.workspace }}\SourceCache\ds2\Support\Testing\Excluded\upstream\non-debugserver-tests.excluded `
+              -v `
+              ${{ steps.test-subdirs.outputs.dirs }} `
+              2>&1 | Where-Object { $_ -notmatch '^UNSUPPORTED: LLDB ' }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  test-windows-i686:
+    runs-on: windows-latest
+    name: Test Windows i686
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test-category: [misc, commands, Python API, functionalities]
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Windows-X64
+          path: ${{ github.workspace }}/BinaryCache/llvm
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: windows-Win32-ds2
+          path: ${{ github.workspace }}/BinaryCache/ds2/Release
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        uses: ./SourceCache/ds2/.github/actions/resolve-test-subdirs
+        with:
+          test-category: ${{ matrix.test-category }}
+          misc-dirs: "SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/windows SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+
+      - name: Install test dependencies
+        run: python -m pip install --quiet packaging psutil
+
+      - name: Run lldb tests against ds2
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path ${{ github.workspace }}\temp | Out-Null
+
+          Start-Process -NoNewWindow -FilePath "${{ github.workspace }}\BinaryCache\ds2\Release\ds2.exe" -ArgumentList "platform","--server","--listen","localhost:5432"
+
+          for ($i = 0; $i -lt 50; $i++) {
+            try {
+              $client = New-Object System.Net.Sockets.TcpClient
+              $client.Connect("localhost", 5432)
+              $client.Close()
+              break
+            } catch {
+              Start-Sleep -Milliseconds 200
+            }
+          }
+
+          python "${{ github.workspace }}\BinaryCache\llvm\bin\lldb-dotest" `
+              --triple i686-pc-windows-msvc `
+              --out-of-tree-debugserver `
+              --platform-name remote-windows `
+              --platform-url connect://localhost:5432 `
+              --platform-working-dir ${{ github.workspace }}\temp `
+              --excluded ${{ github.workspace }}\SourceCache\ds2\Support\Testing\Excluded\upstream\windows-i686.excluded `
+              --excluded ${{ github.workspace }}\SourceCache\ds2\Support\Testing\Excluded\ds2\windows-i686.excluded `
+              --excluded ${{ github.workspace }}\SourceCache\ds2\Support\Testing\Excluded\upstream\non-debugserver-tests.excluded `
+              -v `
+              ${{ steps.test-subdirs.outputs.dirs }} `
+              2>&1 | Where-Object { $_ -notmatch '^UNSUPPORTED: LLDB ' }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  test-windows-arm64:
+    runs-on: windows-11-arm
+    name: Test Windows arm64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test-category: [misc, commands, Python API, functionalities]
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: llvm-Windows-ARM64
+          path: ${{ github.workspace }}/BinaryCache/llvm
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: windows-arm64-ds2
+          path: ${{ github.workspace }}/BinaryCache/ds2/Release
+
+      - name: Checkout llvm project
+        uses: actions/checkout@v7
+        with:
+          repository: llvm/llvm-project
+          ref: ${{ inputs.llvm-ref }}
+          path: ${{ github.workspace }}/SourceCache/llvm
+
+      - name: Checkout ds2
+        uses: actions/checkout@v7
+        with:
+          path: ${{ github.workspace }}/SourceCache/ds2
+
+      - name: Resolve test subdirectories
+        id: test-subdirs
+        uses: ./SourceCache/ds2/.github/actions/resolve-test-subdirs
+        with:
+          test-category: ${{ matrix.test-category }}
+          misc-dirs: "SourceCache/llvm/lldb/test/API/api SourceCache/llvm/lldb/test/API/lang SourceCache/llvm/lldb/test/API/windows SourceCache/llvm/lldb/test/API/tools SourceCache/llvm/lldb/test/API/sanity SourceCache/llvm/lldb/test/API/types"
+
+      - name: Install test dependencies
+        run: python -m pip install --quiet packaging psutil
+
+      - name: Run lldb tests against ds2
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path ${{ github.workspace }}\temp | Out-Null
+
+          Start-Process -NoNewWindow -FilePath "${{ github.workspace }}\BinaryCache\ds2\Release\ds2.exe" -ArgumentList "platform","--server","--listen","localhost:5432"
+
+          for ($i = 0; $i -lt 50; $i++) {
+            try {
+              $client = New-Object System.Net.Sockets.TcpClient
+              $client.Connect("localhost", 5432)
+              $client.Close()
+              break
+            } catch {
+              Start-Sleep -Milliseconds 200
+            }
+          }
+
+          python "${{ github.workspace }}\BinaryCache\llvm\bin\lldb-dotest" `
+              --triple aarch64-pc-windows-msvc `
+              --out-of-tree-debugserver `
+              --platform-name remote-windows `
+              --platform-url connect://localhost:5432 `
+              --platform-working-dir ${{ github.workspace }}\temp `
+              --excluded ${{ github.workspace }}\SourceCache\ds2\Support\Testing\Excluded\upstream\windows-aarch64.excluded `
+              --excluded ${{ github.workspace }}\SourceCache\ds2\Support\Testing\Excluded\ds2\windows-aarch64.excluded `
+              --excluded ${{ github.workspace }}\SourceCache\ds2\Support\Testing\Excluded\upstream\non-debugserver-tests.excluded `
+              -v `
+              ${{ steps.test-subdirs.outputs.dirs }} `
+              2>&1 | Where-Object { $_ -notmatch '^UNSUPPORTED: LLDB ' }
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

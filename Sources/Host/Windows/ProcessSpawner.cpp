@@ -354,7 +354,11 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   LPCWSTR workingDirectoryArg =
       wideWorkingDirectory.empty() ? nullptr : wideWorkingDirectory.c_str();
 
-  DWORD creationFlags = CREATE_UNICODE_ENVIRONMENT;
+  // Neither launch path below wires up a console for the child (the plain
+  // path passes no handles at all, and the redirected path replaces stdio
+  // with pipes/files/ds2's own console handles), so let Windows skip
+  // allocating one instead of popping up a window nothing reads from.
+  DWORD creationFlags = CREATE_UNICODE_ENVIRONMENT | CREATE_NO_WINDOW;
   if (_debugOnCreate)
     creationFlags |= DEBUG_PROCESS | DEBUG_ONLY_THIS_PROCESS;
 

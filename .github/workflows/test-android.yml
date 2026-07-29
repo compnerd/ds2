@@ -14,15 +14,28 @@ jobs:
   # Android
   # -----------------------------------------------------------------------
   #
-  # The emulator-runner action takes the whole test invocation as a single
-  # shell script string executed inside its own wrapper, so it can't invoke
-  # the run-lldb-tests composite action as a normal step the way the Linux
-  # jobs do -- the dotest invocation stays inlined here, same as before this
-  # file existed.
+  # The emulator-runner action runs the whole test invocation as one shell
+  # script, so it can't use the run-lldb-tests composite action like the
+  # Linux jobs do; the dotest invocation stays inlined here.
+  #
+  # Each job's "Wrap NDK compiler" step works around Android.rules always
+  # appending its own unversioned --target after the compiler wrapper's
+  # default, which wins as the last -target flag and drops the API level
+  # below what NDK r29's libc++ needs for pthread_cond_clockwait. CFLAGS_EXTRAS
+  # can't fix this reliably: many test Makefiles set their own, silently
+  # discarding ours. Appending the real target as the wrapper's own last
+  # argument can't be overridden that way.
 
   test-android-x86_64:
     runs-on: ubuntu-latest
     name: Test Android x86_64
+    # Observed category durations run 5-14 minutes; this is roughly 2x the
+    # slowest, catching a hang well before GitHub's 360-minute job default.
+    timeout-minutes: 30
+
+    env:
+      # API level test inferiors compile against.
+      TEST_INFERIOR_API_LEVEL: 28
 
     strategy:
       fail-fast: false
@@ -87,6 +100,24 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
+      # See the top-of-file comment for why this is needed. Android.rules
+      # derives NDK_ROOT (and from it, the sysroot) purely from --compiler's
+      # own directory nesting (dirname($CC)/../../../../..), so the wrapper
+      # has to live 5 levels deep exactly like the real NDK, with a symlink
+      # standing in for the parts Android.rules reads directly from disk.
+      - name: Wrap NDK compiler
+        run: |
+          wrap_bin="$RUNNER_TEMP/android-clang-wrapper/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          mkdir -p "$wrap_bin"
+          ln -s "$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot" "$wrap_bin/../sysroot"
+          wrapper="$wrap_bin/x86_64-linux-android$TEST_INFERIOR_API_LEVEL-clang"
+          {
+            echo '#!/usr/bin/env bash'
+            echo 'exec "$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/$(basename "$0")" "$@" -target x86_64-linux-android'"$TEST_INFERIOR_API_LEVEL"
+          } > "$wrapper"
+          cp "$wrapper" "$wrapper++"
+          chmod +x "$wrapper" "$wrapper++"
+
       - name: Run lldb tests against ds2 on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -112,11 +143,11 @@ jobs:
 
             ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
             --out-of-tree-debugserver
-            --arch x86_64
+            --triple x86_64-none-linux-android
             --platform-name remote-android
             --platform-url connect://localhost:5432
             --platform-working-dir /data/local/tmp
-            --compiler=$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android28-clang
+            --compiler=$RUNNER_TEMP/android-clang-wrapper/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android$TEST_INFERIOR_API_LEVEL-clang
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-x86_64.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-x86_64.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded
@@ -132,6 +163,13 @@ jobs:
   test-android-arm64-v8a:
     runs-on: ubuntu-latest
     name: Test Android arm64-v8a sanity
+    # Observed duration is ~7 minutes; this is roughly 2x that, catching a
+    # hang well before GitHub's 360-minute job default.
+    timeout-minutes: 15
+
+    env:
+      # API level test inferiors compile against.
+      TEST_INFERIOR_API_LEVEL: 27
 
     steps:
       - uses: actions/download-artifact@v8
@@ -186,6 +224,24 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
+      # See the top-of-file comment for why this is needed. Android.rules
+      # derives NDK_ROOT (and from it, the sysroot) purely from --compiler's
+      # own directory nesting (dirname($CC)/../../../../..), so the wrapper
+      # has to live 5 levels deep exactly like the real NDK, with a symlink
+      # standing in for the parts Android.rules reads directly from disk.
+      - name: Wrap NDK compiler
+        run: |
+          wrap_bin="$RUNNER_TEMP/android-clang-wrapper/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          mkdir -p "$wrap_bin"
+          ln -s "$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/sysroot" "$wrap_bin/../sysroot"
+          wrapper="$wrap_bin/aarch64-linux-android$TEST_INFERIOR_API_LEVEL-clang"
+          {
+            echo '#!/usr/bin/env bash'
+            echo 'exec "$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/$(basename "$0")" "$@" -target aarch64-linux-android'"$TEST_INFERIOR_API_LEVEL"
+          } > "$wrapper"
+          cp "$wrapper" "$wrapper++"
+          chmod +x "$wrapper" "$wrapper++"
+
       - name: Run lldb tests against ds2 on Android emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -206,11 +262,11 @@ jobs:
 
             ${{ github.workspace }}/BinaryCache/llvm/bin/lldb-dotest
             --out-of-tree-debugserver
-            --arch aarch64
+            --triple aarch64-none-linux-android
             --platform-name remote-android
             --platform-url connect://localhost:5432
             --platform-working-dir /data/local/tmp
-            --compiler=$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android27-clang
+            --compiler=$RUNNER_TEMP/android-clang-wrapper/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android$TEST_INFERIOR_API_LEVEL-clang
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/ds2/android-aarch64.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/android-aarch64.excluded
             --excluded ${{ github.workspace }}/SourceCache/ds2/Support/Testing/Excluded/upstream/non-debugserver-tests.excluded

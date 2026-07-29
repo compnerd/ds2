@@ -29,6 +29,9 @@ jobs:
   test-linux-i686:
     runs-on: ubuntu-latest
     name: Test Linux i686
+    # Observed category durations run 3-8 minutes; this is roughly 2x the
+    # slowest, catching a hang well before GitHub's 360-minute job default.
+    timeout-minutes: 20
 
     # test-category is the matrix's only key -- GitHub renders every matrix
     # key/value pair in the check name (e.g. "Test Linux i686 (Python API)"),
@@ -89,6 +92,9 @@ jobs:
   test-linux-x86_64:
     runs-on: ubuntu-latest
     name: Test Linux x86_64
+    # Observed category durations run 3-8 minutes; this is roughly 2x the
+    # slowest, catching a hang well before GitHub's 360-minute job default.
+    timeout-minutes: 20
 
     strategy:
       fail-fast: false
@@ -140,6 +146,9 @@ jobs:
   test-linux-aarch64:
     runs-on: ubuntu-24.04-arm
     name: Test Linux aarch64
+    # Observed category durations run 2-5.5 minutes; this is roughly 2x the
+    # slowest, catching a hang well before GitHub's 360-minute job default.
+    timeout-minutes: 15
 
     strategy:
       fail-fast: false

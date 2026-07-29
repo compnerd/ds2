@@ -15,7 +15,10 @@ inputs:
     description: Path to the checked-out ds2 repository
     required: true
   arch:
-    description: Architecture to pass to dotest.py's --arch (e.g. x86_64, i686, aarch64)
+    description: >-
+      Architecture (e.g. x86_64, i686, aarch64), passed to dotest.py as
+      --triple <arch>-unknown-linux-gnu (dotest.py dropped --arch in favor
+      of --triple as of release/23.x)
     required: true
   platform:
     description: >-
@@ -83,7 +86,7 @@ runs:
         # lldb-dotest itself, not to grep.
         "${{ inputs.python }}" "${{ inputs.lldb-dotest-path }}" \
           --out-of-tree-debugserver \
-          --arch "${{ inputs.arch }}" \
+          --triple "${{ inputs.arch }}-unknown-linux-gnu" \
           --platform-name "remote-${{ inputs.platform }}" \
           --platform-url "connect://localhost:${{ inputs.listen-port }}" \
           --platform-working-dir "${{ inputs.working-dir }}" \
